@@ -51,7 +51,7 @@ namespace LunraGames.NoiseMaker
 						if (GUILayout.Button(option.Key, GUILayout.Height(48f))) 
 						{
 							var node = option.Value();
-							node.Position.position = position.center - new Vector2(0f, position.center.y * 0.5f);
+							node.Position.position = new Vector2(0f, 0f);
 							Nodes.Insert(0, node);
 						}
 					}
