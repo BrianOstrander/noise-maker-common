@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Symbols xmlns="http://schemas.postsharp.org/2.0/symbols">
+  <Class Class="#1=T:[Atesh]Atesh.ValidateParametersAttribute">
+    <Instance Declaration="#2=M:[Atesh]Atesh.Bezier2::#ctor(System.Int32)" Id="20576919aa385cfb">
+      <Target>
+        <JoinPoint Description="#3=Wrapped by advice(s) OnEntry, OnSuccess, OnException, OnExit" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#4=M:[Atesh]Atesh.Bezier2::Translate(System.Single, System.Single, out System.Single)" Id="205769193d1027f7">
+      <Target>
+        <JoinPoint Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#5=M:[Atesh]Atesh.Bezier3::#ctor(System.Int32)" Id="20576919a9583bcc">
+      <Target>
+        <JoinPoint Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#6=M:[Atesh]Atesh.Bezier3::Translate(System.Single, System.Single, out System.Single)" Id="20576919e49b4860">
+      <Target>
+        <JoinPoint Description="#3" />
+      </Target>
+    </Instance>
+  </Class>
+</Symbols>

@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atesh", "Atesh\Atesh.csproj", "{2DF26E2D-33A6-45FD-AA5A-1601ECEB4D4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atesh.Editor", "Atesh.Editor\Atesh.Editor.csproj", "{4E575776-4817-4C00-9DD8-7C6EBC3FB9DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atesh.WeNeedCreatedMessage", "Atesh.WeNeedCreatedMessage\Atesh.WeNeedCreatedMessage.csproj", "{4A8CC1BC-C19F-46E1-AA0C-A98CD38AA109}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atesh.WeNeedCreatedMessage.Editor", "Atesh.WeNeedCreatedMessage.Editor\Atesh.WeNeedCreatedMessage.Editor.csproj", "{E2F955FC-D767-49E4-BE03-C19D96560F12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atesh.MagicAutoLinker.Editor", "Atesh.MagicAutoLinker.Editor\Atesh.MagicAutoLinker.Editor.csproj", "{07A68B99-FF3A-43BC-BC66-74110470002D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atesh.MagicAutoLinker", "Atesh.MagicAutoLinker\Atesh.MagicAutoLinker.csproj", "{B339248F-9644-4BEB-A9C4-F833F9688F7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atesh.WindowsAndWidgets", "Atesh.WindowsAndWidgets\Atesh.WindowsAndWidgets.csproj", "{3567E66A-D8E5-4366-8F99-601D1A8713AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atesh.WindowsAndWidgets.Editor", "Atesh.WindowsAndWidgets.Editor\Atesh.WindowsAndWidgets.Editor.csproj", "{56EDDD76-69A8-4065-8492-4B26428DC652}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atesh.Waitress", "Atesh.Waitress\Atesh.Waitress.csproj", "{374E1D15-5FBB-4A80-A702-E36363546D47}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2DF26E2D-33A6-45FD-AA5A-1601ECEB4D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DF26E2D-33A6-45FD-AA5A-1601ECEB4D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E575776-4817-4C00-9DD8-7C6EBC3FB9DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E575776-4817-4C00-9DD8-7C6EBC3FB9DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A8CC1BC-C19F-46E1-AA0C-A98CD38AA109}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A8CC1BC-C19F-46E1-AA0C-A98CD38AA109}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2F955FC-D767-49E4-BE03-C19D96560F12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2F955FC-D767-49E4-BE03-C19D96560F12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07A68B99-FF3A-43BC-BC66-74110470002D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07A68B99-FF3A-43BC-BC66-74110470002D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B339248F-9644-4BEB-A9C4-F833F9688F7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B339248F-9644-4BEB-A9C4-F833F9688F7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3567E66A-D8E5-4366-8F99-601D1A8713AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3567E66A-D8E5-4366-8F99-601D1A8713AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56EDDD76-69A8-4065-8492-4B26428DC652}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56EDDD76-69A8-4065-8492-4B26428DC652}.Release|Any CPU.Build.0 = Release|Any CPU
+		{374E1D15-5FBB-4A80-A702-E36363546D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{374E1D15-5FBB-4A80-A702-E36363546D47}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

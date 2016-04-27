@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Symbols xmlns="http://schemas.postsharp.org/2.0/symbols">
+  <Class Class="#1=T:[Atesh]Atesh.ValidateParametersAttribute">
+    <Instance Declaration="#2=M:[Atesh.Waitress]Atesh.Waitress.MonoBehaviourExtensions::WaitForTime(UnityEngine.MonoBehaviour, System.Single, System.Int32, System.Boolean, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.DoneEventArgs})" Id="59bafda1709ef361">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3=Wrapped by advice(s) OnEntry, OnSuccess, OnException, OnExit" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#4=M:[Atesh.Waitress]Atesh.Waitress.MonoBehaviourExtensions::WaitForCondition(UnityEngine.MonoBehaviour, System.Func{System.Boolean}, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.ResetAndRepeatEventArgs}, System.Int32, System.Single, System.Boolean, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.DoneEventArgs})" Id="59bafda143d0579b">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#5=M:[Atesh.Waitress]Atesh.Waitress.Framer::Wait(UnityEngine.MonoBehaviour, System.Boolean, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.DoneEventArgs})" Id="59bafda170e42c37">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#6=M:[Atesh.Waitress]Atesh.Waitress.Framer::Wait(UnityEngine.MonoBehaviour)" Id="59bafda134e21364">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#7=M:[Atesh.Waitress]Atesh.Waitress.Framer::Wait(UnityEngine.MonoBehaviour, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.DoneEventArgs})" Id="59bafda177afa204">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#8=M:[Atesh.Waitress]Atesh.Waitress.FixedFramer::Wait(UnityEngine.MonoBehaviour, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.DoneEventArgs})" Id="59bafda13ceb50f6">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#9=M:[Atesh.Waitress]Atesh.Waitress.Conditioner::Wait(UnityEngine.MonoBehaviour, System.Func{System.Boolean}, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.ResetAndRepeatEventArgs}, System.Int32, System.Single, System.Boolean, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.DoneEventArgs})" Id="59bafda1917c683d">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#10=M:[Atesh.Waitress]Atesh.Waitress.Conditioner::Wait(System.Func{System.Boolean}, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.ResetAndRepeatEventArgs}, System.Int32, System.Single, System.Boolean, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.DoneEventArgs})" Id="59bafda13c03f0d4">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#11=M:[Atesh.Waitress]Atesh.Waitress.Timer::Wait(UnityEngine.MonoBehaviour, System.Single, System.Int32, System.Boolean, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.DoneEventArgs})" Id="59bafda1ed9ec560">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#12=M:[Atesh.Waitress]Atesh.Waitress.Timer::Wait(System.Single, System.Int32, System.Boolean, System.EventHandler{[Atesh.Waitress]Atesh.Waitress.DoneEventArgs})" Id="59bafda137d742a3">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#13=M:[Atesh.Waitress]Atesh.Waitress.Extras.WWW::Request(UnityEngine.MonoBehaviour, System.String, UnityEngine.WWWForm, System.Collections.Generic.Dictionary{System.String,System.String}, [Atesh.Waitress]Atesh.Waitress.Extras.DoneCallback, [Atesh.Waitress]Atesh.Waitress.Extras.CanceledCallback, System.Int32, System.Single)" Id="59bafda144298c26">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3" />
+      </Target>
+    </Instance>
+    <Instance Declaration="#14=M:[Atesh.Waitress]Atesh.Waitress.Extras.WWW::Request(System.String, UnityEngine.WWWForm, System.Collections.Generic.Dictionary{System.String,System.String}, [Atesh.Waitress]Atesh.Waitress.Extras.DoneCallback, [Atesh.Waitress]Atesh.Waitress.Extras.CanceledCallback, System.Int32, System.Single)" Id="59bafda1269a8c23">
+      <Target>
+        <JoinPoint Advising="#1" Description="#3" />
+      </Target>
+    </Instance>
+  </Class>
+</Symbols>
