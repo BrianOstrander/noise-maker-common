@@ -8,10 +8,10 @@ using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
-	public class Node
+	[Serializable]
+	public abstract class Node
 	{
 		#region Inspector
-		[JsonIgnore]
 		public Vector2 EditorPosition = Vector2.zero;
 		#endregion
 
@@ -22,7 +22,7 @@ namespace LunraGames.NoiseMaker
 		[NonSerialized]
 		protected IModule Module;
 
-		public virtual IModule GetModule(List<Node> nodes) { throw new NotImplementedException(); }
+		public abstract IModule GetModule(List<Node> nodes);
 
 		protected List<IModule> Sources(List<Node> nodes, params string[] sources)
 		{

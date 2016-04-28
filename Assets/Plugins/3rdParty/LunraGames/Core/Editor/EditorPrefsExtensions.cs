@@ -27,6 +27,7 @@ namespace LunraGames
 				if (_SerializerSettings == null)
 				{
 					_SerializerSettings = new JsonSerializerSettings();
+					_SerializerSettings.TypeNameHandling = TypeNameHandling.All;
 					foreach (var converter in Converters) _SerializerSettings.Converters.Add(converter);
 				}
 				return _SerializerSettings;
