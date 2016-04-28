@@ -3,11 +3,36 @@ using System.Collections;
 using UnityEditor;
 using Atesh;
 using System;
+using Newtonsoft.Json;
+using LunraGames.Converters;
 
 namespace LunraGames
 {
 	public static class EditorPrefsExtensions 
 	{
+		static JsonConverter[] Converters = 
+		{
+			new Vector2Converter(),
+			new Vector3Converter(),
+			new Vector4Converter(),
+			new QuaternionConverter()
+		};
+
+		static JsonSerializerSettings _SerializerSettings;
+
+		static JsonSerializerSettings SerializerSettings 
+		{
+			get
+			{
+				if (_SerializerSettings == null)
+				{
+					_SerializerSettings = new JsonSerializerSettings();
+					foreach (var converter in Converters) _SerializerSettings.Converters.Add(converter);
+				}
+				return _SerializerSettings;
+			}
+		}
+		
 		public static T GetJson<T>(string key, T defaultValue = default(T))
 		{
 			var serialized = EditorPrefs.GetString(key, string.Empty);
@@ -15,11 +40,11 @@ namespace LunraGames
 
 			try 
 			{
-				return JsonUtility.FromJson<T>(serialized);
+				return JsonConvert.DeserializeObject<T>(serialized, SerializerSettings);
 			}
-			catch
+			catch (Exception e)
 			{
-				Debug.LogError("Problem parsing "+key+" with value: \n\t"+serialized+"\nReturning default value");
+				Debug.LogError("Problem parsing "+key+" with value: \n\t"+serialized+"\nReturning default value\n Exception:\n"+e.Message);
 				return defaultValue;
 			}
 		}
@@ -27,7 +52,7 @@ namespace LunraGames
 		public static void SetJson(string key, object value)
 		{
 			if (value == null) EditorPrefs.SetString(key, string.Empty);
-			else EditorPrefs.SetString(key, JsonUtility.ToJson(value));
+			else EditorPrefs.SetString(key, JsonConvert.SerializeObject(value, Formatting.None, SerializerSettings));
 		}
 	}
 }

@@ -28,11 +28,11 @@ namespace LibNoise.Modifiers
         : IModule
     {
         public IModule SourceModule { get; set; }
-
+#pragma warning disable 414
         private double XAngle;
         private double YAngle;
         private double ZAngle;
-
+#pragma warning restore 414
         /// An entry within the 3x3 rotation matrix used for rotating the
         /// input value.
         double m_x1Matrix;
