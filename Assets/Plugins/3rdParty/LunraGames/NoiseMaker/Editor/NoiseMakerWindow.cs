@@ -39,11 +39,6 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		Dictionary<string, Func<Node>> NodeOptions = new Dictionary<string, Func<Node>> 
-		{
-			{ "Perlin", () => new PerlinNode() }
-		};
-
 		NoiseMakerWindow()
 		{
 			_Graph = EditorPrefsExtensions.GetJson<Graph>(GraphKey, new Graph());
@@ -135,14 +130,23 @@ namespace LunraGames.NoiseMaker
 			{
 				foreach (var node in Graph.Nodes)
 				{
- 					var drawer = NodeEditorCacher.Editors[node.GetType()];
- 					var windowRect = new Rect(node.EditorPosition, new Vector2(128f, 200f));
-					windowRect = GUILayout.Window(node.Id.GetHashCode(), windowRect, id =>
+					var unmodifiedNode = node;
+					var drawer = NodeEditorCacher.Editors[unmodifiedNode.GetType()];
+ 					var windowRect = new Rect(unmodifiedNode.EditorPosition, new Vector2(200f, 240f));
+					windowRect = GUILayout.Window(unmodifiedNode.Id.GetHashCode(), windowRect, id =>
 					{
-						drawer.Editor.Draw(node);
+						try
+						{
+							drawer.Editor.Draw(Graph, unmodifiedNode);
+						}
+						catch (Exception e)
+						{
+							EditorGUILayout.HelpBox("Exception occured: \n"+e.Message, MessageType.Error);
+							if (GUILayout.Button("Print Exception")) Debug.LogException(e);
+						}
 						GUI.DragWindow();
 					}, (drawer == null || StringExtensions.IsNullOrWhiteSpace(drawer.Details.Name)) ? "Node" : drawer.Details.Name);
-					node.EditorPosition = windowRect.position;
+					unmodifiedNode.EditorPosition = windowRect.position;
 				}
 			}
 	        EndWindows();
@@ -155,11 +159,11 @@ namespace LunraGames.NoiseMaker
 			{
 				GUILayout.BeginScrollView(Vector2.zero);
 				{
-					foreach(var option in NodeOptions) 
+					foreach(var option in NodeEditorCacher.Editors) 
 					{
-						if (GUILayout.Button(option.Key, GUILayout.Height(48f))) 
+						if (GUILayout.Button(option.Value.Details.Name, GUILayout.Height(48f))) 
 						{
-							var node = option.Value();
+							var node = Activator.CreateInstance(option.Value.Details.Target) as Node;
 							node.Id = Guid.NewGuid().ToString();
 							node.EditorPosition = new Vector2(position.width * 0.5f, position.height * 0.5f);
 							Graph.Nodes.Add(node);

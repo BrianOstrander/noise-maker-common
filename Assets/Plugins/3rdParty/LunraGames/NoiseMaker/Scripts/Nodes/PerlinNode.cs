@@ -10,24 +10,21 @@ namespace LunraGames.NoiseMaker
 		public float Frequency;
 		public float Lacunarity;
 		public NoiseQuality Quality;
-		public int OctaveCount;
+		public int OctaveCount = 1;
 		public float Persistence;
 		public int Seed;
 
 		public override IModule GetModule (List<Node> nodes)
 		{
-			if (Module == null) 
-			{
-				var perlin = new Perlin();
-				perlin.Frequency = Frequency;
-				perlin.Lacunarity = Lacunarity;
-				perlin.NoiseQuality = Quality;
-				perlin.OctaveCount = OctaveCount;
-				perlin.Persistence = Persistence;
-				perlin.Seed = Seed;
+			var perlin = Module == null ? new Perlin() : Module as Perlin;
+			perlin.Frequency = Frequency;
+			perlin.Lacunarity = Lacunarity;
+			perlin.NoiseQuality = Quality;
+			perlin.OctaveCount = OctaveCount;
+			perlin.Persistence = Persistence;
+			perlin.Seed = Seed;
 
-				Module = perlin;
-			}
+			Module = perlin;
 			return Module;
 		}
 	}
