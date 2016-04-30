@@ -14,7 +14,8 @@ namespace LunraGames.NoiseMaker
 			var perlin = node as PerlinNode;
 
 			var preview = GetPreview(graph, node);
-			GUILayout.Box(preview.Preview);
+
+			GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewSize), GUILayout.ExpandWidth(true));
 
 			GUILayout.FlexibleSpace();
 

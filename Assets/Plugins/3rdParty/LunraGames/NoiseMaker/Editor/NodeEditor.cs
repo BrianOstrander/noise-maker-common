@@ -2,12 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
 	public abstract class NodeEditor
 	{
 		public const int PreviewSize = 198;
+		const float IoStartOffset = 16;
+		const float IoDivider = 8;
+		const float IoWidth = 32;
+		const float IoHeight = 16;
 
 		protected List<NodePreview> Previews = new List<NodePreview>();
 
@@ -38,6 +44,23 @@ namespace LunraGames.NoiseMaker
 				preview.Stale = false;
 			}
 			return preview;
+		}
+
+		public void DrawInputs(Rect position, params NodeIo[] inputs)
+		{
+			var currRect = new Rect(position.x - IoWidth + 1, position.y + IoStartOffset, IoWidth, IoHeight);
+
+			foreach (var input in inputs)
+			{
+				GUI.RepeatButton(currRect, GUIContent.none, Styles.BoxButton);
+				currRect.y += IoDivider + IoHeight;
+			}
+		}
+
+		public void DrawOutput(Rect position, NodeIo output)
+		{
+			var currRect = new Rect(position.x + position.width - 2, position.y + IoStartOffset, IoWidth, IoHeight);
+			GUI.RepeatButton(currRect, GUIContent.none, Styles.BoxButton);
 		}
 
 		public abstract Node Draw(Graph graph, Node node);

@@ -39,6 +39,9 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
+		Node ConnectingFrom;
+		Node ConnectingTo;
+
 		NoiseMakerWindow()
 		{
 			_Graph = EditorPrefsExtensions.GetJson<Graph>(GraphKey, new Graph());
@@ -74,7 +77,7 @@ namespace LunraGames.NoiseMaker
 			catch (Exception e)
 			{
 				EditorGUILayout.HelpBox("Exception occured: \n"+e.Message, MessageType.Error);
-
+				Debug.LogException(e);
 				GUILayout.BeginHorizontal();
 				{
 					if (GUILayout.Button("Print Exception")) Debug.LogException(e);
@@ -132,7 +135,20 @@ namespace LunraGames.NoiseMaker
 				{
 					var unmodifiedNode = node;
 					var drawer = NodeEditorCacher.Editors[unmodifiedNode.GetType()];
- 					var windowRect = new Rect(unmodifiedNode.EditorPosition, new Vector2(200f, 240f));
+					var windowRect = new Rect(unmodifiedNode.EditorPosition, new Vector2(216f, 240f));
+
+					if (unmodifiedNode.SourceIds != null && 0 < unmodifiedNode.SourceIds.Count)
+					{
+						var inputs = new List<NodeIo>();
+
+						for (var i = 0; i < unmodifiedNode.SourceIds.Count; i++)
+						{
+							inputs.Add(new NodeIo());
+						}
+						drawer.Editor.DrawInputs(windowRect, inputs.ToArray());
+					}
+					drawer.Editor.DrawOutput(windowRect, new NodeIo ());
+
 					windowRect = GUILayout.Window(unmodifiedNode.Id.GetHashCode(), windowRect, id =>
 					{
 						try

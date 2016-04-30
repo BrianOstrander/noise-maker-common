@@ -28,7 +28,8 @@ namespace LunraGames.NoiseMaker
 		{
 			if (nodes == null) throw new ArgumentNullException("nodes");
 			var result = new List<IModule>();
-			foreach (var source in sources)
+			var ids = sources.Length == 0 ? SourceIds.ToArray() : sources;
+			foreach (var source in ids)
 			{
 				if (StringExtensions.IsNullOrWhiteSpace(source)) throw new ArgumentNullOrEmptyException("sources", "Array \"sources\" can't contain a null or empty string");
 				var node = nodes.FirstOrDefault(n => n.Id == source);
