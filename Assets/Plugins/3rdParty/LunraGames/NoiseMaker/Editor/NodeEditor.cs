@@ -23,7 +23,7 @@ namespace LunraGames.NoiseMaker
 
 			if (preview != null)
 			{
-				preview.Stale = node.SourceIds.Count != preview.LastSourceIds.Count;
+				preview.Stale = preview.Stale || node.SourceIds.Count != preview.LastSourceIds.Count;
 				for (var i = 0; i < node.SourceIds.Count; i++)
 				{
 					var id = node.SourceIds[i];

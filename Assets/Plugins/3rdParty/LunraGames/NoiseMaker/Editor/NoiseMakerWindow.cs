@@ -41,6 +41,7 @@ namespace LunraGames.NoiseMaker
 
 		Node ConnectingFrom;
 		Node ConnectingTo;
+		Dictionary<string, bool> ShownCategories = new Dictionary<string, bool>();
 
 		NoiseMakerWindow()
 		{
@@ -238,23 +239,61 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
+
 		void DrawNodeOptions()
 		{
-			var area = new Rect(position.width - 200f, 0f, 200f, position.height);
+			var optionCategories = new Dictionary<string, List<EditorEntry>>();
+
+			foreach (var option in NodeEditorCacher.Editors)
+			{
+				if (optionCategories.ContainsKey(option.Value.Details.Category)) optionCategories[option.Value.Details.Category].Add(option.Value);
+				else optionCategories.Add(option.Value.Details.Category, new List<EditorEntry>(new EditorEntry[] {option.Value}));
+			}
+
+			var area = new Rect(position.width - 208f, -1f, 8f, position.height + 2f);
 			GUILayout.BeginArea(area);
+			{
+				GUILayout.Box(GUIContent.none, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
+			}
+			GUILayout.EndArea();
+			area.x += 8f;
+			area.y += 1f;
+			area.height -= 2f;
+			area.width = 200f;
+			GUILayout.BeginArea(area, Styles.OptionBox);
 			{
 				GUILayout.BeginScrollView(Vector2.zero);
 				{
-					foreach(var option in NodeEditorCacher.Editors) 
+					foreach(var category in optionCategories) 
 					{
-						if (GUILayout.Button(option.Value.Details.Name, GUILayout.Height(48f))) 
+						if (!ShownCategories.ContainsKey(category.Key)) ShownCategories.Add(category.Key, true);
+						var shown = ShownCategories[category.Key];
+						shown = EditorGUILayout.Foldout(shown, category.Key, Styles.Foldout);
+						ShownCategories[category.Key] = shown;
+						if (shown)
 						{
-							var node = Activator.CreateInstance(option.Value.Details.Target) as Node;
-							node.Id = Guid.NewGuid().ToString();
-							node.EditorPosition = new Vector2(position.width * 0.5f, position.height * 0.5f);
-							Graph.Nodes.Add(node);
+							GUILayout.BeginHorizontal();
+							{
+								GUILayout.Box(GUIContent.none, EditorStyles.miniButtonLeft, GUILayout.Width(16f), GUILayout.ExpandHeight(true));
+								GUILayout.BeginVertical();
+								{
+									foreach (var option in category.Value)
+									{
+										if (GUILayout.Button(option.Details.Name, Styles.OptionButton)) 
+										{
+											var node = Activator.CreateInstance(option.Details.Target) as Node;
+											node.Id = Guid.NewGuid().ToString();
+											node.EditorPosition = new Vector2(position.width * 0.5f, position.height * 0.5f);
+											Graph.Nodes.Add(node);
+										}
+									}
+								}
+								GUILayout.EndVertical();
+							}
+							GUILayout.EndHorizontal();
 						}
 					}
+					GUILayout.FlexibleSpace();
 				}
 				GUILayout.EndScrollView();
 			}

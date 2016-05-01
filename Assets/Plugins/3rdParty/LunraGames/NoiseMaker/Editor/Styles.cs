@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
@@ -22,7 +25,7 @@ namespace LunraGames.NoiseMaker
 						for (var y = 0; y < active.height; y++)
 						{
 							var color = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0f, 0f, 0.4f) : Color.HSVToRGB(0f, 0f, 0.5f);
-							active.SetPixel(x, y, color);
+							active.SetPixel(x, y, color.NewA(1f));
 						}
 					}
 					active.Apply();
@@ -49,7 +52,7 @@ namespace LunraGames.NoiseMaker
 						for (var y = 0; y < hovered.height; y++)
 						{
 							var color = x == 0 || y == 0 || x == hovered.width - 1 || y == hovered.height - 1 ? Color.HSVToRGB(0f, 0f, 0.4f) : Color.HSVToRGB(0f, 0f, 0.5f);
-							hovered.SetPixel(x, y, color);
+							hovered.SetPixel(x, y, color.NewA(1f));
 						}
 					}
 					hovered.Apply();
@@ -60,5 +63,84 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
+		static GUIStyle _Foldout;
+
+		public static GUIStyle Foldout
+		{
+			get
+			{
+				if (_Foldout == null)
+				{
+					_Foldout = new GUIStyle(EditorStyles.foldout);
+					_Foldout.fontSize = 18;
+					_Foldout.fixedHeight = 24f;
+					_Foldout.alignment = TextAnchor.MiddleLeft;
+					_Foldout.imagePosition = ImagePosition.TextOnly;
+					_Foldout.padding.bottom += 8;
+				}
+
+				return _Foldout;
+			}
+		}
+
+		static GUIStyle _OptionBox;
+
+		public static GUIStyle OptionBox
+		{
+			get
+			{
+				if (_OptionBox == null)
+				{
+					_OptionBox = new GUIStyle(GUI.skin.box);
+					var background = new Texture2D(_OptionBox.normal.background.width, _OptionBox.normal.background.height);
+
+					for (var x = 0; x < background.width; x++)
+					{
+						for (var y = 0; y < background.height; y++)
+						{
+							var color = x == 0 || x == background.width - 1 ? Color.HSVToRGB(0f, 0f, 0.1f) : Color.HSVToRGB(0f, 0f, 0.25f);
+							background.SetPixel(x, y, color.NewA(0.75f));
+						}
+					}
+					background.Apply();
+					_OptionBox.normal.background = background;
+				}
+
+				return _OptionBox;
+			}
+		}
+
+		static GUIStyle _OptionButton;
+
+		public static GUIStyle OptionButton
+		{
+			get
+			{
+				if (_OptionButton == null)
+				{
+					_OptionButton = new GUIStyle(EditorStyles.miniButtonRight);
+					_OptionButton.alignment = TextAnchor.MiddleLeft;
+					_OptionButton.fontSize = 16;
+					_OptionButton.fixedHeight = 24f;
+					//_OptionButton.padding.left += 8;
+					//_OptionButton.margin.left += 16;
+					/*
+					var background = new Texture2D(_OptionButton.normal.background.width, _OptionButton.normal.background.height);
+					for (var x = 0; x < background.width; x++)
+					{
+						for (var y = 0; y < background.height; y++)
+						{
+							var color = x == 0 || x == background.width - 1 ? Color.HSVToRGB(0f, 0f, 0.1f) : Color.HSVToRGB(0f, 0f, 0.25f);
+							background.SetPixel(x, y, color.NewA(1f));
+						}
+					}
+					background.Apply();
+					_OptionButton.normal.background = background;
+					*/
+				}
+
+				return _OptionButton;
+			}
+		}
 	}
 }

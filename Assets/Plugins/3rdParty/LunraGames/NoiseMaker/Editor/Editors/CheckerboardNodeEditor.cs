@@ -6,7 +6,7 @@ using LibNoise;
 
 namespace LunraGames.NoiseMaker
 {
-	[NodeDrawer(typeof(CheckerboardNode), Strings.Combiners, "Checkerboard")]
+	[NodeDrawer(typeof(CheckerboardNode), Strings.Generators, "Checkerboard")]
 	public class CheckerboardNodeEditor : NodeEditor
 	{
 		public override Node Draw(Graph graph, Node node)
