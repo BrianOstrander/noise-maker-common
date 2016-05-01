@@ -20,8 +20,6 @@ namespace LunraGames.NoiseMaker
 			}
 			else EditorGUILayout.HelpBox("Specify two inputs.", MessageType.Warning);
 
-			GUILayout.FlexibleSpace();
-
 			return multiply;
 		}
 	}

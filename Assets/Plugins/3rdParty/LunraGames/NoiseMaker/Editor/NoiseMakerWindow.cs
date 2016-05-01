@@ -142,7 +142,7 @@ namespace LunraGames.NoiseMaker
 				{
 					var unmodifiedNode = node;
 					var drawer = NodeEditorCacher.Editors[unmodifiedNode.GetType()];
-					var windowRect = new Rect(unmodifiedNode.EditorPosition, new Vector2(216f, 240f));
+					var windowRect = new Rect(unmodifiedNode.EditorPosition, new Vector2(216f, 216f));
 
 					if (unmodifiedNode.SourceIds != null && 0 < unmodifiedNode.SourceIds.Count)
 					{

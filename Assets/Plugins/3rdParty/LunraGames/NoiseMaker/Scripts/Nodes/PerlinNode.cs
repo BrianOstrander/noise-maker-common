@@ -12,7 +12,7 @@ namespace LunraGames.NoiseMaker
 		public NoiseQuality Quality = NoiseQuality.Standard;
 		public int OctaveCount = 1;
 		public float Persistence;
-		public int Seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
+		public int Seed = NoiseUtility.Seed;
 
 		public override IModule GetModule (List<Node> nodes)
 		{
