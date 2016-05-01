@@ -7,12 +7,12 @@ namespace LunraGames.NoiseMaker
 {
 	public class PerlinNode : Node
 	{
-		public float Frequency;
+		public float Frequency = 0.02f;
 		public float Lacunarity;
-		public NoiseQuality Quality;
+		public NoiseQuality Quality = NoiseQuality.Standard;
 		public int OctaveCount = 1;
 		public float Persistence;
-		public int Seed;
+		public int Seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 
 		public override IModule GetModule (List<Node> nodes)
 		{

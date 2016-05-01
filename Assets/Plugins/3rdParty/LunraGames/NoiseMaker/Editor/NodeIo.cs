@@ -9,6 +9,8 @@ namespace LunraGames.NoiseMaker
 	{
 		public string Name;
 		public string Tooltip;
-		public Action OnDragChange;
+		public bool Connecting;
+		public bool Active;
+		public Action OnClick;
 	}
 }

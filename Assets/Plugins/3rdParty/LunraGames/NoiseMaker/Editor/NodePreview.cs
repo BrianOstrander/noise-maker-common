@@ -7,5 +7,6 @@ namespace LunraGames.NoiseMaker
 		public string Id;
 		public bool Stale;
 		public Texture2D Preview;
+		public long LastUpdated;
 	}
 }

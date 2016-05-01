@@ -15,11 +15,22 @@ namespace LunraGames.NoiseMaker
 		const float IoWidth = 32;
 		const float IoHeight = 16;
 
-		protected List<NodePreview> Previews = new List<NodePreview>();
+		protected static List<NodePreview> Previews = new List<NodePreview>();
 
 		protected NodePreview GetPreview(Graph graph, Node node)
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == node.Id);
+
+			if (preview != null)
+			{
+				foreach (var id in node.SourceIds)
+				{
+					if (StringExtensions.IsNullOrWhiteSpace(id)) continue;
+					var sourcePreview = Previews.FirstOrDefault(p => p.Id == id);
+					if (sourcePreview == null) continue;
+					preview.Stale = preview.Stale || preview.LastUpdated < sourcePreview.LastUpdated;
+				}
+			}
 
 			if (preview == null || preview.Stale)
 			{
@@ -42,25 +53,29 @@ namespace LunraGames.NoiseMaker
 				}
 				preview.Preview.Apply();
 				preview.Stale = false;
+				preview.LastUpdated = DateTime.Now.Ticks;
 			}
 			return preview;
 		}
 
-		public void DrawInputs(Rect position, params NodeIo[] inputs)
+		public List<Rect> DrawInputs(Rect position, params NodeIo[] inputs)
 		{
 			var currRect = new Rect(position.x - IoWidth + 1, position.y + IoStartOffset, IoWidth, IoHeight);
-
+			var rects = new List<Rect>();
 			foreach (var input in inputs)
 			{
-				GUI.RepeatButton(currRect, GUIContent.none, Styles.BoxButton);
+				rects.Add(new Rect(currRect));
+				if (GUI.Button(currRect, input.Active ? new GUIContent("x") : GUIContent.none, Styles.BoxButton)) input.OnClick();
 				currRect.y += IoDivider + IoHeight;
 			}
+			return rects;
 		}
 
-		public void DrawOutput(Rect position, NodeIo output)
+		public Rect DrawOutput(Rect position, NodeIo output)
 		{
 			var currRect = new Rect(position.x + position.width - 2, position.y + IoStartOffset, IoWidth, IoHeight);
-			GUI.RepeatButton(currRect, GUIContent.none, Styles.BoxButton);
+			if (GUI.Button(currRect, GUIContent.none, output.Connecting ? Styles.BoxButtonHovered : Styles.BoxButton)) output.OnClick();
+			return currRect;
 		}
 
 		public abstract Node Draw(Graph graph, Node node);

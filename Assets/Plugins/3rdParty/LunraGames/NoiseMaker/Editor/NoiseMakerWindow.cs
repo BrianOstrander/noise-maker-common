@@ -129,8 +129,15 @@ namespace LunraGames.NoiseMaker
 
 		void DrawGraph ()
 		{
+			var connectingFromWas = ConnectingFrom;
+			var fromRect = new Rect();
+			var targetIn = 0;
+
 			BeginWindows();
 			{
+				var outDict = new Dictionary<string, Rect>();
+				var inDict = new Dictionary<string, List<Rect>>();
+
 				foreach (var node in Graph.Nodes)
 				{
 					var unmodifiedNode = node;
@@ -143,11 +150,38 @@ namespace LunraGames.NoiseMaker
 
 						for (var i = 0; i < unmodifiedNode.SourceIds.Count; i++)
 						{
-							inputs.Add(new NodeIo());
+							var unmodifiedI = i;
+							inputs.Add(new NodeIo 
+							{
+								Active = !StringExtensions.IsNullOrWhiteSpace(unmodifiedNode.SourceIds[unmodifiedI]),
+								OnClick = () => 
+								{
+									if (StringExtensions.IsNullOrWhiteSpace(unmodifiedNode.SourceIds[unmodifiedI]))
+									{
+										ConnectingTo = unmodifiedNode;
+										targetIn = unmodifiedI;
+									}
+									else 
+									{
+										unmodifiedNode.SourceIds[unmodifiedI] = null;
+										ResetConnections();
+									}
+								}
+							});
 						}
-						drawer.Editor.DrawInputs(windowRect, inputs.ToArray());
+						inDict.Add(unmodifiedNode.Id, drawer.Editor.DrawInputs(windowRect, inputs.ToArray()));
 					}
-					drawer.Editor.DrawOutput(windowRect, new NodeIo ());
+					 
+					var outRect = drawer.Editor.DrawOutput(
+						windowRect,
+						new NodeIo 
+						{
+							Connecting = ConnectingFrom == unmodifiedNode,
+							OnClick = () => ConnectingFrom = unmodifiedNode
+						}
+					);
+					outDict.Add(unmodifiedNode.Id, outRect);
+					if (ConnectingFrom == unmodifiedNode) fromRect = outRect;
 
 					windowRect = GUILayout.Window(unmodifiedNode.Id.GetHashCode(), windowRect, id =>
 					{
@@ -164,11 +198,47 @@ namespace LunraGames.NoiseMaker
 					}, (drawer == null || StringExtensions.IsNullOrWhiteSpace(drawer.Details.Name)) ? "Node" : drawer.Details.Name);
 					unmodifiedNode.EditorPosition = windowRect.position;
 				}
+
+				foreach (var node in Graph.Nodes)
+				{
+					if (node.SourceIds == null || node.SourceIds.Count == 0) continue;
+
+					var unmodifiedNode = node;
+					var inRects = inDict[unmodifiedNode.Id];
+
+					for (var i = 0; i < unmodifiedNode.SourceIds.Count; i++)
+					{
+						var source = unmodifiedNode.SourceIds[i];
+						if (StringExtensions.IsNullOrWhiteSpace(source)) continue;
+
+						var outRect = outDict[source];
+						DrawCurve(outRect, inRects[i]);
+					}
+				}
 			}
 	        EndWindows();
+
+			if (connectingFromWas != null && Event.current.rawType == EventType.mouseUp && ConnectingTo == null) ResetConnections();
+
+			if (ConnectingFrom != null)
+			{
+				if (ConnectingTo == null)
+				{
+					// dragging around
+					var cursorRect = new Rect(Event.current.mousePosition, Vector2.one);
+					DrawCurve(fromRect, cursorRect);
+					Repaint();
+				}
+				else
+				{
+					// just connected
+					ConnectingTo.SourceIds[targetIn] = ConnectingFrom.Id;
+					ResetConnections();
+				}
+			}
 		}
 
-		void DrawNodeOptions ()
+		void DrawNodeOptions()
 		{
 			var area = new Rect(position.width - 200f, 0f, 200f, position.height);
 			GUILayout.BeginArea(area);
@@ -191,16 +261,36 @@ namespace LunraGames.NoiseMaker
 			GUILayout.EndArea();
 		}
 
-		void Reset ()
+		void Reset()
 		{
 			State = States.Splash;
 			Config = null;
 			Graph = null;
+			ResetConnections();
 		}
 
-		void Cache ()
+		void ResetConnections()
+		{
+			ConnectingFrom = null;
+			ConnectingTo = null;
+			Repaint();
+		}
+
+		void Cache()
 		{
 			EditorPrefsExtensions.SetJson(GraphKey, Graph);
 		}
+
+		void DrawCurve(Rect start, Rect end)
+		{
+			Vector3 startPos = new Vector3(start.x + start.width, start.y + start.height / 2, 0);      
+	        Vector3 endPos = new Vector3(end.x, end.y + end.height / 2, 0);    
+	        Vector3 startTan = startPos + Vector3.right * 50;      
+	        Vector3 endTan = endPos + Vector3.left * 50;       
+	        Color shadowCol = new Color(0, 0, 0, 0.06f);       
+			// Draw a shadow 
+	        for (int i = 0; i < 3; i++) Handles.DrawBezier(startPos, endPos, startTan, endTan, shadowCol, null, (i + 1) * 5);      
+	        Handles.DrawBezier(startPos, endPos, startTan, endTan, Color.black, null, 1);      
+    	}  
 	}
 }
