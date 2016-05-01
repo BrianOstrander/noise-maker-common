@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace LunraGames.NoiseMaker
 {
@@ -8,5 +9,6 @@ namespace LunraGames.NoiseMaker
 		public bool Stale;
 		public Texture2D Preview;
 		public long LastUpdated;
+		public List<string> LastSourceIds = new List<string>();
 	}
 }

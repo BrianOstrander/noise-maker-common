@@ -23,8 +23,11 @@ namespace LunraGames.NoiseMaker
 
 			if (preview != null)
 			{
-				foreach (var id in node.SourceIds)
+				preview.Stale = node.SourceIds.Count != preview.LastSourceIds.Count;
+				for (var i = 0; i < node.SourceIds.Count; i++)
 				{
+					var id = node.SourceIds[i];
+					preview.Stale = preview.Stale || id != preview.LastSourceIds[i];
 					if (StringExtensions.IsNullOrWhiteSpace(id)) continue;
 					var sourcePreview = Previews.FirstOrDefault(p => p.Id == id);
 					if (sourcePreview == null) continue;
@@ -54,6 +57,7 @@ namespace LunraGames.NoiseMaker
 				preview.Preview.Apply();
 				preview.Stale = false;
 				preview.LastUpdated = DateTime.Now.Ticks;
+				preview.LastSourceIds = new List<string>(node.SourceIds);
 			}
 			return preview;
 		}

@@ -6,17 +6,17 @@ using System;
 
 namespace LunraGames.NoiseMaker
 {
-	public class ConstantNode : Node
+	public class SpheresNode : Node
 	{
-		public float Value;
+		public float Frequency;
 
 		public override IModule GetModule (List<Node> nodes)
 		{
-			var constant = Module == null ? new Constant(Value) : Module as Constant;
+			var cylinders = Module == null ? new Spheres() : Module as Spheres;
 
-			constant.Value = Value;
+			cylinders.Frequency = Frequency;
 
-			Module = constant;
+			Module = cylinders;
 			return Module;
 		}
 	}
