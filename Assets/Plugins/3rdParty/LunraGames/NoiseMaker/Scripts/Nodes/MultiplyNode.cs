@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 	{
 		public override IModule GetModule (List<Node> nodes)
 		{
-			if (SourceIds == null || SourceIds.Count < 2)
+			if (SourceIds == null || SourceIds.Count != 2)
 			{
 				if (SourceIds == null) SourceIds = new List<string>();
 				SourceIds.Add(null);

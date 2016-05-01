@@ -4,5 +4,6 @@
 	{
 		public const string Generators = "Generators";
 		public const string Combiners = "Combiners";
+		public const string Modifiers = "Modifiers";
 	}	
 }
