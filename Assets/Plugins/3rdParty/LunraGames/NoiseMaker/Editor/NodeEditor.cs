@@ -15,27 +15,9 @@ namespace LunraGames.NoiseMaker
 		const float IoWidth = 32;
 		const float IoHeight = 16;
 
-		static Vector2 HueRange = Vector2.zero;
-		static Vector2 SaturationRange = Vector2.zero;
-		static Vector2 ValueRange = new Vector2(-2f, 4f);
+		public delegate Color CalculateColor(float value, VisualizationPreview previewer);
 
-		static VisualizationPreview Visualization(string name, float hueMin = 0f, float hueMax = 0f, float saturationMin = 0f, float saturationMax = 0f, float valueMin = 0f, float valueMax = 0f)
-		{
-			var visualization = new VisualizationPreview();
-			visualization.Name = name;
-			visualization.Activate = () => NodeEditor.RangeVisualization(hueMin, hueMax, saturationMin, saturationMax, valueMin, valueMax);
-
-			visualization.LowestCutoff = hueMin;
-			visualization.HighestCutoff = hueMin;
-			foreach (var curr in new float[] { hueMax, saturationMin, saturationMax, valueMin, valueMax})
-			{
-				visualization.LowestCutoff = Mathf.Min(visualization.LowestCutoff, curr);
-				visualization.HighestCutoff = Mathf.Max(visualization.HighestCutoff, curr);
-			}
-
-			visualization.Preview = VisualizationPreview(visualization.LowestCutoff, visualization.HighestCutoff, hueMin, hueMax, saturationMin, saturationMax, valueMin, valueMax);
-			return visualization;
-		}
+		public static VisualizationPreview Previewer;
 
 		static List<VisualizationPreview> _Visualizations;
 
@@ -46,45 +28,37 @@ namespace LunraGames.NoiseMaker
 				if (_Visualizations == null)
 				{
 					_Visualizations = new List<VisualizationPreview>();
-					_Visualizations.Add(Visualization("Grayscale", valueMin: -2f, valueMax: 2f));
-					_Visualizations.Add(Visualization("Spectrum", -2f, 2f, 1f, 1f, 1f, 1f));
+					_Visualizations.Add(new VisualizationPreview 
+					{
+						Name = "Grayscale",
+						Calculate = Visualizers.Grayscale,
+						LowestCutoff = -2f,
+						HighestCutoff = 2f,
+						ValueMin = 0f,
+						ValueMax = 1f
+					});
+					_Visualizations.Add(new VisualizationPreview 
+					{
+						Name = "Spectrum",
+						Calculate = Visualizers.Spectrum,
+						LowestCutoff = -2f,
+						HighestCutoff = 2f,
+						HueMin = 0f,
+						HueMax = 1f
+					});
+					_Visualizations.Add(new VisualizationPreview 
+					{
+						Name = "Cool",
+						Calculate = Visualizers.Spectrum,
+						LowestCutoff = -2f,
+						HighestCutoff = 2f,
+						HueMin = 0.3f,
+						HueMax = 0.7f
+					});
 				}
 
 				return _Visualizations;
 			}
-		}
-
-		static void RangeVisualization(float hueMin = 0f, float hueMax = 0f, float saturationMin = 0f, float saturationMax = 0f, float valueMin = 0f, float valueMax = 0f)
-		{
-			HueRange = new Vector2(hueMin, hueMax - hueMin);
-			SaturationRange = new Vector2(saturationMin, saturationMax - saturationMin);
-			ValueRange = new Vector2(valueMin, valueMax - valueMin);
-		}
-
-		static Texture2D VisualizationPreview(float lowest, float highest, float hueMin = 0f, float hueMax = 0f, float saturationMin = 0f, float saturationMax = 0f, float valueMin = 0f, float valueMax = 0f)
-		{
-			var hueRange = new Vector2(hueMin, hueMax - hueMin);
-			var saturationRange = new Vector2(saturationMin, saturationMax - saturationMin);
-			var valueRange = new Vector2(valueMin, valueMax - valueMin);
-
-			var preview = new Texture2D(PreviewSize, 24);
-			for (var x = 0; x < preview.width; x++)
-			{
-				for (var y = 0; y < preview.height; y++)
-				{
-					var value = lowest + (((highest - lowest) * ((float)x / (float)preview.width)));
-					var color = Color.HSVToRGB(NormalizedRange(value, hueRange), NormalizedRange(value, saturationRange), NormalizedRange(value, valueRange));
-					preview.SetPixel(x, y, color);
-				}
-			}
-			preview.Apply();
-			return preview;
-		}
-
-		static float NormalizedRange(float value, Vector2 range)
-		{
-			if (Mathf.Approximately(range.y, 0f)) return range.x;
-			return (value - range.x) / range.y;
 		}
 
 		protected static List<NodePreview> Previews = new List<NodePreview>();
@@ -95,7 +69,7 @@ namespace LunraGames.NoiseMaker
 
 			if (preview != null)
 			{
-				preview.Stale = preview.Stale || node.SourceIds.Count != preview.LastSourceIds.Count;
+				preview.Stale = preview.Stale || node.SourceIds.Count != preview.LastSourceIds.Count || preview.LastVisualizer != Previewer;
 				for (var i = 0; i < node.SourceIds.Count; i++)
 				{
 					var id = node.SourceIds[i];
@@ -123,7 +97,7 @@ namespace LunraGames.NoiseMaker
 					for (var y = 0; y < preview.Preview.height; y++)
 					{
 						var value = (float)module.GetValue((double)x, (double)y, 0.0);
-						var color = Color.HSVToRGB(NormalizedRange(value, HueRange), NormalizedRange(value, SaturationRange), NormalizedRange(value, ValueRange));
+						var color = Previewer.Calculate(value, Previewer);
 						preview.Preview.SetPixel(x, y, color);
 					}
 				}
@@ -131,6 +105,7 @@ namespace LunraGames.NoiseMaker
 				preview.Stale = false;
 				preview.LastUpdated = DateTime.Now.Ticks;
 				preview.LastSourceIds = new List<string>(node.SourceIds);
+				preview.LastVisualizer = Previewer;
 			}
 			return preview;
 		}

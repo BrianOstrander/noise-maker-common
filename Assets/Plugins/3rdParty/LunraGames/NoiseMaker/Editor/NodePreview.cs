@@ -9,6 +9,7 @@ namespace LunraGames.NoiseMaker
 		public bool Stale;
 		public Texture2D Preview;
 		public long LastUpdated;
+		public VisualizationPreview LastVisualizer;
 		public List<string> LastSourceIds = new List<string>();
 	}
 }

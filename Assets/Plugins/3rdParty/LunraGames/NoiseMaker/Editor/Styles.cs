@@ -163,5 +163,24 @@ namespace LunraGames.NoiseMaker
 				return _VisualizationToggle;
 			}
 		}
+
+		static GUIStyle _VisualizationRangeLabel;
+
+		public static GUIStyle VisualizationRangeLabel
+		{
+			get
+			{
+				if (_VisualizationRangeLabel == null)
+				{
+					_VisualizationRangeLabel = new GUIStyle(EditorStyles.label);
+					_VisualizationRangeLabel.padding.bottom -= 4;
+					_VisualizationRangeLabel.alignment = TextAnchor.LowerCenter;
+					_VisualizationRangeLabel.fontSize = 16;
+					_VisualizationRangeLabel.fixedHeight = 24f;
+				}
+
+				return _VisualizationRangeLabel;
+			}
+		}
 	}
 }

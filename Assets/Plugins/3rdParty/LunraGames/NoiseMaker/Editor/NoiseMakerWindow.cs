@@ -12,11 +12,11 @@ namespace LunraGames.NoiseMaker
 	{
 		const string GraphKey = "LG_NoiseMaker_Graph";
 
-		class Layouts
+		public class Layouts
 		{
 			public const float VisualizationOptionsWidth = 300f;
 			public const float VisualizationOptionsHeight = 24f;
-			public const float VisualizationHeight = 200f;
+			public const float VisualizationHeight = VisualizationOptionsHeight * 4f;
 		}
 
 		enum States
@@ -34,6 +34,8 @@ namespace LunraGames.NoiseMaker
 		GraphConfig Config;
 		[SerializeField]
 		int Visualization;
+		[SerializeField]
+		bool VisualizationShown;
 
 		Graph Graph 
 		{ 
@@ -52,7 +54,7 @@ namespace LunraGames.NoiseMaker
 		Node ConnectingFrom;
 		Node ConnectingTo;
 		Dictionary<string, bool> ShownCategories = new Dictionary<string, bool>();
-		float? VisualizationShown;
+
 
 		NoiseMakerWindow()
 		{
@@ -75,6 +77,7 @@ namespace LunraGames.NoiseMaker
 				if (State == States.Splash) DrawSplash();
 				else if (State == States.Idle || State == States.Connecting)
 				{
+					if (NodeEditor.Previewer == null) NodeEditor.Previewer = NodeEditor.Visualizations[Visualization];
 					DrawGraph();
 					DrawVisualizationOptions();
 					if (GUI.Button(new Rect(Layouts.VisualizationOptionsWidth, 0f, 128f, 24f), "Reset", Styles.ResetButton)) Reset();
@@ -305,19 +308,18 @@ namespace LunraGames.NoiseMaker
 		{
 			var drawToggler = new Action<float, float>((x, y) =>
 			{
-				var toggled = GUI.Button(new Rect(x, y, Layouts.VisualizationOptionsWidth, Layouts.VisualizationOptionsHeight), VisualizationShown.HasValue ? "Close Visualizations" : "Open Visualizations", Styles.VisualizationToggle);
+				var toggled = GUI.Button(new Rect(x, y, Layouts.VisualizationOptionsWidth, Layouts.VisualizationOptionsHeight), VisualizationShown ? "Close Visualizations" : "Open Visualizations", Styles.VisualizationToggle);
 				if (toggled) 
 				{
-					if (VisualizationShown.HasValue) VisualizationShown = null;
-					else VisualizationShown = Layouts.VisualizationHeight;
+					VisualizationShown = !VisualizationShown;
 					Repaint();
 				}
 			});
 
-			if (!VisualizationShown.HasValue) drawToggler(0f, 0f);
-			else if (Mathf.Approximately(VisualizationShown.Value, Layouts.VisualizationHeight))
+			if (!VisualizationShown) drawToggler(0f, 0f);
+			else
 			{
-				var area = new Rect(0f, 0f, Layouts.VisualizationOptionsWidth, 24f + (VisualizationShown.HasValue ? VisualizationShown.Value : 0f));
+				var area = new Rect(0f, 0f, Layouts.VisualizationOptionsWidth, Layouts.VisualizationHeight);
 
 				GUILayout.BeginArea(area, Styles.OptionBox);
 				{
@@ -328,16 +330,23 @@ namespace LunraGames.NoiseMaker
 
 					var oldVisualization = Visualization;
 					Visualization = GUILayout.Toolbar(Visualization, optionNames.ToArray());
-					if (oldVisualization != Visualization) 
+					if (oldVisualization != Visualization || NodeEditor.Previewer == null) 
 					{	
-						options[Visualization].Activate();
+						NodeEditor.Previewer = options[Visualization];
 						Repaint();
 					}
 					GUILayout.BeginHorizontal();
 					{
-						//GUILayout.Label();
+						GUILayout.FlexibleSpace();
 						GUILayout.Box(options[Visualization].Preview);
-//						GUILayout.Label();
+						GUILayout.FlexibleSpace();
+					}
+					GUILayout.EndHorizontal();
+					GUILayout.BeginHorizontal();
+					{
+						GUILayout.Label(NodeEditor.Previewer.LowestCutoff.ToString("N2"), Styles.VisualizationRangeLabel);
+						GUILayout.FlexibleSpace();
+						GUILayout.Label(NodeEditor.Previewer.HighestCutoff.ToString("N2"), Styles.VisualizationRangeLabel);
 					}
 					GUILayout.EndHorizontal();
 				}
