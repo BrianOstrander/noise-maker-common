@@ -122,24 +122,45 @@ namespace LunraGames.NoiseMaker
 					_OptionButton.alignment = TextAnchor.MiddleLeft;
 					_OptionButton.fontSize = 16;
 					_OptionButton.fixedHeight = 24f;
-					//_OptionButton.padding.left += 8;
-					//_OptionButton.margin.left += 16;
-					/*
-					var background = new Texture2D(_OptionButton.normal.background.width, _OptionButton.normal.background.height);
-					for (var x = 0; x < background.width; x++)
-					{
-						for (var y = 0; y < background.height; y++)
-						{
-							var color = x == 0 || x == background.width - 1 ? Color.HSVToRGB(0f, 0f, 0.1f) : Color.HSVToRGB(0f, 0f, 0.25f);
-							background.SetPixel(x, y, color.NewA(1f));
-						}
-					}
-					background.Apply();
-					_OptionButton.normal.background = background;
-					*/
 				}
 
 				return _OptionButton;
+			}
+		}
+
+		static GUIStyle _ResetButton;
+
+		public static GUIStyle ResetButton
+		{
+			get
+			{
+				if (_ResetButton == null)
+				{
+					_ResetButton = new GUIStyle(EditorStyles.miniButtonRight);
+					_ResetButton.alignment = TextAnchor.MiddleCenter;
+					_ResetButton.fontSize = 18;
+					_ResetButton.fixedHeight = 24f;
+				}
+
+				return _ResetButton;
+			}
+		}
+
+		static GUIStyle _VisualizationToggle;
+
+		public static GUIStyle VisualizationToggle
+		{
+			get
+			{
+				if (_VisualizationToggle == null)
+				{
+					_VisualizationToggle = new GUIStyle(EditorStyles.miniButtonMid);
+					_VisualizationToggle.alignment = TextAnchor.MiddleCenter;
+					_VisualizationToggle.fontSize = 18;
+					_VisualizationToggle.fixedHeight = 24f;
+				}
+
+				return _VisualizationToggle;
 			}
 		}
 	}

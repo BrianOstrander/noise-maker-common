@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using LibNoise;
@@ -10,6 +11,13 @@ namespace LunraGames.NoiseMaker
 	public class NoiseMakerWindow : EditorWindow
 	{
 		const string GraphKey = "LG_NoiseMaker_Graph";
+
+		class Layouts
+		{
+			public const float VisualizationOptionsWidth = 300f;
+			public const float VisualizationOptionsHeight = 24f;
+			public const float VisualizationHeight = 200f;
+		}
 
 		enum States
 		{
@@ -24,6 +32,8 @@ namespace LunraGames.NoiseMaker
 		Graph _Graph;
 		[SerializeField]
 		GraphConfig Config;
+		[SerializeField]
+		int Visualization;
 
 		Graph Graph 
 		{ 
@@ -42,6 +52,7 @@ namespace LunraGames.NoiseMaker
 		Node ConnectingFrom;
 		Node ConnectingTo;
 		Dictionary<string, bool> ShownCategories = new Dictionary<string, bool>();
+		float? VisualizationShown;
 
 		NoiseMakerWindow()
 		{
@@ -65,8 +76,9 @@ namespace LunraGames.NoiseMaker
 				else if (State == States.Idle || State == States.Connecting)
 				{
 					DrawGraph();
-					DrawInspector();
-		        	DrawNodeOptions();
+					DrawVisualizationOptions();
+					if (GUI.Button(new Rect(Layouts.VisualizationOptionsWidth, 0f, 128f, 24f), "Reset", Styles.ResetButton)) Reset();
+					DrawNodeOptions();
 
 		        	if (State == States.Connecting)
 		        	{
@@ -115,17 +127,6 @@ namespace LunraGames.NoiseMaker
 			}
 			GUILayout.EndHorizontal();
 			GUILayout.FlexibleSpace();
-		}
-
-		void DrawInspector ()
-		{
-			var area = new Rect(0f, 0f, 300f, position.height);
-			GUILayout.BeginArea(area);
-			{
-				// todo: rename this something meaningful
-				if (GUILayout.Button("Reset")) Reset();
-			}
-			GUILayout.EndArea();
 		}
 
 		void DrawGraph ()
@@ -298,6 +299,51 @@ namespace LunraGames.NoiseMaker
 				GUILayout.EndScrollView();
 			}
 			GUILayout.EndArea();
+		}
+
+		void DrawVisualizationOptions()
+		{
+			var drawToggler = new Action<float, float>((x, y) =>
+			{
+				var toggled = GUI.Button(new Rect(x, y, Layouts.VisualizationOptionsWidth, Layouts.VisualizationOptionsHeight), VisualizationShown.HasValue ? "Close Visualizations" : "Open Visualizations", Styles.VisualizationToggle);
+				if (toggled) 
+				{
+					if (VisualizationShown.HasValue) VisualizationShown = null;
+					else VisualizationShown = Layouts.VisualizationHeight;
+					Repaint();
+				}
+			});
+
+			if (!VisualizationShown.HasValue) drawToggler(0f, 0f);
+			else if (Mathf.Approximately(VisualizationShown.Value, Layouts.VisualizationHeight))
+			{
+				var area = new Rect(0f, 0f, Layouts.VisualizationOptionsWidth, 24f + (VisualizationShown.HasValue ? VisualizationShown.Value : 0f));
+
+				GUILayout.BeginArea(area, Styles.OptionBox);
+				{
+					var optionNames = new List<string>();
+					var options = NodeEditor.Visualizations;
+					foreach (var option in options) optionNames.Add(option.Name);
+					Visualization = Mathf.Min(Visualization, options.Count);
+
+					var oldVisualization = Visualization;
+					Visualization = GUILayout.Toolbar(Visualization, optionNames.ToArray());
+					if (oldVisualization != Visualization) 
+					{	
+						options[Visualization].Activate();
+						Repaint();
+					}
+					GUILayout.BeginHorizontal();
+					{
+						//GUILayout.Label();
+						GUILayout.Box(options[Visualization].Preview);
+//						GUILayout.Label();
+					}
+					GUILayout.EndHorizontal();
+				}
+				GUILayout.EndArea();
+				drawToggler(0f, Layouts.VisualizationHeight);
+			}
 		}
 
 		void Reset()
