@@ -7,6 +7,7 @@
 		public const string Modifiers = "Modifiers";
 		public const string Selectors = "Selectors";
 
+		public const string SpecifyAnInput = "Specify an input.";
 		public const string SpecifyTwoInputs = "Specify two inputs.";
 	}	
 }
