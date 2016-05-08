@@ -7,9 +7,12 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class ExponentNode : Node
+	public class TurbulenceNode : Node
 	{
-		public float Exponent;
+		public float Frequency = 0.02f;
+		public float Power;
+		public int Roughness = 1;
+		public int Seed = NoiseUtility.Seed;
 
 		public override IModule GetModule (List<Node> nodes)
 		{
@@ -22,12 +25,16 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var exponent = Module == null ? new ExponentialOutput(sources[0], Exponent) : Module as ExponentialOutput;
+			var turbulence = Module == null ? new Turbulence(sources[0]) : Module as Turbulence;
 
-			exponent.SourceModule = sources[0];
-			exponent.Exponent = Exponent;
+			turbulence.SourceModule = sources[0];
 
-			Module = exponent;
+			turbulence.Frequency = Frequency;
+			turbulence.Power = Power;
+			turbulence.Roughness = Roughness;
+			turbulence.Seed = Seed;
+
+			Module = turbulence;
 			return Module;
 		}
 	}

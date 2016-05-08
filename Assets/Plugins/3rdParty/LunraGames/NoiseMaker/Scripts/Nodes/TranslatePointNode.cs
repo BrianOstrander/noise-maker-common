@@ -7,9 +7,9 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class ExponentNode : Node
+	public class TranslatePointNode : Node
 	{
-		public float Exponent;
+		public Vector3 Position = Vector3.zero;
 
 		public override IModule GetModule (List<Node> nodes)
 		{
@@ -22,12 +22,15 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var exponent = Module == null ? new ExponentialOutput(sources[0], Exponent) : Module as ExponentialOutput;
+			var translatePoint = Module == null ? new TranslateInput(sources[0], Position.x, Position.y, Position.z) : Module as TranslateInput;
 
-			exponent.SourceModule = sources[0];
-			exponent.Exponent = Exponent;
+			translatePoint.SourceModule = sources[0];
 
-			Module = exponent;
+			translatePoint.X = Position.x;
+			translatePoint.Y = Position.y;
+			translatePoint.Z = Position.z;
+
+			Module = translatePoint;
 			return Module;
 		}
 	}
