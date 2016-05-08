@@ -36,6 +36,8 @@ namespace LunraGames.NoiseMaker
 		int Visualization;
 		[SerializeField]
 		bool VisualizationShown;
+		[SerializeField]
+		Vector2 NodeOptionsScrollPosition = Vector2.zero;
 
 		Graph Graph 
 		{ 
@@ -254,7 +256,7 @@ namespace LunraGames.NoiseMaker
 				else optionCategories.Add(option.Value.Details.Category, new List<EditorEntry>(new EditorEntry[] {option.Value}));
 			}
 
-			var area = new Rect(position.width - 208f, -1f, 8f, position.height + 2f);
+			var area = new Rect(position.width - 240f, -1f, 8f, position.height + 2f);
 			GUILayout.BeginArea(area);
 			{
 				GUILayout.Box(GUIContent.none, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
@@ -263,10 +265,10 @@ namespace LunraGames.NoiseMaker
 			area.x += 8f;
 			area.y += 1f;
 			area.height -= 2f;
-			area.width = 200f;
+			area.width = 232f;
 			GUILayout.BeginArea(area, Styles.OptionBox);
 			{
-				GUILayout.BeginScrollView(Vector2.zero);
+				NodeOptionsScrollPosition = GUILayout.BeginScrollView(new Vector2(0f, NodeOptionsScrollPosition.y));
 				{
 					foreach(var category in optionCategories) 
 					{
