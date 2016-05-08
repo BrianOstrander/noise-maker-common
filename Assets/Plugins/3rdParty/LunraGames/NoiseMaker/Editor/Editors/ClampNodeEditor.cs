@@ -20,8 +20,8 @@ namespace LunraGames.NoiseMaker
 
 				GUILayout.FlexibleSpace();
 
-				clamp.LowerBound = Deltas.DetectDelta<float>(clamp.LowerBound, Mathf.Min(EditorGUILayout.FloatField("Lower Bound", clamp.LowerBound), clamp.UpperBound - 0.00001f), ref preview.Stale);
-				clamp.UpperBound = Deltas.DetectDelta<float>(clamp.UpperBound, Mathf.Max(EditorGUILayout.FloatField("Upper Bound", clamp.UpperBound), clamp.LowerBound + 0.00001f), ref preview.Stale);
+				clamp.LowerBound = Deltas.DetectDelta<float>(clamp.LowerBound, Mathf.Min(EditorGUILayout.FloatField("Lower Bound", clamp.LowerBound), clamp.UpperBound - 0.001f), ref preview.Stale);
+				clamp.UpperBound = Deltas.DetectDelta<float>(clamp.UpperBound, Mathf.Max(EditorGUILayout.FloatField("Upper Bound", clamp.UpperBound), clamp.LowerBound + 0.001f), ref preview.Stale);
 			}
 			else 
 			{

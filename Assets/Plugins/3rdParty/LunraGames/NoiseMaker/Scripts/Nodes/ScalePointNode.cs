@@ -7,9 +7,9 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class RotatePointNode : Node
+	public class ScalePointNode : Node
 	{
-		public Vector3 Rotation = Vector3.zero;
+		public Vector3 Scale = Vector3.one;
 
 		public override IModule GetModule (List<Node> nodes)
 		{
@@ -22,13 +22,15 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var rotatePoint = Module == null ? new RotateInput(sources[0], Rotation.x, Rotation.y, Rotation.z) : Module as RotateInput;
+			var scalePoint = Module == null ? new ScaleInput(sources[0], Scale.x, Scale.y, Scale.z) : Module as ScaleInput;
 
-			rotatePoint.SourceModule = sources[0];
+			scalePoint.SourceModule = sources[0];
 
-			rotatePoint.SetAngles(Rotation.x, Rotation.y, Rotation.z);
+			scalePoint.X = Scale.x;
+			scalePoint.Y = Scale.y;
+			scalePoint.Z = Scale.z;
 
-			Module = rotatePoint;
+			Module = scalePoint;
 			return Module;
 		}
 	}
