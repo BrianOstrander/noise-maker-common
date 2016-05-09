@@ -22,46 +22,25 @@ namespace LunraGames.NoiseMaker
 		enum States
 		{
 			Splash,
-			Idle,
-			Connecting
+			Idle
 		}
+
 
 		[SerializeField]
 		States State = States.Splash;
-		[SerializeField]
-		Graph _Graph;
-		[SerializeField]
-		GraphConfig Config;
 		[SerializeField]
 		int Visualization;
 		[SerializeField]
 		bool VisualizationShown;
 		[SerializeField]
 		Vector2 NodeOptionsScrollPosition = Vector2.zero;
+		[SerializeField]
+		string SavePath;
 
-		Graph Graph 
-		{ 
-			get 
-			{ 
-				return Config == null ? _Graph : Config.Graph; 
-			}
-
-			set
-			{
-				if (Config == null) _Graph = value;
-				else Config.Graph = value;
-			}
-		}
-
+		Graph Graph;
 		Node ConnectingFrom;
 		Node ConnectingTo;
 		Dictionary<string, bool> ShownCategories = new Dictionary<string, bool>();
-
-
-		NoiseMakerWindow()
-		{
-			_Graph = EditorPrefsExtensions.GetJson<Graph>(GraphKey, new Graph());
-		}
 
 		[MenuItem ("Window/Noise Maker")]
 		static void Init () 
@@ -74,22 +53,25 @@ namespace LunraGames.NoiseMaker
 		{
 			try 
 			{
-				if (Graph == null) State = States.Splash;
+				if (State == States.Idle && Graph == null && !StringExtensions.IsNullOrWhiteSpace(SavePath))
+				{
+					var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
+					if (config == null) State = States.Splash;
+					else Graph = config.GraphInstantiation;
+				}
 				
 				if (State == States.Splash) DrawSplash();
-				else if (State == States.Idle || State == States.Connecting)
+				else if (State == States.Idle)
 				{
 					if (NodeEditor.Previewer == null) NodeEditor.Previewer = NodeEditor.Visualizations[Visualization];
 					DrawGraph();
 					DrawVisualizationOptions();
 					if (GUI.Button(new Rect(Layouts.VisualizationOptionsWidth, 0f, 128f, 24f), "Reset", Styles.ResetButton)) Reset();
+					if (GUI.Button(new Rect(Layouts.VisualizationOptionsWidth + 128f, 0f, 128f, 24f), "Save", Styles.ResetButton)) 
+					{
+						Save();
+					}
 					DrawNodeOptions();
-
-		        	if (State == States.Connecting)
-		        	{
-		        		// todo: detect when user stops trying to connect nodes
-		        	}
-		        	else Cache();
 				}
 			}
 			catch (Exception e)
@@ -119,9 +101,15 @@ namespace LunraGames.NoiseMaker
 					{
 						if (GUILayout.Button("New")) 
 						{
-							Reset();
-							Graph = new Graph();
-							State = States.Idle;
+							var savePath = UnityEditor.EditorUtility.SaveFilePanelInProject("New Noise Graph", "Noise", "asset", null);
+							if (!StringExtensions.IsNullOrWhiteSpace(savePath))
+							{
+								SavePath = savePath;
+								var config = NoiseGraph.CreateInstance<NoiseGraph>();
+								AssetDatabase.CreateAsset(config, SavePath);
+								Graph = new Graph();
+								State = States.Idle;
+							}
 						}
 						if (GUILayout.Button("Open")) Debug.Log("not implimented");
 					}
@@ -360,7 +348,7 @@ namespace LunraGames.NoiseMaker
 		void Reset()
 		{
 			State = States.Splash;
-			Config = null;
+			SavePath = null;
 			Graph = null;
 			ResetConnections();
 		}
@@ -372,9 +360,12 @@ namespace LunraGames.NoiseMaker
 			Repaint();
 		}
 
-		void Cache()
+		void Save()
 		{
-			EditorPrefsExtensions.SetJson(GraphKey, Graph);
+			if (StringExtensions.IsNullOrWhiteSpace(SavePath)) throw new NullReferenceException("SavePath cannot be null");
+			var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
+			config.GraphInstantiation = Graph;
+			UnityEditor.EditorUtility.SetDirty(config);
 		}
 
 		void DrawCurve(Rect start, Rect end)

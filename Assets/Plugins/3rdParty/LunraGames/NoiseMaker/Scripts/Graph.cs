@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace LunraGames.NoiseMaker
 {
-	[Serializable]
 	public class Graph
 	{
 		public List<Node> Nodes = new List<Node>();
