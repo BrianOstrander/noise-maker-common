@@ -10,10 +10,14 @@ namespace LunraGames.NoiseMaker
 	public abstract class NodeEditor
 	{
 		public const int PreviewSize = 198;
-		const float IoStartOffset = 16;
-		const float IoDivider = 8;
-		const float IoWidth = 32;
-		const float IoHeight = 16;
+		const float IoStartOffset = 16f;
+		const float IoDivider = 8f;
+		const float IoWidth = 32f;
+		const float IoHeight = 16f;
+
+		const float CloseWidth = 18f;
+		const float CloseHeight = 18f;
+		const float CloseStartOffset = CloseWidth * 2f;
 
 		public delegate Color CalculateColor(float value, VisualizationPreview previewer);
 
@@ -128,6 +132,12 @@ namespace LunraGames.NoiseMaker
 			var currRect = new Rect(position.x + position.width - 2, position.y + IoStartOffset, IoWidth, IoHeight);
 			if (GUI.Button(currRect, GUIContent.none, output.Connecting ? Styles.BoxButtonHovered : Styles.BoxButton)) output.OnClick();
 			return currRect;
+		}
+
+		public bool DrawCloseControl(Rect position)
+		{
+			var rect = new Rect(position.x + position.width - CloseStartOffset, position.y - CloseHeight, CloseWidth, CloseHeight);
+			return GUI.Button(rect, "x", Styles.CloseButton);
 		}
 
 		public abstract Node Draw(Graph graph, Node node);

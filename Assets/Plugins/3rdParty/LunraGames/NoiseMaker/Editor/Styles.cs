@@ -18,17 +18,25 @@ namespace LunraGames.NoiseMaker
 				if (_BoxButton == null)
 				{
 					_BoxButton = new GUIStyle(GUI.skin.box);
+					_BoxButton.padding.top -= 2;
+					var normal = new Texture2D(_BoxButton.normal.background.width, _BoxButton.normal.background.height);
 					var active = new Texture2D(_BoxButton.normal.background.width, _BoxButton.normal.background.height);
 
 					for (var x = 0; x < active.width; x++)
 					{
 						for (var y = 0; y < active.height; y++)
 						{
-							var color = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0f, 0f, 0.4f) : Color.HSVToRGB(0f, 0f, 0.5f);
-							active.SetPixel(x, y, color.NewA(1f));
+							var normalColor = x == 0 || y == 0 || x == normal.width - 1 || y == normal.height - 1 ? Color.HSVToRGB(0f, 0f, 0.35f) : Color.HSVToRGB(0f, 0f, 0.25f);
+							var activeColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0f, 0f, 0.4f) : Color.HSVToRGB(0f, 0f, 0.5f);
+							active.SetPixel(x, y, activeColor.NewA(1f));
+							normal.SetPixel(x, y, normalColor.NewA(1f));
 						}
 					}
+					normal.Apply();
 					active.Apply();
+					_BoxButton.normal.background = normal;
+					_BoxButton.focused.background = normal;
+					_BoxButton.hover.background = normal;
 					_BoxButton.active.background = active;
 				}
 
@@ -60,6 +68,41 @@ namespace LunraGames.NoiseMaker
 				}
 
 				return _BoxButtonHovered;
+			}
+		}
+
+		static GUIStyle _CloseButton;
+
+		public static GUIStyle CloseButton
+		{
+			get
+			{
+				if (_CloseButton == null)
+				{
+					_CloseButton = new GUIStyle(GUI.skin.box);
+					_CloseButton.padding.top -= 2;
+					var normal = new Texture2D(_CloseButton.normal.background.width, _CloseButton.normal.background.height);
+					var active = new Texture2D(_CloseButton.normal.background.width, _CloseButton.normal.background.height);
+
+					for (var x = 0; x < active.width; x++)
+					{
+						for (var y = 0; y < active.height; y++)
+						{
+							var normalColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0f, 0.4f, 0.5f) : Color.HSVToRGB(0f, 0.3f, 0.5f);
+							var activeColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0f, 0.3f, 0.6f) : Color.HSVToRGB(0f, 0.4f, 0.6f);
+							active.SetPixel(x, y, activeColor.NewA(1f));
+							normal.SetPixel(x, y, normalColor.NewA(1f));
+						}
+					}
+					normal.Apply();
+					active.Apply();
+					_CloseButton.normal.background = normal;
+					_CloseButton.focused.background = normal;
+					_CloseButton.hover.background = normal;
+					_CloseButton.active.background = active;
+				}
+
+				return _CloseButton;
 			}
 		}
 
@@ -128,21 +171,39 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		static GUIStyle _ResetButton;
+		static GUIStyle _ToolbarButtonMiddle;
 
-		public static GUIStyle ResetButton
+		public static GUIStyle ToolbarButtonMiddle
 		{
 			get
 			{
-				if (_ResetButton == null)
+				if (_ToolbarButtonMiddle == null)
 				{
-					_ResetButton = new GUIStyle(EditorStyles.miniButtonRight);
-					_ResetButton.alignment = TextAnchor.MiddleCenter;
-					_ResetButton.fontSize = 18;
-					_ResetButton.fixedHeight = 24f;
+					_ToolbarButtonMiddle = new GUIStyle(EditorStyles.miniButtonMid);
+					_ToolbarButtonMiddle.alignment = TextAnchor.MiddleCenter;
+					_ToolbarButtonMiddle.fontSize = 18;
+					_ToolbarButtonMiddle.fixedHeight = 24f;
 				}
 
-				return _ResetButton;
+				return _ToolbarButtonMiddle;
+			}
+		}
+
+		static GUIStyle _ToolbarButtonRight;
+
+		public static GUIStyle ToolbarButtonRight
+		{
+			get
+			{
+				if (_ToolbarButtonRight == null)
+				{
+					_ToolbarButtonRight = new GUIStyle(EditorStyles.miniButtonRight);
+					_ToolbarButtonRight.alignment = TextAnchor.MiddleCenter;
+					_ToolbarButtonRight.fontSize = 18;
+					_ToolbarButtonRight.fixedHeight = 24f;
+				}
+
+				return _ToolbarButtonRight;
 			}
 		}
 

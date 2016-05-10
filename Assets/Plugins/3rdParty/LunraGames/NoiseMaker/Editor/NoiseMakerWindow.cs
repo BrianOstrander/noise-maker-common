@@ -49,6 +49,7 @@ namespace LunraGames.NoiseMaker
 			window.Show();
 		}
 
+		#region Messages
 		void OnGUI()
 		{
 			try 
@@ -66,8 +67,8 @@ namespace LunraGames.NoiseMaker
 					if (NodeEditor.Previewer == null) NodeEditor.Previewer = NodeEditor.Visualizations[Visualization];
 					DrawGraph();
 					DrawVisualizationOptions();
-					if (GUI.Button(new Rect(Layouts.VisualizationOptionsWidth, 0f, 128f, 24f), "Reset", Styles.ResetButton)) Reset();
-					if (GUI.Button(new Rect(Layouts.VisualizationOptionsWidth + 128f, 0f, 128f, 24f), "Save", Styles.ResetButton)) 
+					if (GUI.Button(new Rect(Layouts.VisualizationOptionsWidth, 0f, 128f, 24f), "Reset", Styles.ToolbarButtonMiddle)) Reset();
+					if (GUI.Button(new Rect(Layouts.VisualizationOptionsWidth + 128f, 0f, 128f, 24f), "Save", Styles.ToolbarButtonRight)) 
 					{
 						Save();
 					}
@@ -87,6 +88,11 @@ namespace LunraGames.NoiseMaker
 				GUILayout.EndHorizontal();
 			}
 		}
+
+		void OnFocus() { Save(); }
+		void OnLostFocus() { Save(); }
+		void OnProjectChange() { Save(); }
+		#endregion
 
 		void DrawSplash ()
 		{
@@ -191,6 +197,11 @@ namespace LunraGames.NoiseMaker
 					);
 					outDict.Add(unmodifiedNode.Id, outRect);
 					if (ConnectingFrom == unmodifiedNode) fromRect = outRect;
+
+					if (drawer.Editor.DrawCloseControl(windowRect))
+					{
+						Debug.Log("lol closed");
+					}
 
 					windowRect = GUILayout.Window(unmodifiedNode.Id.GetHashCode(), windowRect, id =>
 					{
@@ -376,11 +387,13 @@ namespace LunraGames.NoiseMaker
 
 		void Save()
 		{
+			if (State != States.Idle || Graph == null) return;
 			if (StringExtensions.IsNullOrWhiteSpace(SavePath)) throw new NullReferenceException("SavePath cannot be null");
 			var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
 			config.GraphInstantiation = Graph;
 			UnityEditor.EditorUtility.SetDirty(config);
 			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
 		}
 
 		void DrawCurve(Rect start, Rect end)
