@@ -111,7 +111,21 @@ namespace LunraGames.NoiseMaker
 								State = States.Idle;
 							}
 						}
-						if (GUILayout.Button("Open")) Debug.Log("not implimented");
+						if (GUILayout.Button("Open"))
+						{
+							var openPath = UnityEditor.EditorUtility.OpenFilePanel("Open Noise Graph", Application.dataPath, "asset");
+							if (!StringExtensions.IsNullOrWhiteSpace(openPath))
+							{
+								if (openPath.StartsWith(Application.dataPath))
+								{
+									SavePath = "Assets"+openPath.Substring(Application.dataPath.Length);
+									var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
+									Graph = config.GraphInstantiation;
+									State = States.Idle;
+								}
+								else UnityEditor.EditorUtility.DisplayDialog("Invalid", "Selected noise graph must be inside project directory.", "Okay");
+							}
+						}
 					}
 					GUILayout.EndHorizontal();
 				}
@@ -366,6 +380,7 @@ namespace LunraGames.NoiseMaker
 			var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
 			config.GraphInstantiation = Graph;
 			UnityEditor.EditorUtility.SetDirty(config);
+			AssetDatabase.SaveAssets();
 		}
 
 		void DrawCurve(Rect start, Rect end)
