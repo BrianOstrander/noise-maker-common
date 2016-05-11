@@ -36,6 +36,8 @@ namespace LunraGames.NoiseMaker
 		Vector2 NodeOptionsScrollPosition = Vector2.zero;
 		[SerializeField]
 		string SavePath;
+		[SerializeField]
+		Vector3 GraphPosition = Vector3.zero;
 
 		Graph Graph;
 		Node ConnectingFrom;
@@ -73,6 +75,17 @@ namespace LunraGames.NoiseMaker
 						Save();
 					}
 					DrawNodeOptions();
+
+					if (Event.current != null && Event.current.isMouse && Event.current.button == 0)
+					{
+						GraphPosition += new Vector3(Event.current.delta.x, Event.current.delta.y);
+						Repaint();
+					}
+					if (Event.current != null && Event.current.rawType == EventType.ScrollWheel)
+					{
+						GraphPosition += new Vector3(Event.current.delta.x * -6f, Event.current.delta.y * -6f);
+						Repaint();
+					}
 				}
 			}
 			catch (Exception e)
@@ -114,6 +127,11 @@ namespace LunraGames.NoiseMaker
 								var config = NoiseGraph.CreateInstance<NoiseGraph>();
 								AssetDatabase.CreateAsset(config, SavePath);
 								Graph = new Graph();
+								var root = new RootNode();
+								root.Id = Guid.NewGuid().ToString();
+								root.EditorPosition = GraphCenter();
+								Graph.Nodes.Add(root);
+								Graph.RootId = root.Id;
 								State = States.Idle;
 							}
 						}
@@ -153,11 +171,14 @@ namespace LunraGames.NoiseMaker
 				var outDict = new Dictionary<string, Rect>();
 				var inDict = new Dictionary<string, List<Rect>>();
 
+				Node deletedNode = null;
+
 				foreach (var node in Graph.Nodes)
 				{
+					var graphPos = new Vector2(GraphPosition.x, GraphPosition.y);
 					var unmodifiedNode = node;
 					var drawer = NodeEditorCacher.Editors[unmodifiedNode.GetType()];
-					var windowRect = new Rect(unmodifiedNode.EditorPosition, new Vector2(216f, 216f));
+					var windowRect = new Rect(unmodifiedNode.EditorPosition + graphPos, new Vector2(216f, 216f));
 
 					if (unmodifiedNode.SourceIds != null && 0 < unmodifiedNode.SourceIds.Count)
 					{
@@ -186,7 +207,7 @@ namespace LunraGames.NoiseMaker
 						}
 						inDict.Add(unmodifiedNode.Id, drawer.Editor.DrawInputs(windowRect, inputs.ToArray()));
 					}
-					 
+
 					var outRect = drawer.Editor.DrawOutput(
 						windowRect,
 						new NodeIo 
@@ -198,10 +219,9 @@ namespace LunraGames.NoiseMaker
 					outDict.Add(unmodifiedNode.Id, outRect);
 					if (ConnectingFrom == unmodifiedNode) fromRect = outRect;
 
-					if (drawer.Editor.DrawCloseControl(windowRect))
-					{
-						Debug.Log("lol closed");
-					}
+					if (!(unmodifiedNode is RootNode) && drawer.Editor.DrawCloseControl(windowRect)) deletedNode = unmodifiedNode;
+
+					GUI.color = unmodifiedNode is RootNode ? Color.cyan : Color.white;
 
 					windowRect = GUILayout.Window(unmodifiedNode.Id.GetHashCode(), windowRect, id =>
 					{
@@ -216,7 +236,10 @@ namespace LunraGames.NoiseMaker
 						}
 						GUI.DragWindow();
 					}, (drawer == null || StringExtensions.IsNullOrWhiteSpace(drawer.Details.Name)) ? "Node" : drawer.Details.Name);
-					unmodifiedNode.EditorPosition = windowRect.position;
+
+					GUI.color = Color.white;
+
+					unmodifiedNode.EditorPosition = windowRect.position - graphPos;
 				}
 
 				foreach (var node in Graph.Nodes)
@@ -235,6 +258,8 @@ namespace LunraGames.NoiseMaker
 						DrawCurve(outRect, inRects[i]);
 					}
 				}
+
+				if (deletedNode != null) Graph.Remove(deletedNode);
 			}
 	        EndWindows();
 
@@ -285,6 +310,8 @@ namespace LunraGames.NoiseMaker
 				{
 					foreach(var category in optionCategories) 
 					{
+						if (category.Key == Strings.Hidden) continue;
+
 						if (!ShownCategories.ContainsKey(category.Key)) ShownCategories.Add(category.Key, true);
 						var shown = ShownCategories[category.Key];
 						shown = EditorGUILayout.Foldout(shown, category.Key, Styles.Foldout);
@@ -302,7 +329,7 @@ namespace LunraGames.NoiseMaker
 										{
 											var node = Activator.CreateInstance(option.Details.Target) as Node;
 											node.Id = Guid.NewGuid().ToString();
-											node.EditorPosition = new Vector2(position.width * 0.5f, position.height * 0.5f);
+											node.EditorPosition = GraphCenter();
 											Graph.Nodes.Add(node);
 										}
 									}
@@ -375,6 +402,7 @@ namespace LunraGames.NoiseMaker
 			State = States.Splash;
 			SavePath = null;
 			Graph = null;
+			GraphPosition = Vector3.zero;
 			ResetConnections();
 		}
 
@@ -407,5 +435,10 @@ namespace LunraGames.NoiseMaker
 	        for (int i = 0; i < 3; i++) Handles.DrawBezier(startPos, endPos, startTan, endTan, shadowCol, null, (i + 1) * 5);      
 	        Handles.DrawBezier(startPos, endPos, startTan, endTan, Color.black, null, 1);      
     	}  
+
+    	Vector2 GraphCenter()
+    	{
+			return new Vector2(-(GraphPosition.x - (position.width * 0.3f)), -(GraphPosition.y - (position.height * 0.3f)));
+    	}
 	}
 }

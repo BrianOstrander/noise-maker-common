@@ -8,7 +8,7 @@ namespace LunraGames.NoiseMaker
 {
 	public class CylindersNode : Node
 	{
-		public float Frequency;
+		public float Frequency = 0.02f;
 
 		public override IModule GetModule (List<Node> nodes)
 		{

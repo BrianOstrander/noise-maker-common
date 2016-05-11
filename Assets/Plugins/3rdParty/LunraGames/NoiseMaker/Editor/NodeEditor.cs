@@ -129,6 +129,7 @@ namespace LunraGames.NoiseMaker
 
 		public Rect DrawOutput(Rect position, NodeIo output)
 		{
+			if (this is RootNodeEditor) return new Rect();
 			var currRect = new Rect(position.x + position.width - 2, position.y + IoStartOffset, IoWidth, IoHeight);
 			if (GUI.Button(currRect, GUIContent.none, output.Connecting ? Styles.BoxButtonHovered : Styles.BoxButton)) output.OnClick();
 			return currRect;

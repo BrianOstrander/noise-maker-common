@@ -29,5 +29,19 @@ namespace LunraGames.NoiseMaker
 				return _Root;
 			}
 		}
+
+		public void Remove(Node node)
+		{
+			if (node == null) throw new ArgumentNullException("node");
+
+			foreach (var curr in Nodes)
+			{
+				for (var i = 0; i < curr.SourceIds.Count; i++)
+				{
+					if (curr.SourceIds[i] == node.Id) curr.SourceIds[i] = null;
+				}
+			}
+			Nodes.Remove(node);
+		}
 	}
 }
