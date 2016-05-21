@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using UnityEditor;
 using LibNoise;
+using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
@@ -11,16 +12,17 @@ namespace LunraGames.NoiseMaker
 	{
 		public override Node Draw(Graph graph, Node node)
 		{
-			var addNode = node as RootNode;
+			var rootNode = node as RootNode;
 
-			if (addNode.GetModule(graph.Nodes) != null)
+			if (rootNode.SourceIds != null && !StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds[0]))
 			{
-				var preview = GetPreview(graph, node);
+				var targetNode = graph.Nodes.Find(n => n.Id == rootNode.SourceIds[0]);
+				var preview = GetPreview(graph, targetNode);
 				GUILayout.Box(preview.Preview);
 			}
 			else EditorGUILayout.HelpBox(Strings.SpecifyAnInput, MessageType.Warning);
 
-			return addNode;
+			return rootNode;
 		}
 	}
 }

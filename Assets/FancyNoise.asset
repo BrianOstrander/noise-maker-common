@@ -9,11 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58a6f9f05ecae4ee8a8e783e1667fede, type: 3}
-  m_Name: Noise
+  m_Name: FancyNoise
   m_EditorClassIdentifier: 
   GraphJson: '{"$type":"LunraGames.NoiseMaker.Graph, Assembly-CSharp-firstpass","Nodes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Node,
     Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.RootNode,
-    Assembly-CSharp-firstpass","EditorPosition":{"x":1807.50024,"y":747.5},"Id":"de219202-0cf1-49dd-9a99-59707695ce23","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    Assembly-CSharp-firstpass","EditorPosition":{"x":1807.50049,"y":747.5},"Id":"de219202-0cf1-49dd-9a99-59707695ce23","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
     mscorlib]], mscorlib","$values":["04f5aae3-f399-45e5-9694-5a9c3d8764d6"]}},{"$type":"LunraGames.NoiseMaker.RidgedMultifractalNode,
     Assembly-CSharp-firstpass","Frequency":0.005,"Lacunarity":1.71,"Quality":1,"OctaveCount":16,"Seed":-816460700,"EditorPosition":{"x":-236.203857,"y":381.701477},"Id":"a7425eb6-4f1f-4c70-a84c-a06f3f5b3fc7","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
     mscorlib]], mscorlib","$values":[]}},{"$type":"LunraGames.NoiseMaker.ExponentNode,

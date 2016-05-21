@@ -14,6 +14,8 @@ namespace LunraGames.NoiseMaker
 
 		public class Layouts
 		{
+			public const float PreviewWidth = 400f;
+			public const float PreviewHeight = 400f;
 			public const float VisualizationOptionsWidth = 300f;
 			public const float VisualizationOptionsHeight = 24f;
 			public const float VisualizationHeight = VisualizationOptionsHeight * 4f;
@@ -38,11 +40,17 @@ namespace LunraGames.NoiseMaker
 		string SavePath;
 		[SerializeField]
 		Vector3 GraphPosition = Vector3.zero;
+		[SerializeField]
+		GameObject PreviewObject;
+		[SerializeField]
+		Editor PreviewObjectEditor;
 
 		Graph Graph;
 		Node ConnectingFrom;
 		Node ConnectingTo;
 		Dictionary<string, bool> ShownCategories = new Dictionary<string, bool>();
+		int PreviewSelected;
+		Dictionary<string, Action> Previews;
 
 		[MenuItem ("Window/Noise Maker")]
 		static void Init () 
@@ -75,6 +83,7 @@ namespace LunraGames.NoiseMaker
 						Save();
 					}
 					DrawNodeOptions();
+					DrawPreview();
 
 					if (Event.current != null && Event.current.isMouse && Event.current.button == 0)
 					{
@@ -294,7 +303,7 @@ namespace LunraGames.NoiseMaker
 				else optionCategories.Add(option.Value.Details.Category, new List<EditorEntry>(new EditorEntry[] {option.Value}));
 			}
 
-			var area = new Rect(position.width - 240f, -1f, 8f, position.height + 2f);
+			var area = new Rect(position.width - 240f, -1f, 8f, position.height - Layouts.PreviewHeight + 2f);
 			GUILayout.BeginArea(area);
 			{
 				GUILayout.Box(GUIContent.none, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
@@ -396,6 +405,96 @@ namespace LunraGames.NoiseMaker
 				drawToggler(0f, Layouts.VisualizationHeight);
 			}
 		}
+
+		void DrawPreview()
+		{
+			var area = new Rect(position.width - Layouts.PreviewWidth, position.height - Layouts.PreviewHeight, Layouts.PreviewWidth, Layouts.PreviewHeight);
+
+			GUILayout.BeginArea(area, Styles.OptionBox);
+			{
+				if (Previews == null) 
+				{
+					Previews = new Dictionary<string, Action> {
+						{ "Flat", DrawFlatPreview },
+						{ "Sphere", DrawSpherePreview },
+						{ "Elevation", DrawElevationPreview }
+					};
+				}
+
+				var keys = Previews.Keys.ToArray();
+				PreviewSelected = GUILayout.Toolbar(PreviewSelected, keys);
+
+				var previewArea = new Rect(0f, 24f, area.width, area.height - 24f);
+				GUILayout.BeginArea(previewArea);
+				{
+					var rootNode = Graph.Nodes.FirstOrDefault(n => n.Id == Graph.RootId);
+					if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds[0]))
+					{
+						GUILayout.FlexibleSpace();
+						GUILayout.BeginHorizontal();
+						{
+							GUILayout.FlexibleSpace();
+							GUILayout.Label("Invalid Root", Styles.NoPreviewLabel);
+							GUILayout.FlexibleSpace();
+						}
+						GUILayout.EndHorizontal();
+						GUILayout.FlexibleSpace();
+					}
+					else Previews[keys[PreviewSelected]]();
+				}
+				GUILayout.EndArea();
+			}
+			GUILayout.EndArea();
+		/*
+			if (PreviewObject == null)
+			{
+				var targetPreview = NoiseMakerConfig.Instance == null ? null : NoiseMakerConfig.Instance.Ico4Preview;
+				if (targetPreview == null)
+				{
+					Debug.LogError("No target preview available");
+					return;
+				}
+				//PreviewObject = (GameObject)GameObject.Instantiate(targetPreview);
+//				PreviewObject.hideFlags = HideFlags.HideAndDontSave | HideFlags.HideInInspector | HideFlags.NotEditable;
+				PreviewObject = targetPreview;
+				PreviewObjectEditor = null;
+			}
+			if (PreviewObjectEditor == null)
+			{
+ 				PreviewObjectEditor = Editor.CreateEditor(PreviewObject);
+			}
+
+
+			var area = new Rect(position.width - Layouts.PreviewWidth, position.height - Layouts.PreviewHeight, Layouts.PreviewWidth, Layouts.PreviewHeight);
+
+			PreviewObjectEditor.OnPreviewGUI(area, GUI.skin.box);
+			*/
+			/*
+			GUILayout.BeginArea(area);
+			{
+				
+				//GUILayout.Box(GUIContent.none, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
+			}
+			GUILayout.EndArea();
+			*/
+		}
+
+		#region Previews
+		void DrawFlatPreview()
+		{
+			
+
+			//GUI.DrawTexture(area, Graph.Root.)
+		}
+		void DrawSpherePreview()
+		{
+
+		}
+		void DrawElevationPreview()
+		{
+
+		}
+		#endregion
 
 		void Reset()
 		{
