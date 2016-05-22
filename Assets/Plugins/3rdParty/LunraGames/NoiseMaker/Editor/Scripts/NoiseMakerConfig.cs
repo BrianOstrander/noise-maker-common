@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 
 		static NoiseMakerConfig FindInstance()
 		{
-			var instances = AssetDatabase.FindAssets("LgNmSettings");
+			var instances = AssetDatabase.FindAssets("LunraGamesNoiseMakerSettings");
 			if (instances.Length != 1) 
 			{
 				Debug.LogError(instances.Length == 0 ? "No instance of Noise Maker settings exist" : "More than one instance of Noise Maker settings exists");
@@ -21,6 +21,7 @@ namespace LunraGames.NoiseMaker
 
 		}
 
-		public GameObject Ico4Preview;
+		public GameObject Ico4Vertex;
+		public GameObject Ico4Face;
 	}
 }

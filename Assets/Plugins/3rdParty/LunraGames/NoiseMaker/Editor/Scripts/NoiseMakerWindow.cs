@@ -532,7 +532,7 @@ namespace LunraGames.NoiseMaker
 
 				Repaint();
 			}
-			var mat = NoiseMakerConfig.Instance.Ico4Preview.GetComponent<MeshRenderer>().sharedMaterial;
+			var mat = NoiseMakerConfig.Instance.Ico4Vertex.GetComponent<MeshRenderer>().sharedMaterial;
 
 			if (mat.mainTexture != PreviewTexture)
 			{
@@ -540,7 +540,7 @@ namespace LunraGames.NoiseMaker
 				Repaint();
 			}
 
-			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico4Preview);
+			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico4Vertex);
 
 			PreviewObjectEditor.OnPreviewGUI(new Rect(1f, 0f, area.width - 1f, area.height), Styles.OptionBox);
 		}
