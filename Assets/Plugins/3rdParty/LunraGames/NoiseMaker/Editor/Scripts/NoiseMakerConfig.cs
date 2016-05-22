@@ -22,6 +22,9 @@ namespace LunraGames.NoiseMaker
 		}
 
 		public GameObject Ico4Vertex;
+		public Mesh Ico4VertexMesh;
+
 		public GameObject Ico4Face;
+		public Mesh Ico4FaceMesh;
 	}
 }

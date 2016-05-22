@@ -49,7 +49,7 @@ namespace LunraGames.NoiseMaker
 		Dictionary<string, Action<Node, Rect>> Previews;
 		long PreviewLastUpdated;
 		Texture2D PreviewTexture;
-
+		Mesh PreviewMesh;
 		Editor PreviewObjectEditor;
 
 		[MenuItem ("Window/Noise Maker")]
@@ -436,6 +436,8 @@ namespace LunraGames.NoiseMaker
 								{
 									PreviewSelected = i;
 									PreviewLastUpdated = 0L;
+									PreviewObjectEditor = null;
+									PreviewMesh = null;
 								}
 							}
 						}
@@ -507,6 +509,8 @@ namespace LunraGames.NoiseMaker
 
 		void DrawSpherePreview(Node node, Rect area)
 		{
+			NoiseMakerConfig.Instance.Ico4Vertex.GetComponent<MeshFilter>().sharedMesh = NoiseMakerConfig.Instance.Ico4VertexMesh;
+
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
 			if (lastUpdate != PreviewLastUpdated) 
 			{
@@ -547,7 +551,41 @@ namespace LunraGames.NoiseMaker
 
 		void DrawElevationPreview(Node node, Rect area)
 		{
+			var lastUpdate = NodeEditor.LastUpdated(node.Id);
+			if (lastUpdate != PreviewLastUpdated) 
+			{
+				NoiseMakerConfig.Instance.Ico4Face.GetComponent<MeshFilter>().sharedMesh = NoiseMakerConfig.Instance.Ico4FaceMesh;
 
+				if (PreviewMesh == null) PreviewMesh = (Mesh)Instantiate(NoiseMakerConfig.Instance.Ico4FaceMesh);
+
+				var module = node.GetModule(Graph.Nodes);
+				var sphere = new Sphere(module);
+
+				var verts = PreviewMesh.vertices;
+				var newVerts = new Vector3[verts.Length];
+				for (var i = 0; i < verts.Length; i++)
+				{
+					var vert = verts[i];
+					var latLong = SphereUtils.CartesianToPolar(vert.normalized);
+					newVerts[i] = vert.normalized + (vert.normalized * (float)sphere.GetValue(latLong.x, latLong.y) * 0.1f);
+				}
+				PreviewMesh.vertices = newVerts;
+
+				PreviewLastUpdated = lastUpdate;
+
+				Repaint();
+			}
+			var filter = NoiseMakerConfig.Instance.Ico4Face.GetComponent<MeshFilter>();
+
+			if (filter.sharedMesh != PreviewMesh)
+			{
+				filter.sharedMesh = PreviewMesh;
+				Repaint();
+			}
+
+			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico4Face);
+
+			PreviewObjectEditor.OnPreviewGUI(new Rect(1f, 0f, area.width - 1f, area.height), Styles.OptionBox);
 		}
 		#endregion
 
