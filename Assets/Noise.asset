@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58a6f9f05ecae4ee8a8e783e1667fede, type: 3}
+  m_Name: Noise
+  m_EditorClassIdentifier: 
+  GraphJson: '{"$type":"LunraGames.NoiseMaker.Graph, Assembly-CSharp-firstpass","Nodes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Node,
+    Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.RootNode,
+    Assembly-CSharp-firstpass","EditorPosition":{"x":656.6,"y":432.900024},"Id":"dd43ec0a-4eb0-432d-8f59-3996495e2ea1","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":["336a3174-57b3-43d9-97f7-4ae044084f73"]}},{"$type":"LunraGames.NoiseMaker.BillowNode,
+    Assembly-CSharp-firstpass","Frequency":0.02,"Lacunarity":0.0,"Quality":1,"OctaveCount":1,"Persistence":0.0,"Seed":348386949,"EditorPosition":{"x":84.6000061,"y":63.9000244},"Id":"336a3174-57b3-43d9-97f7-4ae044084f73","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":[]}}]},"RootId":"dd43ec0a-4eb0-432d-8f59-3996495e2ea1"}'

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 using LibNoise;
 using LibNoise.Modifiers;
 using System.Collections.Generic;
@@ -18,11 +19,14 @@ namespace LunraGames.NoiseMaker
 			}
 			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
 			var sources = Sources(nodes);
-			if (sources.Count != 1) return null;
+			if (sources.Count != 1 || sources[0] == null) return null;
 
-			var rootModule = Module == null ? sources[0] : Module as IModule;
+			// This is my lazy hack, I couldn't grok how I can do a root node without actually defining a new IModule...
+			var root = Module == null ?  new TranslateInput(sources[0], 0f, 0f ,0f) : Module as TranslateInput;
 
-			Module = rootModule;
+			root.SourceModule = sources[0];
+
+			Module = root;
 
 			return Module;
 		}

@@ -50,7 +50,9 @@ namespace LunraGames.NoiseMaker
 		Node ConnectingTo;
 		Dictionary<string, bool> ShownCategories = new Dictionary<string, bool>();
 		int PreviewSelected;
-		Dictionary<string, Action> Previews;
+		Dictionary<string, Action<Node>> Previews;
+		long PreviewLastUpdated;
+		Texture2D PreviewTexture;
 
 		[MenuItem ("Window/Noise Maker")]
 		static void Init () 
@@ -414,7 +416,7 @@ namespace LunraGames.NoiseMaker
 			{
 				if (Previews == null) 
 				{
-					Previews = new Dictionary<string, Action> {
+					Previews = new Dictionary<string, Action<Node>> {
 						{ "Flat", DrawFlatPreview },
 						{ "Sphere", DrawSpherePreview },
 						{ "Elevation", DrawElevationPreview }
@@ -427,8 +429,8 @@ namespace LunraGames.NoiseMaker
 				var previewArea = new Rect(0f, 24f, area.width, area.height - 24f);
 				GUILayout.BeginArea(previewArea);
 				{
-					var rootNode = Graph.Nodes.FirstOrDefault(n => n.Id == Graph.RootId);
-					if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds[0]))
+					var rootNode = Graph == null ? null : Graph.Nodes.FirstOrDefault(n => n.Id == Graph.RootId);
+					if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()) || rootNode.GetModule(Graph.Nodes) == null)
 					{
 						GUILayout.FlexibleSpace();
 						GUILayout.BeginHorizontal();
@@ -440,7 +442,7 @@ namespace LunraGames.NoiseMaker
 						GUILayout.EndHorizontal();
 						GUILayout.FlexibleSpace();
 					}
-					else Previews[keys[PreviewSelected]]();
+					else Previews[keys[PreviewSelected]](rootNode);
 				}
 				GUILayout.EndArea();
 			}
@@ -480,17 +482,37 @@ namespace LunraGames.NoiseMaker
 		}
 
 		#region Previews
-		void DrawFlatPreview()
+		void DrawFlatPreview(Node node)
 		{
-			
+			var lastUpdate = NodeEditor.LastUpdated(node.Id);
+			if (lastUpdate != PreviewLastUpdated) 
+			{
+				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)position.width, (int)position.height);
 
-			//GUI.DrawTexture(area, Graph.Root.)
+				var module = node.GetModule(Graph.Nodes);
+
+				for (var x = 0; x < PreviewTexture.width; x++)
+				{
+					for (var y = 0; y < PreviewTexture.height; y++)
+					{
+						var value = (float)module.GetValue((double)x, (double)y, 0.0);
+						var color = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+						PreviewTexture.SetPixel(x, y, color);
+					}
+				}
+				PreviewTexture.Apply();
+
+				PreviewLastUpdated = lastUpdate;
+
+				Repaint();
+			}
+			GUI.DrawTexture(new Rect(2f, 2f, PreviewTexture.width - 4f, PreviewTexture.height -4f), PreviewTexture);
 		}
-		void DrawSpherePreview()
+		void DrawSpherePreview(Node node)
 		{
 
 		}
-		void DrawElevationPreview()
+		void DrawElevationPreview(Node node)
 		{
 
 		}
@@ -502,6 +524,7 @@ namespace LunraGames.NoiseMaker
 			SavePath = null;
 			Graph = null;
 			GraphPosition = Vector3.zero;
+			PreviewLastUpdated = 0L;
 			ResetConnections();
 		}
 

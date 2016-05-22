@@ -141,6 +141,12 @@ namespace LunraGames.NoiseMaker
 			return GUI.Button(rect, "x", Styles.CloseButton);
 		}
 
+		public static long LastUpdated(string id)
+		{
+			var preview = Previews.FirstOrDefault(p => p.Id == id);
+			return preview == null ? long.MinValue : preview.LastUpdated;
+		}
+
 		public abstract Node Draw(Graph graph, Node node);
 	}
 }
