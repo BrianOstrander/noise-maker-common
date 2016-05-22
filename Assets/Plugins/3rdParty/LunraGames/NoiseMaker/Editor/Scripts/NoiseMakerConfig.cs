@@ -21,7 +21,6 @@ namespace LunraGames.NoiseMaker
 
 		}
 
-		public GUISkin EditorSkin;
 		public GameObject Ico4Preview;
 	}
 }

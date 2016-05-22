@@ -27,7 +27,6 @@ namespace LunraGames.NoiseMaker
 			Idle
 		}
 
-
 		[SerializeField]
 		States State = States.Splash;
 		[SerializeField]
@@ -412,39 +411,58 @@ namespace LunraGames.NoiseMaker
 		{
 			var area = new Rect(position.width - Layouts.PreviewWidth, position.height - Layouts.PreviewHeight, Layouts.PreviewWidth, Layouts.PreviewHeight);
 
-			GUILayout.BeginArea(area, Styles.OptionBox);
+			GUILayout.BeginArea(area);
 			{
-				if (Previews == null) 
+				GUILayout.BeginHorizontal();
 				{
-					Previews = new Dictionary<string, Action<Node>> {
-						{ "Flat", DrawFlatPreview },
-						{ "Sphere", DrawSpherePreview },
-						{ "Elevation", DrawElevationPreview }
-					};
-				}
+					GUILayout.Box(GUIContent.none, EditorStyles.miniButtonLeft, GUILayout.Width(16f), GUILayout.Height(area.height));
 
-				var keys = Previews.Keys.ToArray();
-				PreviewSelected = GUILayout.Toolbar(PreviewSelected, keys);
-
-				var previewArea = new Rect(0f, 24f, area.width, area.height - 24f);
-				GUILayout.BeginArea(previewArea);
-				{
-					var rootNode = Graph == null ? null : Graph.Nodes.FirstOrDefault(n => n.Id == Graph.RootId);
-					if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()) || rootNode.GetModule(Graph.Nodes) == null)
+					GUILayout.BeginVertical(Styles.PreviewBackground);
 					{
-						GUILayout.FlexibleSpace();
+						if (Previews == null) 
+						{
+							Previews = new Dictionary<string, Action<Node>> {
+								{ "Flat", DrawFlatPreview },
+								{ "Sphere", DrawSpherePreview },
+								{ "Elevation", DrawElevationPreview }
+							};
+						}
+
+						var keys = Previews.Keys.ToArray();
+
 						GUILayout.BeginHorizontal();
 						{
-							GUILayout.FlexibleSpace();
-							GUILayout.Label("Invalid Root", Styles.NoPreviewLabel);
-							GUILayout.FlexibleSpace();
+							for (var i = 0; i < keys.Length; i++)
+							{
+								if (GUILayout.Button(keys[i], i == PreviewSelected ? Styles.PreviewToolbarSelected : Styles.PreviewToolbar)) PreviewSelected = i;
+							}
 						}
 						GUILayout.EndHorizontal();
+
+						var previewArea = new Rect(14f, 24f, area.width - 14f, area.height - 24f);
+						GUILayout.BeginArea(previewArea);
+						{
+							var rootNode = Graph == null ? null : Graph.Nodes.FirstOrDefault(n => n.Id == Graph.RootId);
+							if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()) || rootNode.GetModule(Graph.Nodes) == null)
+							{
+								GUILayout.FlexibleSpace();
+								GUILayout.BeginHorizontal();
+								{
+									GUILayout.FlexibleSpace();
+									GUILayout.Label("Invalid Root", Styles.NoPreviewLabel);
+									GUILayout.FlexibleSpace();
+								}
+								GUILayout.EndHorizontal();
+								GUILayout.FlexibleSpace();
+							}
+							else Previews[keys[PreviewSelected]](rootNode);
+						}
+						GUILayout.EndArea();
 						GUILayout.FlexibleSpace();
 					}
-					else Previews[keys[PreviewSelected]](rootNode);
+					GUILayout.EndVertical();
 				}
-				GUILayout.EndArea();
+				GUILayout.EndHorizontal();
 			}
 			GUILayout.EndArea();
 		/*

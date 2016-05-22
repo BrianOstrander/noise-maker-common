@@ -260,5 +260,80 @@ namespace LunraGames.NoiseMaker
 				return _NoPreviewLabel;
 			}
 		}
+
+		static GUIStyle _PreviewToolbar;
+
+		public static GUIStyle PreviewToolbar
+		{
+			get
+			{
+				if (_PreviewToolbar == null)
+				{
+					_PreviewToolbar = new GUIStyle(EditorStyles.miniButtonMid);
+					_PreviewToolbar.alignment = TextAnchor.MiddleCenter;
+					_PreviewToolbar.fontSize = 18;
+					_PreviewToolbar.fixedHeight = 23f;
+				}
+
+				return _PreviewToolbar;
+			}
+		}
+
+		static GUIStyle _PreviewToolbarSelected;
+
+		public static GUIStyle PreviewToolbarSelected
+		{
+			get
+			{
+				if (_PreviewToolbarSelected == null)
+				{
+					_PreviewToolbarSelected = new GUIStyle(EditorStyles.miniButtonMid);
+					_PreviewToolbarSelected.alignment = TextAnchor.MiddleCenter;
+					_PreviewToolbarSelected.fontSize = 18;
+					_PreviewToolbarSelected.fixedHeight = 23f;
+
+					_PreviewToolbarSelected.normal = _PreviewToolbarSelected.active;
+				}
+
+				return _PreviewToolbarSelected;
+			}
+		}
+
+		static GUIStyle _PreviewBackground;
+
+		public static GUIStyle PreviewBackground
+		{
+			get 
+			{
+				if (_PreviewBackground == null)
+				{
+					_PreviewBackground = new GUIStyle(GUI.skin.box);
+
+					_PreviewBackground.margin.left = 0;
+					_PreviewBackground.margin.top = 0;
+					_PreviewBackground.margin.bottom = 0;
+					_PreviewBackground.padding.left = 0;
+					_PreviewBackground.padding.right = 0;
+					_PreviewBackground.padding.top = 0;
+
+					_PreviewBackground.border.top = 16;
+					_PreviewBackground.border.bottom = 2;
+
+					var background = new Texture2D(64, 64);
+
+					for (var x = 0; x < background.width; x++)
+					{
+						for (var y = 0; y < background.height; y++)
+						{
+							var color = (background.height - 16) < y ? Color.clear : Color.HSVToRGB(0f, 0f, 0.25f);
+							background.SetPixel(x, y, color);
+						}
+					}
+					background.Apply();
+					_PreviewBackground.normal.background = background;
+				}
+				return _PreviewBackground;
+			}
+		}
 	}
 }
