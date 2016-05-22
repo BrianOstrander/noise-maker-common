@@ -11,5 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1cf7838657b8494db8d0753cd21b787, type: 3}
   m_Name: LgNmSettings
   m_EditorClassIdentifier: 
-  EditorSkin: {fileID: 11400000, guid: 1690b43e301b7480fbb356a0e9f4fd8c, type: 2}
   Ico4Preview: {fileID: 174050, guid: 9871d5f344982455d9b7408791ee3dd6, type: 2}

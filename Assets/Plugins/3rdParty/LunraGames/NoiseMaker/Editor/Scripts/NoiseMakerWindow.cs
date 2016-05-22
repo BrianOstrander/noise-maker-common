@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using LibNoise;
 using Atesh;
+using LibNoise.Models;
 
 namespace LunraGames.NoiseMaker
 {
@@ -39,19 +40,17 @@ namespace LunraGames.NoiseMaker
 		string SavePath;
 		[SerializeField]
 		Vector3 GraphPosition = Vector3.zero;
-		[SerializeField]
-		GameObject PreviewObject;
-		[SerializeField]
-		Editor PreviewObjectEditor;
 
 		Graph Graph;
 		Node ConnectingFrom;
 		Node ConnectingTo;
 		Dictionary<string, bool> ShownCategories = new Dictionary<string, bool>();
 		int PreviewSelected;
-		Dictionary<string, Action<Node>> Previews;
+		Dictionary<string, Action<Node, Rect>> Previews;
 		long PreviewLastUpdated;
 		Texture2D PreviewTexture;
+
+		Editor PreviewObjectEditor;
 
 		[MenuItem ("Window/Noise Maker")]
 		static void Init () 
@@ -421,7 +420,7 @@ namespace LunraGames.NoiseMaker
 					{
 						if (Previews == null) 
 						{
-							Previews = new Dictionary<string, Action<Node>> {
+							Previews = new Dictionary<string, Action<Node, Rect>> {
 								{ "Flat", DrawFlatPreview },
 								{ "Sphere", DrawSpherePreview },
 								{ "Elevation", DrawElevationPreview }
@@ -429,12 +428,15 @@ namespace LunraGames.NoiseMaker
 						}
 
 						var keys = Previews.Keys.ToArray();
-
 						GUILayout.BeginHorizontal();
 						{
 							for (var i = 0; i < keys.Length; i++)
 							{
-								if (GUILayout.Button(keys[i], i == PreviewSelected ? Styles.PreviewToolbarSelected : Styles.PreviewToolbar)) PreviewSelected = i;
+								if (GUILayout.Button(keys[i], i == PreviewSelected ? Styles.PreviewToolbarSelected : Styles.PreviewToolbar) && PreviewSelected != i) 
+								{
+									PreviewSelected = i;
+									PreviewLastUpdated = 0L;
+								}
 							}
 						}
 						GUILayout.EndHorizontal();
@@ -455,7 +457,7 @@ namespace LunraGames.NoiseMaker
 								GUILayout.EndHorizontal();
 								GUILayout.FlexibleSpace();
 							}
-							else Previews[keys[PreviewSelected]](rootNode);
+							else Previews[keys[PreviewSelected]](rootNode, new Rect(0f, 0f, previewArea.width, previewArea.height));
 						}
 						GUILayout.EndArea();
 						GUILayout.FlexibleSpace();
@@ -465,30 +467,6 @@ namespace LunraGames.NoiseMaker
 				GUILayout.EndHorizontal();
 			}
 			GUILayout.EndArea();
-		/*
-			if (PreviewObject == null)
-			{
-				var targetPreview = NoiseMakerConfig.Instance == null ? null : NoiseMakerConfig.Instance.Ico4Preview;
-				if (targetPreview == null)
-				{
-					Debug.LogError("No target preview available");
-					return;
-				}
-				//PreviewObject = (GameObject)GameObject.Instantiate(targetPreview);
-//				PreviewObject.hideFlags = HideFlags.HideAndDontSave | HideFlags.HideInInspector | HideFlags.NotEditable;
-				PreviewObject = targetPreview;
-				PreviewObjectEditor = null;
-			}
-			if (PreviewObjectEditor == null)
-			{
- 				PreviewObjectEditor = Editor.CreateEditor(PreviewObject);
-			}
-
-
-			var area = new Rect(position.width - Layouts.PreviewWidth, position.height - Layouts.PreviewHeight, Layouts.PreviewWidth, Layouts.PreviewHeight);
-
-			PreviewObjectEditor.OnPreviewGUI(area, GUI.skin.box);
-			*/
 			/*
 			GUILayout.BeginArea(area);
 			{
@@ -500,12 +478,12 @@ namespace LunraGames.NoiseMaker
 		}
 
 		#region Previews
-		void DrawFlatPreview(Node node)
+		void DrawFlatPreview(Node node, Rect area)
 		{
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
 			if (lastUpdate != PreviewLastUpdated) 
 			{
-				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)position.width, (int)position.height);
+				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)area.width, (int)area.height);
 
 				var module = node.GetModule(Graph.Nodes);
 
@@ -526,11 +504,48 @@ namespace LunraGames.NoiseMaker
 			}
 			GUI.DrawTexture(new Rect(2f, 2f, PreviewTexture.width - 4f, PreviewTexture.height -4f), PreviewTexture);
 		}
-		void DrawSpherePreview(Node node)
-		{
 
+		void DrawSpherePreview(Node node, Rect area)
+		{
+			var lastUpdate = NodeEditor.LastUpdated(node.Id);
+			if (lastUpdate != PreviewLastUpdated) 
+			{
+				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)area.width, (int)area.width * 2);
+
+				var module = node.GetModule(Graph.Nodes);
+				var sphere = new Sphere(module);
+
+				for (var x = 0; x < PreviewTexture.width; x++)
+				{
+					for (var y = 0; y < PreviewTexture.height; y++)
+					{
+						var lat = SphereUtils.GetLatitude(y, PreviewTexture.height);
+						var lon = SphereUtils.GetLongitude(x, PreviewTexture.width);
+						var value = (float)sphere.GetValue((double)lat, (double)lon);
+						var color = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+						PreviewTexture.SetPixel(x, y, color);
+					}
+				}
+				PreviewTexture.Apply();
+
+				PreviewLastUpdated = lastUpdate;
+
+				Repaint();
+			}
+			var mat = NoiseMakerConfig.Instance.Ico4Preview.GetComponent<MeshRenderer>().sharedMaterial;
+
+			if (mat.mainTexture != PreviewTexture)
+			{
+				mat.mainTexture = PreviewTexture;
+				Repaint();
+			}
+
+			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico4Preview);
+
+			PreviewObjectEditor.OnPreviewGUI(new Rect(1f, 0f, area.width - 1f, area.height), Styles.OptionBox);
 		}
-		void DrawElevationPreview(Node node)
+
+		void DrawElevationPreview(Node node, Rect area)
 		{
 
 		}

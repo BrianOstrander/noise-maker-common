@@ -13,7 +13,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GraphJson: '{"$type":"LunraGames.NoiseMaker.Graph, Assembly-CSharp-firstpass","Nodes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Node,
     Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.RootNode,
-    Assembly-CSharp-firstpass","EditorPosition":{"x":178.599731,"y":-115.300415},"Id":"dd43ec0a-4eb0-432d-8f59-3996495e2ea1","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
-    mscorlib]], mscorlib","$values":["336a3174-57b3-43d9-97f7-4ae044084f73"]}},{"$type":"LunraGames.NoiseMaker.BillowNode,
-    Assembly-CSharp-firstpass","Frequency":0.01,"Lacunarity":0.0,"Quality":1,"OctaveCount":1,"Persistence":0.0,"Seed":348386949,"EditorPosition":{"x":-231.3999,"y":-242.099976},"Id":"336a3174-57b3-43d9-97f7-4ae044084f73","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
-    mscorlib]], mscorlib","$values":[]}}]},"RootId":"dd43ec0a-4eb0-432d-8f59-3996495e2ea1"}'
+    Assembly-CSharp-firstpass","EditorPosition":{"x":685.6,"y":231.900024},"Id":"8d5f6dd4-4227-4add-9ea2-bd272b51bc93","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":["6f6200fa-19c6-4a57-afb4-0e1bf0ecc0da"]}},{"$type":"LunraGames.NoiseMaker.BillowNode,
+    Assembly-CSharp-firstpass","Frequency":0.02,"Lacunarity":0.0,"Quality":1,"OctaveCount":1,"Persistence":0.0,"Seed":-2112364250,"EditorPosition":{"x":122.600006,"y":391.900024},"Id":"3de76f7c-1e4e-4d14-8205-3d9395e061a1","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":[]}},{"$type":"LunraGames.NoiseMaker.ScalePointNode,
+    Assembly-CSharp-firstpass","Scale":{"x":200.0,"y":200.0,"z":200.0},"EditorPosition":{"x":399.599976,"y":267.900024},"Id":"6f6200fa-19c6-4a57-afb4-0e1bf0ecc0da","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":["3de76f7c-1e4e-4d14-8205-3d9395e061a1"]}}]},"RootId":"8d5f6dd4-4227-4add-9ea2-bd272b51bc93"}'
