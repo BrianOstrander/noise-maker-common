@@ -13,7 +13,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GraphJson: '{"$type":"LunraGames.NoiseMaker.Graph, Assembly-CSharp-firstpass","Nodes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Node,
     Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.RootNode,
-    Assembly-CSharp-firstpass","EditorPosition":{"x":885.300049,"y":269.900024},"Id":"8ad69d5a-cbd2-4e6d-9f58-cda77321afdf","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
-    mscorlib]], mscorlib","$values":["8a2cf2bc-c16d-4c5a-b673-b4d28ec07676"]}},{"$type":"LunraGames.NoiseMaker.ConstantNode,
-    Assembly-CSharp-firstpass","Value":0.0,"EditorPosition":{"x":482.300018,"y":267.900024},"Id":"8a2cf2bc-c16d-4c5a-b673-b4d28ec07676","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
-    mscorlib]], mscorlib","$values":[]}}]},"RootId":"8ad69d5a-cbd2-4e6d-9f58-cda77321afdf"}'
+    Assembly-CSharp-firstpass","EditorPosition":{"x":941.5,"y":288.900024},"Id":"d53db227-10b8-4461-8ac5-d99ea45082de","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":["510914dd-3963-4b3a-b19e-9fcccf04e3c7"]}},{"$type":"LunraGames.NoiseMaker.BillowNode,
+    Assembly-CSharp-firstpass","Frequency":0.02,"Lacunarity":0.0,"Quality":1,"OctaveCount":1,"Persistence":0.0,"Seed":24734203,"EditorPosition":{"x":24.50003,"y":75.9000244},"Id":"c6262847-9967-4bfa-9aa0-7aed01a7955a","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":[]}},{"$type":"LunraGames.NoiseMaker.ConstantNode,
+    Assembly-CSharp-firstpass","Value":0.0,"EditorPosition":{"x":477.2996,"y":297.101563},"Id":"510914dd-3963-4b3a-b19e-9fcccf04e3c7","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":[]}}]},"RootId":"d53db227-10b8-4461-8ac5-d99ea45082de"}'

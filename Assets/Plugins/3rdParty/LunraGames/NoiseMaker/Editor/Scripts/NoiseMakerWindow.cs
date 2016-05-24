@@ -22,6 +22,9 @@ namespace LunraGames.NoiseMaker
 			public const float VisualizationHeight = VisualizationOptionsHeight * 4f;
 		}
 
+		// A magic value because the sphere I have is too big.
+		const float SphereScalar = 0.65f;
+
 		enum States
 		{
 			Splash,
@@ -514,23 +517,7 @@ namespace LunraGames.NoiseMaker
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
 			if (lastUpdate != PreviewLastUpdated) 
 			{
-				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)area.width, (int)area.width * 2);
-
-				var module = node.GetModule(Graph.Nodes);
-				var sphere = new Sphere(module);
-
-				for (var x = 0; x < PreviewTexture.width; x++)
-				{
-					for (var y = 0; y < PreviewTexture.height; y++)
-					{
-						var lat = SphereUtils.GetLatitude(y, PreviewTexture.height);
-						var lon = SphereUtils.GetLongitude(x, PreviewTexture.width);
-						var value = (float)sphere.GetValue((double)lat, (double)lon);
-						var color = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
-						PreviewTexture.SetPixel(x, y, color);
-					}
-				}
-				PreviewTexture.Apply();
+				PreviewTexture = GetSphereTexture(node.GetModule(Graph.Nodes), (int)area.height);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -554,9 +541,9 @@ namespace LunraGames.NoiseMaker
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
 			if (lastUpdate != PreviewLastUpdated) 
 			{
-				NoiseMakerConfig.Instance.Ico4Face.GetComponent<MeshFilter>().sharedMesh = NoiseMakerConfig.Instance.Ico4FaceMesh;
+				NoiseMakerConfig.Instance.Ico5Vertex.GetComponent<MeshFilter>().sharedMesh = NoiseMakerConfig.Instance.Ico5VertexMesh;
 
-				if (PreviewMesh == null) PreviewMesh = (Mesh)Instantiate(NoiseMakerConfig.Instance.Ico4FaceMesh);
+				if (PreviewMesh == null) PreviewMesh = (Mesh)Instantiate(NoiseMakerConfig.Instance.Ico5VertexMesh);
 
 				var module = node.GetModule(Graph.Nodes);
 				var sphere = new Sphere(module);
@@ -567,15 +554,17 @@ namespace LunraGames.NoiseMaker
 				{
 					var vert = verts[i];
 					var latLong = SphereUtils.CartesianToPolar(vert.normalized);
-					newVerts[i] = vert.normalized + (vert.normalized * (float)sphere.GetValue(latLong.x, latLong.y) * 0.1f);
+					newVerts[i] = (vert.normalized * SphereScalar) + (vert.normalized * (float)sphere.GetValue(latLong.x, latLong.y) * 0.1f);
 				}
 				PreviewMesh.vertices = newVerts;
+
+				PreviewTexture = GetSphereTexture(module, (int)area.width);
 
 				PreviewLastUpdated = lastUpdate;
 
 				Repaint();
 			}
-			var filter = NoiseMakerConfig.Instance.Ico4Face.GetComponent<MeshFilter>();
+			var filter = NoiseMakerConfig.Instance.Ico5Vertex.GetComponent<MeshFilter>();
 
 			if (filter.sharedMesh != PreviewMesh)
 			{
@@ -583,11 +572,42 @@ namespace LunraGames.NoiseMaker
 				Repaint();
 			}
 
-			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico4Face);
+			var mat = NoiseMakerConfig.Instance.Ico5Vertex.GetComponent<MeshRenderer>().sharedMaterial;
+			mat.mainTextureOffset = new Vector2(0.5f, 0f);
+
+			if (mat.mainTexture != PreviewTexture)
+			{
+				mat.mainTexture = PreviewTexture;
+				Repaint();
+			}
+
+			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico5Vertex);
 
 			PreviewObjectEditor.OnPreviewGUI(new Rect(1f, 0f, area.width - 1f, area.height), Styles.OptionBox);
 		}
 		#endregion
+
+		Texture2D GetSphereTexture(IModule module, int height)
+		{
+			var result = new Texture2D(height, height * 2);
+
+			var sphere = new Sphere(module);
+
+			for (var x = 0; x < result.width; x++)
+			{
+				for (var y = 0; y < result.height; y++)
+				{
+					var lat = SphereUtils.GetLatitude(y, result.height);
+					var lon = SphereUtils.GetLongitude(x, result.width);
+					var value = (float)sphere.GetValue((double)lat, (double)lon);
+					var color = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+					result.SetPixel(x, y, color);
+				}
+			}
+			result.Apply();
+
+			return result;
+		}
 
 		void Reset()
 		{

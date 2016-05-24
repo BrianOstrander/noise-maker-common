@@ -13,5 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Ico4Vertex: {fileID: 150354, guid: e4d5615eab2c84ba7aea59810cfcfee2, type: 2}
   Ico4VertexMesh: {fileID: 4300000, guid: c7aaa1def987848d69eeb62440374ba8, type: 2}
+  Ico5Vertex: {fileID: 150354, guid: a94f2b651dcec4484b54fd927f09a8b5, type: 2}
+  Ico5VertexMesh: {fileID: 4300000, guid: 78443035bfcbc4c149ce328d212ccbae, type: 2}
   Ico4Face: {fileID: 174050, guid: 9871d5f344982455d9b7408791ee3dd6, type: 2}
   Ico4FaceMesh: {fileID: 4300000, guid: cbc424abf434748c383a34975b2574a0, type: 2}
