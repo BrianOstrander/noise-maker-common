@@ -190,7 +190,7 @@ namespace LunraGames.NoiseMaker
 					var graphPos = new Vector2(GraphPosition.x, GraphPosition.y);
 					var unmodifiedNode = node;
 					var drawer = NodeEditorCacher.Editors[unmodifiedNode.GetType()];
-					var windowRect = new Rect(unmodifiedNode.EditorPosition + graphPos, new Vector2(216f, 216f));
+					var windowRect = new Rect(unmodifiedNode.EditorPosition + graphPos, new Vector2(216f, 77f));
 
 					if (unmodifiedNode.SourceIds != null && 0 < unmodifiedNode.SourceIds.Count)
 					{

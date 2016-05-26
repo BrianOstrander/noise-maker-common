@@ -12,7 +12,7 @@ namespace LunraGames.NoiseMaker
 
 			var preview = GetPreview(graph, node);
 
-			GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewSize), GUILayout.ExpandWidth(true));
+			GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewWidth), GUILayout.ExpandWidth(true));
 
 			GUILayout.FlexibleSpace();
 

@@ -9,7 +9,9 @@ namespace LunraGames.NoiseMaker
 {
 	public abstract class NodeEditor
 	{
-		public const int PreviewSize = 198;
+		public const int PreviewWidth = 198;
+		public const int PreviewHeight = 64;
+
 		const float IoStartOffset = 16f;
 		const float IoDivider = 8f;
 		const float IoWidth = 32f;
@@ -90,7 +92,7 @@ namespace LunraGames.NoiseMaker
 				if (preview == null)
 				{
 					preview = new NodePreview { Id = node.Id };
-					preview.Preview = new Texture2D(PreviewSize, PreviewSize);
+					preview.Preview = new Texture2D(PreviewWidth, PreviewHeight);
 					Previews.Add(preview);
 				}
 
