@@ -97,16 +97,17 @@ namespace LunraGames.NoiseMaker
 				}
 
 				var module = node.GetModule(graph.Nodes);
-
+				var pixels = new Color[preview.Preview.width * preview.Preview.height];
 				for (var x = 0; x < preview.Preview.width; x++)
 				{
 					for (var y = 0; y < preview.Preview.height; y++)
 					{
 						var value = (float)module.GetValue((double)x, (double)y, 0.0);
-						var color = Previewer.Calculate(value, Previewer);
-						preview.Preview.SetPixel(x, y, color);
+						pixels[(preview.Preview.width * y) + x] = Previewer.Calculate(value, Previewer);
 					}
 				}
+				preview.Preview.SetPixels(pixels);
+
 				preview.Preview.Apply();
 				preview.Stale = false;
 				preview.LastUpdated = DateTime.Now.Ticks;

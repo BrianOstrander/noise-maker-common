@@ -491,16 +491,16 @@ namespace LunraGames.NoiseMaker
 				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)area.width, (int)area.height);
 
 				var module = node.GetModule(Graph.Nodes);
-
+				var pixels = new Color[PreviewTexture.width * PreviewTexture.height];
 				for (var x = 0; x < PreviewTexture.width; x++)
 				{
 					for (var y = 0; y < PreviewTexture.height; y++)
 					{
 						var value = (float)module.GetValue((double)x, (double)y, 0.0);
-						var color = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
-						PreviewTexture.SetPixel(x, y, color);
+						pixels[(PreviewTexture.width * y) + x] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 					}
 				}
+				PreviewTexture.SetPixels(pixels);
 				PreviewTexture.Apply();
 
 				PreviewLastUpdated = lastUpdate;
@@ -517,7 +517,7 @@ namespace LunraGames.NoiseMaker
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
 			if (lastUpdate != PreviewLastUpdated) 
 			{
-				PreviewTexture = GetSphereTexture(node.GetModule(Graph.Nodes), (int)area.height);
+				PreviewTexture = GetSphereTexture(node.GetModule(Graph.Nodes));
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -558,7 +558,7 @@ namespace LunraGames.NoiseMaker
 				}
 				PreviewMesh.vertices = newVerts;
 
-				PreviewTexture = GetSphereTexture(module, (int)area.width);
+				PreviewTexture = GetSphereTexture(module);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -587,12 +587,12 @@ namespace LunraGames.NoiseMaker
 		}
 		#endregion
 
-		Texture2D GetSphereTexture(IModule module, int height)
+		Texture2D GetSphereTexture(IModule module, int height = 98)
 		{
 			var result = new Texture2D(height, height * 2);
 
 			var sphere = new Sphere(module);
-
+			var pixels = new Color[result.width * result.height];
 			for (var x = 0; x < result.width; x++)
 			{
 				for (var y = 0; y < result.height; y++)
@@ -600,10 +600,10 @@ namespace LunraGames.NoiseMaker
 					var lat = SphereUtils.GetLatitude(y, result.height);
 					var lon = SphereUtils.GetLongitude(x, result.width);
 					var value = (float)sphere.GetValue((double)lat, (double)lon);
-					var color = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
-					result.SetPixel(x, y, color);
+					pixels[(result.width * y) + x] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 				}
 			}
+			result.SetPixels(pixels);
 			result.Apply();
 
 			return result;
