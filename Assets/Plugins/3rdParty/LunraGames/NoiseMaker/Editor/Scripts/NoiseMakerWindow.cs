@@ -15,11 +15,12 @@ namespace LunraGames.NoiseMaker
 
 		public class Layouts
 		{
-			public const float PreviewWidth = 400f;
-			public const float PreviewHeight = 400f;
 			public const float VisualizationOptionsWidth = 300f;
 			public const float VisualizationOptionsHeight = 24f;
 			public const float VisualizationHeight = VisualizationOptionsHeight * 4f;
+			public const float NodeOptionsWidth = 240f;
+			public const float PreviewWidth = NodeOptionsWidth + 13f;
+			public const float PreviewHeight = PreviewWidth;
 		}
 
 		// A magic value because the sphere I have is too big.
@@ -178,6 +179,9 @@ namespace LunraGames.NoiseMaker
 			var fromRect = new Rect();
 			var targetIn = 0;
 
+			var wasMatrix = GUI.matrix;
+			GUI.matrix = Matrix4x4.TRS(new Vector3(3f - Layouts.NodeOptionsWidth, 0f), Quaternion.identity, Vector3.one);
+
 			BeginWindows();
 			{
 				var outDict = new Dictionary<string, Rect>();
@@ -293,6 +297,8 @@ namespace LunraGames.NoiseMaker
 					ResetConnections();
 				}
 			}
+
+			GUI.matrix = wasMatrix;
 		}
 
 
@@ -306,7 +312,7 @@ namespace LunraGames.NoiseMaker
 				else optionCategories.Add(option.Value.Details.Category, new List<EditorEntry>(new EditorEntry[] {option.Value}));
 			}
 
-			var area = new Rect(position.width - 240f, -1f, 8f, position.height - Layouts.PreviewHeight + 2f);
+			var area = new Rect(position.width - (Layouts.NodeOptionsWidth - 3f), -4f, 8f, position.height - (Layouts.PreviewHeight - 11f));
 			GUILayout.BeginArea(area);
 			{
 				GUILayout.Box(GUIContent.none, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
