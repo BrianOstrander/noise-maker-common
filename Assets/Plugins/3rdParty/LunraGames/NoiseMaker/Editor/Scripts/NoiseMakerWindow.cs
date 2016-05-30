@@ -56,7 +56,7 @@ namespace LunraGames.NoiseMaker
 		Mesh PreviewMesh;
 		Editor PreviewObjectEditor;
 
-		[MenuItem ("Window/Noise Maker")]
+		[MenuItem ("Window/Lunra Games/Noise Maker")]
 		static void Init () 
 		{
 			var window = EditorWindow.GetWindow(typeof (NoiseMakerWindow), false, "Noise Maker") as NoiseMakerWindow;
