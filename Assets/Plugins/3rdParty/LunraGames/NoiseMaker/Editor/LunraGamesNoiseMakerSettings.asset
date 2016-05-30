@@ -17,3 +17,7 @@ MonoBehaviour:
   Ico5VertexMesh: {fileID: 4300000, guid: 78443035bfcbc4c149ce328d212ccbae, type: 2}
   Ico4Face: {fileID: 174050, guid: 9871d5f344982455d9b7408791ee3dd6, type: 2}
   Ico4FaceMesh: {fileID: 4300000, guid: cbc424abf434748c383a34975b2574a0, type: 2}
+  AuthorTabPro: {fileID: 2800000, guid: 04dd56ef5ee724f76ac3e1c0e4e0999f, type: 3}
+  AuthorTabPeasant: {fileID: 2800000, guid: 6f2f3f58aa8b0431cb29b7f110fecaa4, type: 3}
+  PreviewTabPro: {fileID: 2800000, guid: 790c59b1094384858b4fc5aa08f61529, type: 3}
+  PreviewTabPeasant: {fileID: 2800000, guid: 790c59b1094384858b4fc5aa08f61529, type: 3}

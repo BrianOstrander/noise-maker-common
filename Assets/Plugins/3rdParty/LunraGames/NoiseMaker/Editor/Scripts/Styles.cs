@@ -254,7 +254,7 @@ namespace LunraGames.NoiseMaker
 				{
 					_NoPreviewLabel = new GUIStyle(EditorStyles.label);
 					_NoPreviewLabel.alignment = TextAnchor.MiddleCenter;
-					_NoPreviewLabel.fontSize = 58;
+					_NoPreviewLabel.fontSize = 48;
 					_NoPreviewLabel.fixedHeight = 128f;
 				}
 				return _NoPreviewLabel;

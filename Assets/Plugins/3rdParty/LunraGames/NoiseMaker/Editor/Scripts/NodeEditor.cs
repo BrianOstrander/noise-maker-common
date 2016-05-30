@@ -23,7 +23,7 @@ namespace LunraGames.NoiseMaker
 
 		public delegate Color CalculateColor(float value, VisualizationPreview previewer);
 
-		public static VisualizationPreview Previewer;
+		public static VisualizationPreview Previewer = Visualizations[0];
 
 		static List<VisualizationPreview> _Visualizations;
 

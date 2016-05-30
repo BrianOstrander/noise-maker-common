@@ -24,7 +24,7 @@ namespace LunraGames.NoiseMaker
 		}
 
 		// A magic value because the sphere I have is too big.
-		const float SphereScalar = 0.65f;
+		public const float SphereScalar = 0.65f;
 
 		enum States
 		{
@@ -60,6 +60,7 @@ namespace LunraGames.NoiseMaker
 		static void Init () 
 		{
 			var window = EditorWindow.GetWindow(typeof (NoiseMakerWindow), false, "Noise Maker") as NoiseMakerWindow;
+			window.titleContent = new GUIContent("Noise Maker", NoiseMakerConfig.Instance.AuthorTab);
 			window.Show();
 		}
 
@@ -593,7 +594,7 @@ namespace LunraGames.NoiseMaker
 		}
 		#endregion
 
-		Texture2D GetSphereTexture(IModule module, int height = 98)
+		public static Texture2D GetSphereTexture(IModule module, int height = 98)
 		{
 			var result = new Texture2D(height, height * 2);
 

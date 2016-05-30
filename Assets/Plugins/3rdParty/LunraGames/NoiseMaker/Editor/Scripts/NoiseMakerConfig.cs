@@ -21,6 +21,7 @@ namespace LunraGames.NoiseMaker
 
 		}
 
+		#region Elevation preview resources
 		public GameObject Ico4Vertex;
 		public Mesh Ico4VertexMesh;
 
@@ -29,5 +30,18 @@ namespace LunraGames.NoiseMaker
 
 		public GameObject Ico4Face;
 		public Mesh Ico4FaceMesh;
+		#endregion
+
+		#region Window tab icons
+		public Texture2D AuthorTab { get { return EditorGUIUtility.isProSkin ? AuthorTabPro : AuthorTabPeasant; } }
+
+		public Texture2D AuthorTabPro;
+		public Texture2D AuthorTabPeasant;
+
+		public Texture2D PreviewTab { get { return EditorGUIUtility.isProSkin ? PreviewTabPro : PreviewTabPeasant; } }
+
+		public Texture2D PreviewTabPro;
+		public Texture2D PreviewTabPeasant;
+		#endregion
 	}
 }
