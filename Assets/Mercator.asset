@@ -12,6 +12,4 @@ MonoBehaviour:
   m_Name: Mercator
   m_EditorClassIdentifier: 
   MercatorJson: '{"$type":"LunraGames.NoiseMaker.Mercator, Assembly-CSharp-firstpass","Latitudes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Latitude,
-    Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.Latitude,
-    Assembly-CSharp-firstpass","Id":null,"Altitudes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Altitude,
-    Assembly-CSharp-firstpass]], mscorlib","$values":[]}}]}}'
+    Assembly-CSharp-firstpass]], mscorlib","$values":[]}}'

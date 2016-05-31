@@ -164,10 +164,26 @@ namespace LunraGames.NoiseMaker
 					_OptionButton = new GUIStyle(EditorStyles.miniButtonRight);
 					_OptionButton.alignment = TextAnchor.MiddleLeft;
 					_OptionButton.fontSize = 16;
-					_OptionButton.fixedHeight = 24f;
 				}
 
 				return _OptionButton;
+			}
+		}
+
+		static GUIStyle _ToolbarButtonLeft;
+
+		public static GUIStyle ToolbarButtonLeft
+		{
+			get
+			{
+				if (_ToolbarButtonLeft == null)
+				{
+					_ToolbarButtonLeft = new GUIStyle(EditorStyles.miniButtonLeft);
+					_ToolbarButtonLeft.alignment = TextAnchor.MiddleCenter;
+					_ToolbarButtonLeft.fontSize = 18;
+				}
+
+				return _ToolbarButtonLeft;
 			}
 		}
 
@@ -182,7 +198,6 @@ namespace LunraGames.NoiseMaker
 					_ToolbarButtonMiddle = new GUIStyle(EditorStyles.miniButtonMid);
 					_ToolbarButtonMiddle.alignment = TextAnchor.MiddleCenter;
 					_ToolbarButtonMiddle.fontSize = 18;
-					_ToolbarButtonMiddle.fixedHeight = 24f;
 				}
 
 				return _ToolbarButtonMiddle;

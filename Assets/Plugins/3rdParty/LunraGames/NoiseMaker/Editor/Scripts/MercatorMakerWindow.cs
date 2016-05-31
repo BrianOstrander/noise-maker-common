@@ -13,6 +13,7 @@ namespace LunraGames.NoiseMaker
 		public class Layouts
 		{
 			public const float PreviewHeight = 256f;
+			public const float LatitudeEntryHeight = 64f;
 		}
 
 		enum States
@@ -177,32 +178,45 @@ namespace LunraGames.NoiseMaker
 				GUILayout.FlexibleSpace();
 				return;
 			}
+
+			if (GUILayout.Button("+", Styles.ToolbarButtonMiddle)) Mercator.Latitudes.Insert(0, new Latitude());
+
 			LatitudesScrollPosition = GUILayout.BeginScrollView(new Vector2(0f, LatitudesScrollPosition.y), false, true);
 			{
-				foreach(var latitude in Mercator.Latitudes)
+				int? deletedIndex = null;
+
+				for(var i = 0; i < Mercator.Latitudes.Count; i++)
 				{
-					var unmodifiedLatitude = latitude;
-					GUILayout.BeginHorizontal(GUILayout.Height(128f));
+					var unmodifiedI = i;
+					var latitude = Mercator.Latitudes[i];
+					GUILayout.BeginHorizontal();
 					{
-						GUILayout.BeginVertical(GUILayout.Width(64f));
+						if (GUILayout.Button("Copy", Styles.ToolbarButtonLeft, GUILayout.Width(64f), GUILayout.Height(Layouts.LatitudeEntryHeight)))
 						{
-							if (GUILayout.Button("^", GUILayout.ExpandHeight(true)))
-							{
 
-							}
-							if (GUILayout.Button("v", GUILayout.ExpandHeight(true)))
-							{
-
-							}
 						}
-						GUILayout.EndVertical();
 
+						if (GUILayout.Button("Entry", Styles.ToolbarButtonMiddle, GUILayout.ExpandWidth(true), GUILayout.Height(Layouts.LatitudeEntryHeight)))
+						{
+
+						}
+
+						if (GUILayout.Button("X", EditorStyles.miniButtonRight, GUILayout.Width(32f), GUILayout.Height(Layouts.LatitudeEntryHeight))) deletedIndex = unmodifiedI;
 					}
 					GUILayout.EndHorizontal();
 				}
 				GUILayout.FlexibleSpace();
+
+				if (deletedIndex.HasValue) 
+				{
+					if (SelectedIndex == deletedIndex.Value) SelectedIndex = -1;
+					Mercator.Latitudes.RemoveAt(deletedIndex.Value);
+				}
+
 			}
 			GUILayout.EndScrollView();
+
+			if (GUILayout.Button("+", Styles.ToolbarButtonMiddle)) Mercator.Latitudes.Add(new Latitude());
 		}
 
 		void DrawLatitudeEditor()
