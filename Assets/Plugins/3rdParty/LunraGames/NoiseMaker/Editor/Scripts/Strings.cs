@@ -2,6 +2,8 @@
 {
 	public class Strings
 	{
+		public const string Default = "Default";
+
 		public const string Generators = "Generators";
 		public const string Combiners = "Combiners";
 		public const string Modifiers = "Modifiers";

@@ -34,14 +34,22 @@ namespace LunraGames.NoiseMaker
 
 		#region Window tab icons
 		public Texture2D AuthorTab { get { return EditorGUIUtility.isProSkin ? AuthorTabPro : AuthorTabPeasant; } }
-
-		public Texture2D AuthorTabPro;
-		public Texture2D AuthorTabPeasant;
+		[SerializeField]
+		Texture2D AuthorTabPro;
+		[SerializeField]
+		Texture2D AuthorTabPeasant;
 
 		public Texture2D PreviewTab { get { return EditorGUIUtility.isProSkin ? PreviewTabPro : PreviewTabPeasant; } }
+		[SerializeField]
+		Texture2D PreviewTabPro;
+		[SerializeField]
+		Texture2D PreviewTabPeasant;
 
-		public Texture2D PreviewTabPro;
-		public Texture2D PreviewTabPeasant;
+		public Texture2D MercatorTab { get { return EditorGUIUtility.isProSkin ? MercatorTabPro : MercatorTabPeasant; } }
+		[SerializeField]
+		Texture2D MercatorTabPro;
+		[SerializeField]
+		Texture2D MercatorTabPeasant;
 		#endregion
 	}
 }

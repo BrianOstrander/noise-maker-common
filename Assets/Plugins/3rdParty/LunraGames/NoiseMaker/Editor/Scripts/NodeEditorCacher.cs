@@ -8,9 +8,9 @@ namespace LunraGames.NoiseMaker
 	[InitializeOnLoad]
 	sealed class NodeEditorCacher : Editor 
 	{
-		static Dictionary<Type, EditorEntry> _Editors = new Dictionary<Type, EditorEntry>();
+		static Dictionary<Type, NodeEditorEntry> _Editors = new Dictionary<Type, NodeEditorEntry>();
 
-		internal static Dictionary<Type, EditorEntry> Editors { get { return new Dictionary<Type, EditorEntry>(_Editors); }}
+		internal static Dictionary<Type, NodeEditorEntry> Editors { get { return new Dictionary<Type, NodeEditorEntry>(_Editors); }}
 
 		static NodeEditorCacher()
 		{
@@ -19,7 +19,7 @@ namespace LunraGames.NoiseMaker
 
 		static void Refresh()
 		{
-			_Editors = new Dictionary<Type, EditorEntry>();
+			_Editors = new Dictionary<Type, NodeEditorEntry>();
 			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 			foreach (var assembly in assemblies)
 			{
@@ -35,7 +35,7 @@ namespace LunraGames.NoiseMaker
 							continue;
 						}
 						var attribute = attributes[0] as NodeDrawer;
-						_Editors.Add(attribute.Target, new EditorEntry { Details = attribute, Editor = Activator.CreateInstance(type) as NodeEditor } );
+						_Editors.Add(attribute.Target, new NodeEditorEntry { Details = attribute, Editor = Activator.CreateInstance(type) as NodeEditor } );
 					}
 				}
 			}

@@ -1,6 +1,6 @@
 ﻿namespace LunraGames.NoiseMaker
 {
-	public class EditorEntry
+	public class NodeEditorEntry
 	{
 		public NodeDrawer Details;
 		public NodeEditor Editor;

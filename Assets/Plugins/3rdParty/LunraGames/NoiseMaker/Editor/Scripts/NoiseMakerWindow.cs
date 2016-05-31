@@ -305,12 +305,12 @@ namespace LunraGames.NoiseMaker
 
 		void DrawNodeOptions()
 		{
-			var optionCategories = new Dictionary<string, List<EditorEntry>>();
+			var optionCategories = new Dictionary<string, List<NodeEditorEntry>>();
 
 			foreach (var option in NodeEditorCacher.Editors)
 			{
 				if (optionCategories.ContainsKey(option.Value.Details.Category)) optionCategories[option.Value.Details.Category].Add(option.Value);
-				else optionCategories.Add(option.Value.Details.Category, new List<EditorEntry>(new EditorEntry[] {option.Value}));
+				else optionCategories.Add(option.Value.Details.Category, new List<NodeEditorEntry>(new NodeEditorEntry[] {option.Value}));
 			}
 
 			var area = new Rect(position.width - (Layouts.NodeOptionsWidth - 3f), -4f, 8f, position.height - (Layouts.PreviewHeight - 11f));

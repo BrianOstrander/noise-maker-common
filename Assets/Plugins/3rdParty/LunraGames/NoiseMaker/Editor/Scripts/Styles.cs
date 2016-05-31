@@ -335,5 +335,23 @@ namespace LunraGames.NoiseMaker
 				return _PreviewBackground;
 			}
 		}
+
+		static GUIStyle _CreateFirstLatitudeButton;
+
+		public static GUIStyle CreateFirstLatitudeButton
+		{
+			get
+			{
+				if (_CreateFirstLatitudeButton == null)
+				{
+					_CreateFirstLatitudeButton = new GUIStyle(GUI.skin.button);
+					_CreateFirstLatitudeButton.alignment = TextAnchor.MiddleCenter;
+					_CreateFirstLatitudeButton.fontSize = 32;
+					_CreateFirstLatitudeButton.fixedHeight = 98f;
+				}
+
+				return _CreateFirstLatitudeButton;
+			}
+		}
 	}
 }
