@@ -202,7 +202,11 @@ namespace LunraGames.NoiseMaker
 
 						}
 
-						if (GUILayout.Button("Entry", Styles.ToolbarButtonMiddle, GUILayout.ExpandWidth(true), GUILayout.Height(Layouts.LatitudeEntryHeight))) SelectedIndex = unmodifiedI;
+						if (GUILayout.Button("Entry", Styles.ToolbarButtonMiddle, GUILayout.ExpandWidth(true), GUILayout.Height(Layouts.LatitudeEntryHeight))) 
+						{
+							if (SelectedIndex == unmodifiedI) SelectedIndex = -1;
+							else SelectedIndex = unmodifiedI;
+						}
 
 						if (GUILayout.Button("X", EditorStyles.miniButtonRight, GUILayout.Width(32f), GUILayout.Height(Layouts.LatitudeEntryHeight))) deletedIndex = unmodifiedI;
 					}
@@ -227,7 +231,7 @@ namespace LunraGames.NoiseMaker
 
 		void DrawLatitudeEditor()
 		{
-			if (Selected != null)
+			if (Selected == null)
 			{
 				GUILayout.Box("No Latitude Selected");
 				return;
