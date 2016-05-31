@@ -36,7 +36,7 @@ namespace LunraGames.NoiseMaker
 		{
 			get 
 			{
-				if (SelectedIndex < 0 || Mercator == null || Mercator.Latitudes == null || Mercator.Latitudes.Count == 0) return null;
+				if (SelectedIndex < 0 || Mercator == null || Mercator.Latitudes == null || Mercator.Latitudes.Count == 0 || Mercator.Latitudes.Count <= SelectedIndex) return null;
 				return Mercator.Latitudes[SelectedIndex];
 			}
 		}
@@ -179,7 +179,11 @@ namespace LunraGames.NoiseMaker
 				return;
 			}
 
-			if (GUILayout.Button("+", Styles.ToolbarButtonMiddle)) Mercator.Latitudes.Insert(0, new Latitude());
+			if (GUILayout.Button("+", Styles.ToolbarButtonMiddle)) 
+			{
+				Mercator.Latitudes.Insert(0, new Latitude());
+				if (SelectedIndex != -1) SelectedIndex++;
+			}
 
 			LatitudesScrollPosition = GUILayout.BeginScrollView(new Vector2(0f, LatitudesScrollPosition.y), false, true);
 			{
@@ -187,6 +191,8 @@ namespace LunraGames.NoiseMaker
 
 				for(var i = 0; i < Mercator.Latitudes.Count; i++)
 				{
+					if (SelectedIndex == i) GUI.color = Color.magenta;
+
 					var unmodifiedI = i;
 					var latitude = Mercator.Latitudes[i];
 					GUILayout.BeginHorizontal();
@@ -196,20 +202,20 @@ namespace LunraGames.NoiseMaker
 
 						}
 
-						if (GUILayout.Button("Entry", Styles.ToolbarButtonMiddle, GUILayout.ExpandWidth(true), GUILayout.Height(Layouts.LatitudeEntryHeight)))
-						{
-
-						}
+						if (GUILayout.Button("Entry", Styles.ToolbarButtonMiddle, GUILayout.ExpandWidth(true), GUILayout.Height(Layouts.LatitudeEntryHeight))) SelectedIndex = unmodifiedI;
 
 						if (GUILayout.Button("X", EditorStyles.miniButtonRight, GUILayout.Width(32f), GUILayout.Height(Layouts.LatitudeEntryHeight))) deletedIndex = unmodifiedI;
 					}
 					GUILayout.EndHorizontal();
+
+					GUI.color = Color.white;
 				}
 				GUILayout.FlexibleSpace();
 
 				if (deletedIndex.HasValue) 
 				{
 					if (SelectedIndex == deletedIndex.Value) SelectedIndex = -1;
+					if (deletedIndex.Value < SelectedIndex && SelectedIndex != -1) SelectedIndex--;
 					Mercator.Latitudes.RemoveAt(deletedIndex.Value);
 				}
 
