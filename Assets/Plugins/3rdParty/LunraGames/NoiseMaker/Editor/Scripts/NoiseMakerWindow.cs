@@ -23,7 +23,7 @@ namespace LunraGames.NoiseMaker
 			public const float PreviewHeight = PreviewWidth;
 		}
 
-		// A magic value because the sphere I have is too big.
+		// todo: Make this dynamic and settable in editor
 		public const float SphereScalar = 0.65f;
 
 		enum States
@@ -56,7 +56,7 @@ namespace LunraGames.NoiseMaker
 		Mesh PreviewMesh;
 		Editor PreviewObjectEditor;
 
-		[MenuItem ("Window/Lunra Games/Noise Maker")]
+		[MenuItem ("Window/Lunra Games/Noise Maker/Editor")]
 		static void Init () 
 		{
 			var window = EditorWindow.GetWindow(typeof (NoiseMakerWindow), false, "Noise Maker") as NoiseMakerWindow;
@@ -69,6 +69,7 @@ namespace LunraGames.NoiseMaker
 		{
 			try 
 			{
+				// If we're opening the editor from a cold start, and it looks like the user was editing something, load it.
 				if (State == States.Idle && Graph == null && !StringExtensions.IsNullOrWhiteSpace(SavePath))
 				{
 					var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
@@ -82,14 +83,15 @@ namespace LunraGames.NoiseMaker
 					if (NodeEditor.Previewer == null) NodeEditor.Previewer = NodeEditor.Visualizations[Visualization];
 					DrawGraph();
 					DrawVisualizationOptions();
+					// Reset back to splash.
 					if (GUI.Button(new Rect(Layouts.VisualizationOptionsWidth, 0f, 128f, 24f), "Reset", Styles.ToolbarButtonMiddle)) Reset();
-					if (GUI.Button(new Rect(Layouts.VisualizationOptionsWidth + 128f, 0f, 128f, 24f), "Save", Styles.ToolbarButtonRight)) 
-					{
-						Save();
-					}
+					// Save active file.
+					if (GUI.Button(new Rect(Layouts.VisualizationOptionsWidth + 128f, 0f, 128f, 24f), "Save", Styles.ToolbarButtonRight)) Save();
+
 					DrawNodeOptions();
 					DrawPreview();
 
+					// Detect if they're dragging or scrolling around.
 					if (Event.current != null && Event.current.isMouse && Event.current.button == 0)
 					{
 						GraphPosition += new Vector3(Event.current.delta.x, Event.current.delta.y);
@@ -121,6 +123,9 @@ namespace LunraGames.NoiseMaker
 		void OnProjectChange() { Save(); }
 		#endregion
 
+		/// <summary>
+		/// Draws the splash.
+		/// </summary>
 		void DrawSplash ()
 		{
 			GUILayout.FlexibleSpace();
@@ -132,11 +137,13 @@ namespace LunraGames.NoiseMaker
 					GUILayout.Label("Welcome to Noise Maker!");
 					GUILayout.BeginHorizontal();
 					{
+						// Create new Noise Maker graph file.
 						if (GUILayout.Button("New")) 
 						{
 							var savePath = UnityEditor.EditorUtility.SaveFilePanelInProject("New Noise Graph", "Noise", "asset", null);
 							if (!StringExtensions.IsNullOrWhiteSpace(savePath))
 							{
+								// Create default save, add required root node, save it, and open it up for editing.
 								SavePath = savePath;
 								var config = NoiseGraph.CreateInstance<NoiseGraph>();
 								AssetDatabase.CreateAsset(config, SavePath);
@@ -149,6 +156,7 @@ namespace LunraGames.NoiseMaker
 								State = States.Idle;
 							}
 						}
+						// Open existing Noise Maker graph file
 						if (GUILayout.Button("Open"))
 						{
 							var openPath = UnityEditor.EditorUtility.OpenFilePanel("Open Noise Graph", Application.dataPath, "asset");
@@ -156,6 +164,7 @@ namespace LunraGames.NoiseMaker
 							{
 								if (openPath.StartsWith(Application.dataPath))
 								{
+									// Open up existing file for editing.
 									SavePath = "Assets"+openPath.Substring(Application.dataPath.Length);
 									var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
 									Graph = config.GraphInstantiation;
@@ -174,17 +183,25 @@ namespace LunraGames.NoiseMaker
 			GUILayout.FlexibleSpace();
 		}
 
+		/// <summary>
+		/// Draws the graph containing all the nodes and connections for the file currently being edited.
+		/// </summary>
 		void DrawGraph ()
 		{
+			// Cache connecting from so we know if the user just clicked on a node, or deselected it by clicking the background of the graph.
 			var connectingFromWas = ConnectingFrom;
+			// Use this to determine the start point of the connection when the user's mouse is moving around with it.
 			var fromRect = new Rect();
+			// Index to assign the ConnectingFrom node to.
 			var targetIn = 0;
 
+			// Shift the GUI over so the windows don't draw under the node option area to the right of the editor.
 			var wasMatrix = GUI.matrix;
 			GUI.matrix = Matrix4x4.TRS(new Vector3(3f - Layouts.NodeOptionsWidth, 0f), Quaternion.identity, Vector3.one);
 
 			BeginWindows();
 			{
+				// Cache the out and in connection points because we want to draw lines between the connected ones after the node windows.
 				var outDict = new Dictionary<string, Rect>();
 				var inDict = new Dictionary<string, List<Rect>>();
 
@@ -196,7 +213,7 @@ namespace LunraGames.NoiseMaker
 					var unmodifiedNode = node;
 					var drawer = NodeEditorCacher.Editors[unmodifiedNode.GetType()];
 					var windowRect = new Rect(unmodifiedNode.EditorPosition + graphPos, new Vector2(216f, 77f));
-
+					// Checks if this node has inputs we need to draw.
 					if (unmodifiedNode.SourceIds != null && 0 < unmodifiedNode.SourceIds.Count)
 					{
 						var inputs = new List<NodeIo>();
@@ -204,11 +221,14 @@ namespace LunraGames.NoiseMaker
 						for (var i = 0; i < unmodifiedNode.SourceIds.Count; i++)
 						{
 							var unmodifiedI = i;
+
 							inputs.Add(new NodeIo 
 							{
 								Active = !StringExtensions.IsNullOrWhiteSpace(unmodifiedNode.SourceIds[unmodifiedI]),
 								OnClick = () => 
 								{
+									// When a node's input is clicked, cache what was clicked and the index of the input, 
+									// unless it already has a connection, then delete that connection.
 									if (StringExtensions.IsNullOrWhiteSpace(unmodifiedNode.SourceIds[unmodifiedI]))
 									{
 										ConnectingTo = unmodifiedNode;
@@ -222,9 +242,10 @@ namespace LunraGames.NoiseMaker
 								}
 							});
 						}
+						// DrawInputs does what it sounds like, then returns a list of their positions.
 						inDict.Add(unmodifiedNode.Id, drawer.Editor.DrawInputs(windowRect, inputs.ToArray()));
 					}
-
+					// A single rect is returned when drawing an output: its position.
 					var outRect = drawer.Editor.DrawOutput(
 						windowRect,
 						new NodeIo 
@@ -235,11 +256,11 @@ namespace LunraGames.NoiseMaker
 					);
 					outDict.Add(unmodifiedNode.Id, outRect);
 					if (ConnectingFrom == unmodifiedNode) fromRect = outRect;
-
+					// Can't delete the root node, so don't show the delete button.
 					if (!(unmodifiedNode is RootNode) && drawer.Editor.DrawCloseControl(windowRect)) deletedNode = unmodifiedNode;
 
 					GUI.color = unmodifiedNode is RootNode ? Color.cyan : Color.white;
-
+					// Draw the node and cache its position incase it got dragged around.
 					windowRect = GUILayout.Window(unmodifiedNode.Id.GetHashCode(), windowRect, id =>
 					{
 						try
@@ -258,7 +279,7 @@ namespace LunraGames.NoiseMaker
 
 					unmodifiedNode.EditorPosition = windowRect.position - graphPos;
 				}
-
+				// Loop through the nodes and draw any connections between them.
 				foreach (var node in Graph.Nodes)
 				{
 					if (node.SourceIds == null || node.SourceIds.Count == 0) continue;
@@ -275,13 +296,13 @@ namespace LunraGames.NoiseMaker
 						DrawCurve(outRect, inRects[i]);
 					}
 				}
-
+				// Delete the node now, since we know it won't cause any null reference exceptions.
 				if (deletedNode != null) Graph.Remove(deletedNode);
 			}
 	        EndWindows();
-
+	        // If the user clicks the background of the graph area, it cancels the process of connecting nodes.
 			if (connectingFromWas != null && Event.current.rawType == EventType.mouseUp && ConnectingTo == null) ResetConnections();
-
+			// Draw the node that's following the cursor around if the user is currently connecting nodes.
 			if (ConnectingFrom != null)
 			{
 				if (ConnectingTo == null)
@@ -298,21 +319,25 @@ namespace LunraGames.NoiseMaker
 					ResetConnections();
 				}
 			}
-
+			// Shift the gui back to where it was.
 			GUI.matrix = wasMatrix;
 		}
 
-
+		/// <summary>
+		/// Draws the node spawning area to the right of the editor.
+		/// </summary>
 		void DrawNodeOptions()
 		{
 			var optionCategories = new Dictionary<string, List<NodeEditorEntry>>();
-
+			// Go through and add all nodes to the appropriate category. 
 			foreach (var option in NodeEditorCacher.Editors)
 			{
 				if (optionCategories.ContainsKey(option.Value.Details.Category)) optionCategories[option.Value.Details.Category].Add(option.Value);
-				else optionCategories.Add(option.Value.Details.Category, new List<NodeEditorEntry>(new NodeEditorEntry[] {option.Value}));
+				else optionCategories.Add(option.Value.Details.Category, new List<NodeEditorEntry>(new [] {option.Value}));
 			}
 
+			// todo: remove hacks below for layout when I get around to making a proper GUISkin for the editor.
+			// hacks start
 			var area = new Rect(position.width - (Layouts.NodeOptionsWidth - 3f), -4f, 8f, position.height - (Layouts.PreviewHeight - 11f));
 			GUILayout.BeginArea(area);
 			{
@@ -323,12 +348,15 @@ namespace LunraGames.NoiseMaker
 			area.y += 1f;
 			area.height -= 2f;
 			area.width = 232f;
+			// hacks end
+
 			GUILayout.BeginArea(area, Styles.OptionBox);
 			{
 				NodeOptionsScrollPosition = GUILayout.BeginScrollView(new Vector2(0f, NodeOptionsScrollPosition.y));
 				{
 					foreach(var category in optionCategories) 
 					{
+						// Special nodes like the root are not spawnable.
 						if (category.Key == Strings.Hidden) continue;
 
 						if (!ShownCategories.ContainsKey(category.Key)) ShownCategories.Add(category.Key, true);
@@ -339,7 +367,9 @@ namespace LunraGames.NoiseMaker
 						{
 							GUILayout.BeginHorizontal();
 							{
+								// Add a nice little margin
 								GUILayout.Box(GUIContent.none, EditorStyles.miniButtonLeft, GUILayout.Width(16f), GUILayout.ExpandHeight(true));
+								// Start drawing the actual options
 								GUILayout.BeginVertical();
 								{
 									foreach (var option in category.Value)
@@ -365,8 +395,12 @@ namespace LunraGames.NoiseMaker
 			GUILayout.EndArea();
 		}
 
+		/// <summary>
+		/// Draws the visualization area on the top left side of the editor.
+		/// </summary>
 		void DrawVisualizationOptions()
 		{
+			// Little lambda for drawing the button in the appropriate place.
 			var drawToggler = new Action<float, float>((x, y) =>
 			{
 				var toggled = GUI.Button(new Rect(x, y, Layouts.VisualizationOptionsWidth, Layouts.VisualizationOptionsHeight), VisualizationShown ? "Close Visualizations" : "Open Visualizations", Styles.VisualizationToggle);
@@ -393,6 +427,7 @@ namespace LunraGames.NoiseMaker
 					Visualization = GUILayout.Toolbar(Visualization, optionNames.ToArray());
 					if (oldVisualization != Visualization || NodeEditor.Previewer == null) 
 					{	
+						// User has selected a new visualization option.
 						NodeEditor.Previewer = options[Visualization];
 						Repaint();
 					}
@@ -416,6 +451,9 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
+		/// <summary>
+		/// Draws the preview area on the lower right side of the editor.
+		/// </summary>
 		void DrawPreview()
 		{
 			var area = new Rect(position.width - Layouts.PreviewWidth, position.height - Layouts.PreviewHeight, Layouts.PreviewWidth, Layouts.PreviewHeight);
@@ -444,6 +482,7 @@ namespace LunraGames.NoiseMaker
 							{
 								if (GUILayout.Button(keys[i], i == PreviewSelected ? Styles.PreviewToolbarSelected : Styles.PreviewToolbar) && PreviewSelected != i) 
 								{
+									// When previews change, we reset any cached info.
 									PreviewSelected = i;
 									PreviewLastUpdated = 0L;
 									PreviewObjectEditor = null;
@@ -452,13 +491,15 @@ namespace LunraGames.NoiseMaker
 							}
 						}
 						GUILayout.EndHorizontal();
-
+						// todo: remove the magic numbers below
 						var previewArea = new Rect(14f, 24f, area.width - 14f, area.height - 24f);
+
 						GUILayout.BeginArea(previewArea);
 						{
 							var rootNode = Graph == null ? null : Graph.Nodes.FirstOrDefault(n => n.Id == Graph.RootId);
 							if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()) || rootNode.GetModule(Graph.Nodes) == null)
 							{
+								// A proper root with a source hasn't been defined.
 								GUILayout.FlexibleSpace();
 								GUILayout.BeginHorizontal();
 								{
@@ -479,20 +520,19 @@ namespace LunraGames.NoiseMaker
 				GUILayout.EndHorizontal();
 			}
 			GUILayout.EndArea();
-			/*
-			GUILayout.BeginArea(area);
-			{
-				
-				//GUILayout.Box(GUIContent.none, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
-			}
-			GUILayout.EndArea();
-			*/
 		}
 
 		#region Previews
+		/// <summary>
+		/// Draws the flat preview.
+		/// </summary>
+		/// <param name="node">Node to draw, typically the root.</param>
+		/// <param name="area">Area the editor should take up.</param>
 		void DrawFlatPreview(Node node, Rect area)
 		{
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
+			// todo: remove these duplicate update checks.
+			// Check if node has been updated since the last time we had drawn it.
 			if (lastUpdate != PreviewLastUpdated) 
 			{
 				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)area.width, (int)area.height);
@@ -503,6 +543,7 @@ namespace LunraGames.NoiseMaker
 				{
 					for (var y = 0; y < PreviewTexture.height; y++)
 					{
+						// Get the value from the specified location, and run it through the selected previewer. 
 						var value = (float)module.GetValue((double)x, (double)y, 0.0);
 						pixels[(PreviewTexture.width * y) + x] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 					}
@@ -517,11 +558,19 @@ namespace LunraGames.NoiseMaker
 			GUI.DrawTexture(new Rect(2f, 2f, PreviewTexture.width - 4f, PreviewTexture.height -4f), PreviewTexture);
 		}
 
+		/// <summary>
+		/// Draws the sphere preview.
+		/// </summary>
+		/// <param name="node">Node to draw, typically the root.</param>
+		/// <param name="area">Area the editor should take up.</param>
 		void DrawSpherePreview(Node node, Rect area)
 		{
+			// Reset mesh, incase another preview has modified it.
 			NoiseMakerConfig.Instance.Ico4Vertex.GetComponent<MeshFilter>().sharedMesh = NoiseMakerConfig.Instance.Ico4VertexMesh;
 
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
+			// todo: remove these duplicate update checks.
+			// Check if node has been updated since the last time we had drawn it.
 			if (lastUpdate != PreviewLastUpdated) 
 			{
 				PreviewTexture = GetSphereTexture(node.GetModule(Graph.Nodes));
@@ -530,8 +579,9 @@ namespace LunraGames.NoiseMaker
 
 				Repaint();
 			}
+			// Reset material
 			var mat = NoiseMakerConfig.Instance.Ico4Vertex.GetComponent<MeshRenderer>().sharedMaterial;
-
+			// If material hasn't been set, set it.
 			if (mat.mainTexture != PreviewTexture)
 			{
 				mat.mainTexture = PreviewTexture;
@@ -539,18 +589,26 @@ namespace LunraGames.NoiseMaker
 			}
 
 			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico4Vertex);
-
+			// Draw interactable preview.
 			PreviewObjectEditor.OnPreviewGUI(new Rect(1f, 0f, area.width - 1f, area.height), Styles.OptionBox);
 		}
 
+		/// <summary>
+		/// Draws the elevation preview.
+		/// </summary>
+		/// <param name="node">Node to draw, typically the root.</param>
+		/// <param name="area">Area the editor should take up.</param>
 		void DrawElevationPreview(Node node, Rect area)
 		{
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
+			// todo: remove these duplicate update checks.
+			// Check if node has been updated since the last time we had drawn it.
 			if (lastUpdate != PreviewLastUpdated) 
 			{
+				// Reset mesh
 				NoiseMakerConfig.Instance.Ico5Vertex.GetComponent<MeshFilter>().sharedMesh = NoiseMakerConfig.Instance.Ico5VertexMesh;
 
-				if (PreviewMesh == null) PreviewMesh = (Mesh)Instantiate(NoiseMakerConfig.Instance.Ico5VertexMesh);
+				if (PreviewMesh == null) PreviewMesh = Instantiate(NoiseMakerConfig.Instance.Ico5VertexMesh);
 
 				var module = node.GetModule(Graph.Nodes);
 				var sphere = new Sphere(module);
@@ -559,6 +617,7 @@ namespace LunraGames.NoiseMaker
 				var newVerts = new Vector3[verts.Length];
 				for (var i = 0; i < verts.Length; i++)
 				{
+					// Get the value of the specified vert, by converting it's euler position to a latitude and longitude.
 					var vert = verts[i];
 					var latLong = SphereUtils.CartesianToPolar(vert.normalized);
 					newVerts[i] = (vert.normalized * SphereScalar) + (vert.normalized * (float)sphere.GetValue(latLong.x, latLong.y) * 0.1f);
@@ -589,11 +648,17 @@ namespace LunraGames.NoiseMaker
 			}
 
 			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico5Vertex);
-
+			// Draw interactable preview.
 			PreviewObjectEditor.OnPreviewGUI(new Rect(1f, 0f, area.width - 1f, area.height), Styles.OptionBox);
 		}
 		#endregion
 
+		/// <summary>
+		/// Gets the sphere projected texture, a simple heightmap using the active previewer.
+		/// </summary>
+		/// <returns>The sphere texture.</returns>
+		/// <param name="module">Module to get the texture from.</param>
+		/// <param name="height">Height.</param>
 		public static Texture2D GetSphereTexture(IModule module, int height = 98)
 		{
 			var result = new Texture2D(height, height * 2);
@@ -616,6 +681,9 @@ namespace LunraGames.NoiseMaker
 			return result;
 		}
 
+		/// <summary>
+		/// Reset editor to splash.
+		/// </summary>
 		void Reset()
 		{
 			State = States.Splash;
@@ -626,6 +694,9 @@ namespace LunraGames.NoiseMaker
 			ResetConnections();
 		}
 
+		/// <summary>
+		/// Resets the active connections.
+		/// </summary>
 		void ResetConnections()
 		{
 			ConnectingFrom = null;
@@ -633,6 +704,9 @@ namespace LunraGames.NoiseMaker
 			Repaint();
 		}
 
+		/// <summary>
+		/// Save the current file being edited.
+		/// </summary>
 		void Save()
 		{
 			if (State != States.Idle || Graph == null) return;
@@ -644,18 +718,30 @@ namespace LunraGames.NoiseMaker
 			AssetDatabase.Refresh();
 		}
 
+		/// <summary>
+		/// Draws a bezier curve with a shadow.
+		/// </summary>
+		/// <remarks>
+		/// This snippet taken from a Unity Answers question.
+		/// </remarks>
+		/// <param name="start">Start.</param>
+		/// <param name="end">End.</param>
 		void DrawCurve(Rect start, Rect end)
 		{
-			Vector3 startPos = new Vector3(start.x + start.width, start.y + start.height / 2, 0);      
-	        Vector3 endPos = new Vector3(end.x, end.y + end.height / 2, 0);    
-	        Vector3 startTan = startPos + Vector3.right * 50;      
-	        Vector3 endTan = endPos + Vector3.left * 50;       
-	        Color shadowCol = new Color(0, 0, 0, 0.06f);       
+			Vector3 startPos = new Vector3(start.x + start.width, start.y + start.height / 2f, 0f);      
+	        Vector3 endPos = new Vector3(end.x, end.y + end.height / 2f, 0f);    
+	        Vector3 startTan = startPos + Vector3.right * 50f;      
+	        Vector3 endTan = endPos + Vector3.left * 50f;       
+	        Color shadowCol = new Color(0f, 0f, 0f, 0.06f);       
 			// Draw a shadow 
 	        for (int i = 0; i < 3; i++) Handles.DrawBezier(startPos, endPos, startTan, endTan, shadowCol, null, (i + 1) * 5);      
 	        Handles.DrawBezier(startPos, endPos, startTan, endTan, Color.black, null, 1);      
     	}  
 
+    	/// <summary>
+    	/// Gets the current center of the graph, from the users perspective.
+    	/// </summary>
+    	/// <returns>The center.</returns>
     	Vector2 GraphCenter()
     	{
 			return new Vector2(-(GraphPosition.x - (position.width * 0.3f)), -(GraphPosition.y - (position.height * 0.3f)));

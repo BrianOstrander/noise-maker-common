@@ -7,11 +7,10 @@ namespace LunraGames.CuteQueries
 {
     public class CuteQueries
     {
-        public static void Log(string query, string response, Dictionary<string, string> headers)
+        public static void Log(string query, string response, Dictionary<string, string> headers, bool colorize = false)
         {
             try
             {
-            	var colorize = false;// Application.isEditor;
             	var colorizeResponse = colorize && Application.HasProLicense();
                 string message = query + "\n";
                 if (colorize) message += "<color=green>~~~~ Header ~~~~</color>\n";

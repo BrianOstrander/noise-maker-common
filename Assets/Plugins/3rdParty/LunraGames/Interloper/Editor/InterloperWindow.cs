@@ -82,29 +82,17 @@ namespace LunraGames.Interloper
 
 		internal static bool IsDirty;
 
-		[NonSerialized]
 		bool EditingEntry;
-		[NonSerialized]
 		Assembly[] BrowsingAssemblies;
-		[NonSerialized]
 		List<string> BrowsingAssemblyNames;
-		[NonSerialized]
 		int SelectedAssembly;
-		[NonSerialized]
 		Type[] BrowsingTypes;
-		[NonSerialized]
 		List<string> BrowsingTypeNames;
-		[NonSerialized]
 		int SelectedType;
-		[NonSerialized]
 		List<string> BrowsingReflectedTypeNames;
-		[NonSerialized]
 		int SelectedReflectedType;
-		[NonSerialized]
 		object[] Infos;
-		[NonSerialized]
 		List<string> InfoNames;
-		[NonSerialized]
 		int SelectedInfo;
 
 		[SerializeField]
@@ -117,7 +105,7 @@ namespace LunraGames.Interloper
 			EditorApplication.update += InterloperUpdate;
 		}
 
-		[MenuItem ("Window/Interloper")]
+		[MenuItem ("Window/Lunra Games/Interloper")]
 		static void Init () {
 			var window = EditorWindow.GetWindow(typeof (InterloperWindow), false, "Interloper") as InterloperWindow;
 			window.Show();

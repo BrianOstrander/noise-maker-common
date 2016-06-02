@@ -7,6 +7,7 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
+	// todo: make a proper GUISkin file for these, instead of these hacks.
 	public class Styles
 	{
 		static GUIStyle _BoxButton;

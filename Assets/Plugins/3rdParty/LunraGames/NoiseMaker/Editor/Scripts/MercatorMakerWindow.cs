@@ -41,7 +41,7 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		[MenuItem ("Window/Lunra Games/Noise Maker - Mercator")]
+		[MenuItem ("Window/Lunra Games/Noise Maker/Mercator")]
 		static void Init () 
 		{
 			var window = EditorWindow.GetWindow(typeof (MercatorMakerWindow), false, "Mercator") as MercatorMakerWindow;
