@@ -662,8 +662,6 @@ namespace LunraGames.NoiseMaker
 		public static Texture2D GetSphereTexture(IModule module, int width = 98, Mercator map = null, Texture2D existing = null)
 		{
 			var result = existing == null || existing.width != width || existing.height != width * 2 ? new Texture2D(width, width * 2) : existing;
-
-			var lolTime = DateTime.Now;
 			 
 			var sphere = new Sphere(module);
 			var pixels = new Color[result.width * result.height];
@@ -677,8 +675,6 @@ namespace LunraGames.NoiseMaker
 					pixels[(result.width * y) + x] = map == null ? NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer) : map.GetColor(lat, lon, value);
 				}
 			}
-
-			Debug.Log("Delta: "+(DateTime.Now - lolTime).Duration().TotalSeconds);
 			TextureFarmer.Queue(result, pixels);
 
 			return result;

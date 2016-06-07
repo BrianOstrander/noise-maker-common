@@ -106,9 +106,8 @@ namespace LunraGames.NoiseMaker
 						pixels[(preview.Preview.width * y) + x] = Previewer.Calculate(value, Previewer);
 					}
 				}
-				preview.Preview.SetPixels(pixels);
+				TextureFarmer.Queue(preview.Preview, pixels);
 
-				preview.Preview.Apply();
 				preview.Stale = false;
 				preview.LastUpdated = DateTime.Now.Ticks;
 				preview.LastSourceIds = new List<string>(node.SourceIds);

@@ -109,8 +109,9 @@ namespace LunraGames.NoiseMaker
 					var latLong = SphereUtils.CartesianToPolar(vert.normalized);
 					newVerts[i] = (vert.normalized * NoiseMakerWindow.SphereScalar) + (vert.normalized * (float)sphere.GetValue(latLong.x, latLong.y) * 0.1f);
 				}
-				//PreviewMesh.vertices = newVerts;
-				PreviewMesh.SetVertices(new List<Vector3>(newVerts));
+				// todo: figure out what's faster, setting vertices with method or the direct array
+				PreviewMesh.vertices = newVerts;
+				//PreviewMesh.SetVertices(new List<Vector3>(newVerts));
 				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, 256, MercatorMap == null ? null : MercatorMap.MercatorInstantiation, PreviewTexture);
 
 				PreviewLastUpdated = lastUpdate;
