@@ -223,13 +223,13 @@ namespace LunraGames.NoiseMaker
 						preview = new LatitudePreview 
 						{
 							Id = latitude.Id,
-							Preview = GetPreview(latitude, (int)width, (int)(Layouts.LatitudeEntryHeight * 0.5f))
+							Preview = GetPreview(latitude, (int)width, 1)
 						};
 						Previews.Add(preview);
 					}
 					else if (preview.Stale || preview.Preview.width != (int)width)
 					{
-						preview.Preview = GetPreview(latitude, (int)width, (int)(Layouts.LatitudeEntryHeight * 0.9f));
+						preview.Preview = GetPreview(latitude, (int)width, 1);
 						preview.Stale = false;
 					}
 
@@ -242,7 +242,7 @@ namespace LunraGames.NoiseMaker
 
 						var wasColor = GUI.color;
 						GUI.color = Color.white;
-						if (GUILayout.Button(preview.Preview, Styles.ToolbarButtonMiddle, GUILayout.Width(width), GUILayout.Height(Layouts.LatitudeEntryHeight))) 
+						if (GUILayout.Button("", Styles.StretchedImageButton(preview.Preview), GUILayout.Width(width), GUILayout.Height(Layouts.LatitudeEntryHeight)))
 						{
 							if (SelectedLatitudeIndex == unmodifiedI) SelectedLatitudeIndex = -1;
 							else SelectedLatitudeIndex = unmodifiedI;

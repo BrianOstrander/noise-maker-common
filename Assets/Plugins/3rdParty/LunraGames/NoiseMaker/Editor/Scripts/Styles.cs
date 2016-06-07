@@ -369,5 +369,13 @@ namespace LunraGames.NoiseMaker
 				return _CreateFirstLatitudeButton;
 			}
 		}
+
+		public static GUIStyle StretchedImageButton(Texture2D image)
+		{
+			var button = new GUIStyle(GUI.skin.button);
+			button.normal.background = image;
+
+			return button;
+		}
 	}
 }
