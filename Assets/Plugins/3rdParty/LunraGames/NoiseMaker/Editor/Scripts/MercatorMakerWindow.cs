@@ -14,11 +14,14 @@ namespace LunraGames.NoiseMaker
 		{
 			public const float PreviewHeight = 256f;
 			public const float LatitudeEntryHeight = 64f;
+			public const float LatitudeEntryCopyWidth = 64f;
+			public const float LatitudeEntryDeleteWidth = 32f;
 			public const float AltitudeEntriesHeight = 128f;
 			public const float AltitudeEntrySelectWidth = 64f;
 			public const float AltitudeEntryDeleteWidth = 32f;
 			public const float AltitudeEntryEditorHeight = 128f;
 			public const float LatitudeEditorHeight = AltitudeEntriesHeight + AltitudeEntryEditorHeight;
+			public const float ScrollbarMagicWidth = 32f;
 		}
 
 		const float AltitudeOffset = 0.01f;
@@ -50,6 +53,8 @@ namespace LunraGames.NoiseMaker
 				return Mercator.Latitudes[SelectedLatitudeIndex];
 			}
 		}
+
+		static List<LatitudePreview> Previews = new List<LatitudePreview>();
 
 		[MenuItem ("Window/Lunra Games/Noise Maker/Mercator")]
 		static void Init () 
@@ -208,20 +213,43 @@ namespace LunraGames.NoiseMaker
 
 					var unmodifiedI = i;
 					var latitude = Mercator.Latitudes[i];
+
+					var preview = Previews.FirstOrDefault(p => p.Id == latitude.Id);
+
+					var width = position.width - Layouts.LatitudeEntryCopyWidth - Layouts.LatitudeEntryDeleteWidth - Layouts.ScrollbarMagicWidth;
+
+					if (preview == null)
+					{
+						preview = new LatitudePreview 
+						{
+							Id = latitude.Id,
+							Preview = GetPreview(latitude, (int)width, (int)(Layouts.LatitudeEntryHeight * 0.5f))
+						};
+						Previews.Add(preview);
+					}
+					else if (preview.Stale || preview.Preview.width != (int)width)
+					{
+						preview.Preview = GetPreview(latitude, (int)width, (int)(Layouts.LatitudeEntryHeight * 0.9f));
+						preview.Stale = false;
+					}
+
 					GUILayout.BeginHorizontal();
 					{
-						if (GUILayout.Button("Copy", Styles.ToolbarButtonLeft, GUILayout.Width(64f), GUILayout.Height(Layouts.LatitudeEntryHeight)))
+						if (GUILayout.Button("Copy", Styles.ToolbarButtonLeft, GUILayout.Width(Layouts.LatitudeEntryCopyWidth), GUILayout.Height(Layouts.LatitudeEntryHeight)))
 						{
 
 						}
 
-						if (GUILayout.Button("Entry", Styles.ToolbarButtonMiddle, GUILayout.ExpandWidth(true), GUILayout.Height(Layouts.LatitudeEntryHeight))) 
+						var wasColor = GUI.color;
+						GUI.color = Color.white;
+						if (GUILayout.Button(preview.Preview, Styles.ToolbarButtonMiddle, GUILayout.Width(width), GUILayout.Height(Layouts.LatitudeEntryHeight))) 
 						{
 							if (SelectedLatitudeIndex == unmodifiedI) SelectedLatitudeIndex = -1;
 							else SelectedLatitudeIndex = unmodifiedI;
 						}
+						GUI.color = wasColor;
 
-						if (GUILayout.Button("X", EditorStyles.miniButtonRight, GUILayout.Width(32f), GUILayout.Height(Layouts.LatitudeEntryHeight))) deletedIndex = unmodifiedI;
+						if (GUILayout.Button("X", EditorStyles.miniButtonRight, GUILayout.ExpandWidth(true), GUILayout.Height(Layouts.LatitudeEntryHeight))) deletedIndex = unmodifiedI;
 					}
 					GUILayout.EndHorizontal();
 
@@ -258,6 +286,8 @@ namespace LunraGames.NoiseMaker
 						return;
 					}
 
+					var preview = Previews.FirstOrDefault(p => p.Id == latitude.Id);
+
 					var editors = AltitudeEditorCacher.Editors;
 					var keys = new List<string>(new [] {"Select Altitude Drawer"});
 					foreach (var val in editors.Values) keys.Add(val.Details.Name);
@@ -293,7 +323,7 @@ namespace LunraGames.NoiseMaker
 					{
 						GUILayout.BeginScrollView(Vector2.one, false, true, GUILayout.Height(Layouts.AltitudeEntriesHeight));
 						{
-							var width = position.width - Layouts.AltitudeEntryDeleteWidth - Layouts.AltitudeEntrySelectWidth - 32f; // Magic value for scroll bar.
+							var width = position.width - Layouts.AltitudeEntryDeleteWidth - Layouts.AltitudeEntrySelectWidth - Layouts.ScrollbarMagicWidth;
 							int? deletedIndex = null;
 
 							for (var i = 0; i < latitude.Altitudes.Count; i++)
@@ -347,11 +377,16 @@ namespace LunraGames.NoiseMaker
 										if (SelectedAltitudeIndex == unmodifiedI) SelectedAltitudeIndex = -1;
 										else SelectedAltitudeIndex = unmodifiedI;
 									}
+									var wasMin = altitude.MinAltitude;
+									var wasMax = altitude.MaxAltitude;
+
 									altitude.MinAltitude = Mathf.Max(min, altitude.MinAltitude);
 									altitude.MaxAltitude = Mathf.Min(max, altitude.MaxAltitude);
 									EditorGUILayout.MinMaxSlider(GUIContent.none, ref altitude.MinAltitude, ref altitude.MaxAltitude, 0f, 1f, GUILayout.Width(width));
 									if (altitude.MaxAltitude < maxMin) altitude.MaxAltitude = maxMin;
 									if (minMax < altitude.MinAltitude) altitude.MinAltitude = minMax;
+
+									preview.Stale = preview.Stale || wasMin != altitude.MinAltitude || wasMax != altitude.MaxAltitude;
 
 									if (GUILayout.Button("x", GUILayout.Width(Layouts.AltitudeEntryDeleteWidth))) deletedIndex = unmodifiedI;
 								}
@@ -394,7 +429,8 @@ namespace LunraGames.NoiseMaker
 								if (editor.Value == null) EditorGUILayout.HelpBox("Unable to find editor for altitude type \""+altitude.GetType()+"\".", MessageType.Error);
 								else 
 								{
-									editor.Value.Editor.Draw(altitude);
+									var cache = Previews.FirstOrDefault(p => p.Id == latitude.Id);
+									editor.Value.Editor.Draw(altitude, ref cache.Stale);
 								}
 								GUILayout.FlexibleSpace();
 							}
@@ -433,6 +469,23 @@ namespace LunraGames.NoiseMaker
 			UnityEditor.EditorUtility.SetDirty(config);
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh();
+		}
+
+		public Texture2D GetPreview(Latitude latitude, int width, int height)
+		{
+			var texture = new Texture2D(width, height);
+
+			var pixels = new Color[width * height];
+			for (var x = 0; x < width; x++)
+			{
+				for (var y = 0; y < height; y++)
+				{
+					pixels[(width * y) + x] = latitude.GetColor(0f, 0f, (float)x / (float)width);
+				}
+			}
+			texture.SetPixels(pixels);
+			texture.Apply();
+			return texture;
 		}
 	}
 }

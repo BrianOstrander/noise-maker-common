@@ -15,7 +15,8 @@ MonoBehaviour:
     Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.Latitude,
     Assembly-CSharp-firstpass","Id":null,"MinLatitude":0.0,"MaxLatitude":0.0,"Altitudes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Altitude,
     Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.ColorAltitude,
-    Assembly-CSharp-firstpass","Color":{"r":1.0,"g":0.517241359,"b":0.0,"a":1.0},"Id":"7aecec06-0881-41d2-8414-3e886c5926f8","MinAltitude":0.0,"MaxAltitude":0.207809091},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
-    Assembly-CSharp-firstpass","Color":{"r":1.0,"g":0.9724138,"b":0.0,"a":1.0},"Id":"43daca04-a33a-461f-960a-d4bbc033aec4","MinAltitude":0.197809085,"MaxAltitude":0.273895383},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
-    Assembly-CSharp-firstpass","Color":{"r":0.5310346,"g":1.0,"b":0.0,"a":1.0},"Id":"cb9b014d-78e0-40dc-ae91-800c7feca672","MinAltitude":0.2638954,"MaxAltitude":0.9380615},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
-    Assembly-CSharp-firstpass","Color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"Id":"f57a2d84-331d-4b88-8466-31f4e421943b","MinAltitude":0.9280615,"MaxAltitude":1.0}]}}]}}'
+    Assembly-CSharp-firstpass","Color":{"r":0.477941155,"g":0.3048935,"b":0.119485289,"a":1.0},"Id":"7aecec06-0881-41d2-8414-3e886c5926f8","MinAltitude":0.0,"MaxAltitude":0.2507557},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.875,"g":0.8608012,"b":0.3602941,"a":1.0},"Id":"43daca04-a33a-461f-960a-d4bbc033aec4","MinAltitude":0.170665488,"MaxAltitude":0.466830373},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.235185981,"g":0.5514706,"b":0.237367228,"a":1.0},"Id":"ba31805f-03f7-40b0-a036-b4bf739e0ca4","MinAltitude":0.286432326,"MaxAltitude":0.7473105},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.361263543,"g":0.4852941,"b":0.3568339,"a":1.0},"Id":"30828fa6-b059-43a2-9c8d-a02131cda4cb","MinAltitude":0.6896129,"MaxAltitude":0.9569743},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"Id":"17838c46-4d3a-45ad-8c25-67425c516c0c","MinAltitude":0.8975172,"MaxAltitude":1.0}]}}]}}'
