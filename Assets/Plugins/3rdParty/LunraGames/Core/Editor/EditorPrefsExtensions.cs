@@ -15,7 +15,8 @@ namespace LunraGames
 			new Vector2Converter(),
 			new Vector3Converter(),
 			new Vector4Converter(),
-			new QuaternionConverter()
+			new QuaternionConverter(),
+			new ColorConverter()
 		};
 
 		static JsonSerializerSettings _SerializerSettings;
