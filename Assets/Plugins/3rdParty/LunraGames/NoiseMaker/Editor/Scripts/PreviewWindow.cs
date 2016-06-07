@@ -9,6 +9,9 @@ namespace LunraGames.NoiseMaker
 {
 	public class PreviewWindow : EditorWindow
 	{
+		[SerializeField]
+		MercatorMap MercatorMap;
+
 		string LastGraph;
 		Graph Graph;
 
@@ -72,7 +75,14 @@ namespace LunraGames.NoiseMaker
 				return;
 			}
 
-			DrawElevationPreview(root, position, overridePreview);
+			var map = EditorGUILayout.ObjectField("Mercator", MercatorMap, typeof(MercatorMap), false);
+			var wasMap = MercatorMap;
+			MercatorMap = map == null ? null : map as MercatorMap;
+			overridePreview = overridePreview || wasMap != MercatorMap;
+
+			overridePreview = GUILayout.Button("Reset preview hack") || overridePreview;
+
+			DrawElevationPreview(root, new Rect(0f, 32f, position.width, position.height - 32f), overridePreview);
 		}
 
 		void OnSelectionChange() { Repaint(); }
@@ -101,7 +111,7 @@ namespace LunraGames.NoiseMaker
 				}
 				PreviewMesh.vertices = newVerts;
 
-				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module);
+				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, map: MercatorMap.MercatorInstantiation);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -126,7 +136,7 @@ namespace LunraGames.NoiseMaker
 
 			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico5Vertex);
 
-			PreviewObjectEditor.OnPreviewGUI(new Rect(1f, 0f, area.width - 1f, area.height), Styles.OptionBox);
+			PreviewObjectEditor.OnPreviewGUI(new Rect(area.x, area.y, area.width, area.height), Styles.OptionBox);
 		}
 		#endregion
 

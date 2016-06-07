@@ -73,11 +73,12 @@ namespace LunraGames.NoiseMaker
 		Altitude GetLowest()
 		{
 			if (Altitudes == null) return null;
+
 			Altitude lowest = null;
 			foreach (var altitude in Altitudes)
 			{
 				var unmodifiedAltitude = altitude;
-				if (lowest == null || unmodifiedAltitude.MinAltitude <= altitude.MinAltitude) lowest = unmodifiedAltitude;
+				if (lowest == null || unmodifiedAltitude.MinAltitude <= lowest.MinAltitude) lowest = unmodifiedAltitude;
 			}
 			return lowest;
 		}

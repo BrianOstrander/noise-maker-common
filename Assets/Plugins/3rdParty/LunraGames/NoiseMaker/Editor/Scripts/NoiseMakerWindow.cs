@@ -659,7 +659,7 @@ namespace LunraGames.NoiseMaker
 		/// <returns>The sphere texture.</returns>
 		/// <param name="module">Module to get the texture from.</param>
 		/// <param name="height">Height.</param>
-		public static Texture2D GetSphereTexture(IModule module, int height = 98)
+		public static Texture2D GetSphereTexture(IModule module, int height = 98, Mercator map = null)
 		{
 			var result = new Texture2D(height, height * 2);
 
@@ -672,7 +672,7 @@ namespace LunraGames.NoiseMaker
 					var lat = SphereUtils.GetLatitude(y, result.height);
 					var lon = SphereUtils.GetLongitude(x, result.width);
 					var value = (float)sphere.GetValue((double)lat, (double)lon);
-					pixels[(result.width * y) + x] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+					pixels[(result.width * y) + x] = map == null ? NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer) : map.GetColor(lat, lon, value);
 				}
 			}
 			result.SetPixels(pixels);

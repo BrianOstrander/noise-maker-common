@@ -23,5 +23,14 @@ namespace LunraGames.NoiseMaker
 			}
 			if (index.HasValue) Latitudes.RemoveAt(index.Value);
 		}
+
+		// todo: support more than one latitude.
+		public Color GetColor(float latitude, float longitude, float altitude)
+		{
+			if (Latitudes == null || Latitudes.FirstOrDefault() == null) return Color.white;
+
+			var lat = Latitudes.FirstOrDefault();
+			return lat.GetColor(latitude, longitude, altitude);
+		}
 	}
 }

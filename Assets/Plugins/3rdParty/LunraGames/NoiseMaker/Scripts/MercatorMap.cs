@@ -23,6 +23,5 @@ namespace LunraGames.NoiseMaker
 				MercatorJson = Serialization.SerializeJson(value);
 			}
 		}
-
 	}
 }
