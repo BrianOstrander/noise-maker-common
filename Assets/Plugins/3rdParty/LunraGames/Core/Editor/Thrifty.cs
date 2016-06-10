@@ -67,14 +67,11 @@ namespace LunraGames
 	    {
 	        Running = true;
 	        ThreadedException = null;
-	        var workDone = false;
+	        var isDone = false;
 
 	        // This pattern lets us interrupt the work at a safe point if neeeded.
-	        while(Running && !workDone)
+	        while(Running && !isDone)
 	        {
-	            // Do Work...
-	            var startTime = DateTime.Now;
-
 				try 
 	            {
 	            	if (ThreadedLambda != null) ThreadedLambda.Threaded();
@@ -84,9 +81,7 @@ namespace LunraGames
             		ThreadedException = e;
         		}
 
-				if (1f < DateTime.Now.Subtract(startTime).TotalSeconds) Debug.Log(DateTime.Now.Subtract(startTime).TotalSeconds);
-
-	            workDone = true;
+	            isDone = true;
 	        }
 	        Running = false;
 	    }
