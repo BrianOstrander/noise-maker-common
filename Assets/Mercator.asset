@@ -15,8 +15,8 @@ MonoBehaviour:
     Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.Latitude,
     Assembly-CSharp-firstpass","Id":null,"MinLatitude":0.0,"MaxLatitude":0.0,"Altitudes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Altitude,
     Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.ColorAltitude,
-    Assembly-CSharp-firstpass","Color":{"r":0.6911765,"g":0.4783558,"b":0.02032878,"a":1.0},"Id":"7aecec06-0881-41d2-8414-3e886c5926f8","MinAltitude":0.0,"MaxAltitude":0.105355173},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
-    Assembly-CSharp-firstpass","Color":{"r":0.875,"g":0.8608012,"b":0.3602941,"a":1.0},"Id":"43daca04-a33a-461f-960a-d4bbc033aec4","MinAltitude":0.07624534,"MaxAltitude":0.149499834},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
-    Assembly-CSharp-firstpass","Color":{"r":0.235185981,"g":0.5514706,"b":0.237367228,"a":1.0},"Id":"ba31805f-03f7-40b0-a036-b4bf739e0ca4","MinAltitude":0.115355171,"MaxAltitude":0.5127904},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.02032878,"g":0.441343337,"b":0.6911765,"a":1.0},"Id":"7aecec06-0881-41d2-8414-3e886c5926f8","MinAltitude":0.0,"MaxAltitude":0.105355173},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.875,"g":0.8608012,"b":0.3602941,"a":1.0},"Id":"43daca04-a33a-461f-960a-d4bbc033aec4","MinAltitude":0.07702173,"MaxAltitude":0.297791749},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.235185981,"g":0.5514706,"b":0.237367228,"a":1.0},"Id":"ba31805f-03f7-40b0-a036-b4bf739e0ca4","MinAltitude":0.18212536,"MaxAltitude":0.533028066},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
     Assembly-CSharp-firstpass","Color":{"r":0.361263543,"g":0.4852941,"b":0.3568339,"a":1.0},"Id":"30828fa6-b059-43a2-9c8d-a02131cda4cb","MinAltitude":0.488058567,"MaxAltitude":0.829405963},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
     Assembly-CSharp-firstpass","Color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"Id":"17838c46-4d3a-45ad-8c25-67425c516c0c","MinAltitude":0.543028057,"MaxAltitude":1.0}]}}]}}'

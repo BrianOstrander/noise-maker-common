@@ -97,9 +97,9 @@ namespace LunraGames.NoiseMaker
 				}
 
 				var module = node.GetModule(graph.Nodes);
-				var pixels = new Color[preview.Preview.width * preview.Preview.height];
 				var width = preview.Preview.width;
 				var height = preview.Preview.height;
+				var pixels = new Color[width * height];
 
 				Thrifty.Queue(
 					() =>

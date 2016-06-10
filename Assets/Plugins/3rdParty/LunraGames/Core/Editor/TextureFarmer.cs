@@ -8,7 +8,7 @@ namespace LunraGames
 {
 	public class TextureFarmer 
 	{
-		const int PixelBudget = 1024;
+		const int PixelBudget = 4096;
 
 		class Entry
 		{

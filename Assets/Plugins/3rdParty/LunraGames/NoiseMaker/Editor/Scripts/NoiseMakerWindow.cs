@@ -666,10 +666,11 @@ namespace LunraGames.NoiseMaker
 
 			var sphere = new Sphere(module);
 			sphere.GetValue(0.0, 0.0);
-			var pixels = new Color[result.width * result.height];
 			var resultWidth = result.width;
 			var resultHeight = result.height;
 			var unmodifiedMap = map;
+			var pixels = new Color[resultWidth * resultHeight];
+
 			Thrifty.Queue(
 				() =>
 				{
@@ -699,7 +700,8 @@ namespace LunraGames.NoiseMaker
 							*/
 							if (sphere == null) Debug.Log("sphere is null?");
 							var value = (float)sphere.GetValue((double)lat, (double)lon);
-							pixels[(resultWidth * y) + x] = unmodifiedMap == null ? NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer) : unmodifiedMap.GetColor(lat, lon, value);
+							var index = (resultWidth * y) + x;
+							pixels[index] = unmodifiedMap == null ? NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer) : unmodifiedMap.GetColor(lat, lon, value);
 						}
 					}
 				},
