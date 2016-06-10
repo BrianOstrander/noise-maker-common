@@ -6,6 +6,7 @@ using UnityEngine;
 using LibNoise;
 using Atesh;
 using LibNoise.Models;
+using System.Threading;
 
 namespace LunraGames.NoiseMaker
 {
@@ -662,21 +663,48 @@ namespace LunraGames.NoiseMaker
 		public static Texture2D GetSphereTexture(IModule module, int width = 98, Mercator map = null, Texture2D existing = null)
 		{
 			var result = existing == null || existing.width != width || existing.height != width * 2 ? new Texture2D(width, width * 2) : existing;
-			 
-			var sphere = new Sphere(module);
-			var pixels = new Color[result.width * result.height];
-			for (var x = 0; x < result.width; x++)
-			{
-				for (var y = 0; y < result.height; y++)
-				{
-					var lat = SphereUtils.GetLatitude(y, result.height);
-					var lon = SphereUtils.GetLongitude(x, result.width);
-					var value = (float)sphere.GetValue((double)lat, (double)lon);
-					pixels[(result.width * y) + x] = map == null ? NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer) : map.GetColor(lat, lon, value);
-				}
-			}
-			TextureFarmer.Queue(result, pixels);
 
+			var sphere = new Sphere(module);
+			sphere.GetValue(0.0, 0.0);
+			var pixels = new Color[result.width * result.height];
+			var resultWidth = result.width;
+			var resultHeight = result.height;
+			var unmodifiedMap = map;
+			Thrifty.Queue(
+				() =>
+				{
+					for (var x = 0; x < resultWidth; x++)
+					{
+						for (var y = 0; y < resultHeight; y++)
+						{
+							var lat = SphereUtils.GetLatitude(y, resultHeight);
+							var lon = SphereUtils.GetLongitude(x, resultWidth);
+							/*
+							// We do this try catch to avoid an issue with unity recompiling and causing weird serialization problems and spamming errors.
+							float? value = null;
+							int tries = 0;
+							while (value == null && tries < 3)
+							{
+								try { value = (float)sphere.GetValue((double)lat, (double)lon); }
+								catch 
+								{
+									value = null;
+									tries++;
+									Thread.Sleep(20);
+								}
+								tries++;
+							}
+							if (value == null) throw new InvalidOperationException("Something went wrong trying to access the value of a sphere.");
+							pixels[(resultWidth * y) + x] = unmodifiedMap == null ? NodeEditor.Previewer.Calculate(value.Value, NodeEditor.Previewer) : unmodifiedMap.GetColor(lat, lon, value.Value);
+							*/
+							if (sphere == null) Debug.Log("sphere is null?");
+							var value = (float)sphere.GetValue((double)lat, (double)lon);
+							pixels[(resultWidth * y) + x] = unmodifiedMap == null ? NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer) : unmodifiedMap.GetColor(lat, lon, value);
+						}
+					}
+				},
+				() => TextureFarmer.Queue(result, pixels)
+			);
 			return result;
 		}
 

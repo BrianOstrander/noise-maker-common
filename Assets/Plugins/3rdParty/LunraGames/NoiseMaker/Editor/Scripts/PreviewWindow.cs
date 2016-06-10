@@ -112,7 +112,8 @@ namespace LunraGames.NoiseMaker
 				// todo: figure out what's faster, setting vertices with method or the direct array
 				PreviewMesh.vertices = newVerts;
 				//PreviewMesh.SetVertices(new List<Vector3>(newVerts));
-				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, 256, MercatorMap == null ? null : MercatorMap.MercatorInstantiation, PreviewTexture);
+
+				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, 512, MercatorMap == null ? null : MercatorMap.MercatorInstantiation, PreviewTexture);
 
 				PreviewLastUpdated = lastUpdate;
 

@@ -98,15 +98,23 @@ namespace LunraGames.NoiseMaker
 
 				var module = node.GetModule(graph.Nodes);
 				var pixels = new Color[preview.Preview.width * preview.Preview.height];
-				for (var x = 0; x < preview.Preview.width; x++)
-				{
-					for (var y = 0; y < preview.Preview.height; y++)
+				var width = preview.Preview.width;
+				var height = preview.Preview.height;
+
+				Thrifty.Queue(
+					() =>
 					{
-						var value = (float)module.GetValue((double)x, (double)y, 0.0);
-						pixels[(preview.Preview.width * y) + x] = Previewer.Calculate(value, Previewer);
-					}
-				}
-				TextureFarmer.Queue(preview.Preview, pixels);
+						for (var x = 0; x < width; x++)
+						{
+							for (var y = 0; y < height; y++)
+							{
+								var value = (float)module.GetValue((double)x, (double)y, 0.0);
+								pixels[(width * y) + x] = Previewer.Calculate(value, Previewer);
+							}
+						}
+					},
+					() => TextureFarmer.Queue(preview.Preview, pixels)
+				);
 
 				preview.Stale = false;
 				preview.LastUpdated = DateTime.Now.Ticks;

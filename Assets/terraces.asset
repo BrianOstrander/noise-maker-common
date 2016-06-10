@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58a6f9f05ecae4ee8a8e783e1667fede, type: 3}
+  m_Name: terraces
+  m_EditorClassIdentifier: 
+  GraphJson: '{"$type":"LunraGames.NoiseMaker.Graph, Assembly-CSharp-firstpass","Nodes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Node,
+    Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.RootNode,
+    Assembly-CSharp-firstpass","EditorPosition":{"x":451.399719,"y":282.800049},"Id":"be06db44-e4a8-47b4-9d13-af2a23392edc","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":["32697216-4fa8-4e3a-8ae0-5d07799a345e"]}},{"$type":"LunraGames.NoiseMaker.BillowNode,
+    Assembly-CSharp-firstpass","Frequency":0.02,"Lacunarity":0.0,"Quality":1,"OctaveCount":1,"Persistence":0.0,"Seed":-1298397888,"EditorPosition":{"x":-316.639526,"y":130.967163},"Id":"5f296553-7b83-4529-b8d4-dd8c35159ab3","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":[]}},{"$type":"LunraGames.NoiseMaker.TerraceNode,
+    Assembly-CSharp-firstpass","Points":{"$type":"System.Collections.Generic.List`1[[System.Single,
+    mscorlib]], mscorlib","$values":[-1.0,0.0,1.0]},"EditorPosition":{"x":130.360474,"y":129.967163},"Id":"32697216-4fa8-4e3a-8ae0-5d07799a345e","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":["5f296553-7b83-4529-b8d4-dd8c35159ab3"]}}]},"RootId":"be06db44-e4a8-47b4-9d13-af2a23392edc"}'

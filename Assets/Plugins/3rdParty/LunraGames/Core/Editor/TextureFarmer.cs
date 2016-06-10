@@ -8,6 +8,8 @@ namespace LunraGames
 {
 	public class TextureFarmer 
 	{
+		const int PixelBudget = 1024;
+
 		class Entry
 		{
 			public Texture2D Target;
@@ -26,22 +28,32 @@ namespace LunraGames
 
 		static void Farm()
 		{
-			var first = Entries.FirstOrDefault();
+			if (Entries == null || Entries.Count == 0) return;
 
-			if (first == null) return;
+			var remainingBudget = PixelBudget;
+			var deletions = new List<Entry>();
 
-			var pixels = new Color[first.Target.width];
-			var start = first.YProgress * first.Target.width;
-			var end = start + first.Target.width;
+			foreach (var entry in Entries)
+			{
+				remainingBudget -= entry.Target.width;
 
-			for (var i = start; i < end; i++) pixels[i - start] = first.Replacements[i];
+				var pixels = new Color[entry.Target.width];
+				var start = entry.YProgress * entry.Target.width;
+				var end = start + entry.Target.width;
 
-			first.Target.SetPixels(0, first.YProgress, first.Target.width, 1, pixels);
-			first.Target.Apply();
+				for (var i = start; i < end; i++) pixels[i - start] = entry.Replacements[i];
 
-			first.YProgress++;
+				entry.Target.SetPixels(0, entry.YProgress, entry.Target.width, 1, pixels);
+				entry.Target.Apply();
 
-			if (first.YProgress == first.Target.height) Entries.Remove(first);
+				entry.YProgress++;
+
+				if (entry.YProgress == entry.Target.height) deletions.Add(entry);
+
+				if (remainingBudget <= 0) break;
+			}
+
+			foreach (var deletion in deletions) Entries.Remove(deletion);
 		}
 
 		public static void Queue(Texture2D target, Color[] replacements)
