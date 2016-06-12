@@ -51,11 +51,12 @@ namespace LunraGames.NoiseMaker
 		Node ConnectingTo;
 		Dictionary<string, bool> ShownCategories = new Dictionary<string, bool>();
 		int PreviewSelected;
-		Dictionary<string, Action<Node, Rect>> Previews;
+		Dictionary<string, Action<Node, Rect, int>> Previews;
 		long PreviewLastUpdated;
 		Texture2D PreviewTexture;
 		Mesh PreviewMesh;
 		Editor PreviewObjectEditor;
+		bool PreviewUpdating;
 
 		[MenuItem ("Window/Lunra Games/Noise Maker/Editor")]
 		static void Init () 
@@ -469,7 +470,7 @@ namespace LunraGames.NoiseMaker
 					{
 						if (Previews == null) 
 						{
-							Previews = new Dictionary<string, Action<Node, Rect>> {
+							Previews = new Dictionary<string, Action<Node, Rect, int>> {
 								{ "Flat", DrawFlatPreview },
 								{ "Sphere", DrawSpherePreview },
 								{ "Elevation", DrawElevationPreview }
@@ -484,6 +485,7 @@ namespace LunraGames.NoiseMaker
 								if (GUILayout.Button(keys[i], i == PreviewSelected ? Styles.PreviewToolbarSelected : Styles.PreviewToolbar) && PreviewSelected != i) 
 								{
 									// When previews change, we reset any cached info.
+									PreviewUpdating = false;
 									PreviewSelected = i;
 									PreviewLastUpdated = 0L;
 									PreviewObjectEditor = null;
@@ -511,7 +513,16 @@ namespace LunraGames.NoiseMaker
 								GUILayout.EndHorizontal();
 								GUILayout.FlexibleSpace();
 							}
-							else Previews[keys[PreviewSelected]](rootNode, new Rect(0f, 0f, previewArea.width, previewArea.height));
+							else 
+							{
+								Previews[keys[PreviewSelected]](rootNode, new Rect(0f, 0f, previewArea.width, previewArea.height), PreviewSelected);
+
+								if (PreviewUpdating)
+								{
+									Pinwheel.Draw(new Vector2(previewArea.width * 0.5f, previewArea.height * 0.5f));
+									Repaint();
+								}
+							}
 						}
 						GUILayout.EndArea();
 						GUILayout.FlexibleSpace();
@@ -529,7 +540,7 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		/// <param name="node">Node to draw, typically the root.</param>
 		/// <param name="area">Area the editor should take up.</param>
-		void DrawFlatPreview(Node node, Rect area)
+		void DrawFlatPreview(Node node, Rect area, int index)
 		{
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
 			// todo: remove these duplicate update checks.
@@ -564,7 +575,7 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		/// <param name="node">Node to draw, typically the root.</param>
 		/// <param name="area">Area the editor should take up.</param>
-		void DrawSpherePreview(Node node, Rect area)
+		void DrawSpherePreview(Node node, Rect area, int index)
 		{
 			// Reset mesh, incase another preview has modified it.
 			NoiseMakerConfig.Instance.Ico4Vertex.GetComponent<MeshFilter>().sharedMesh = NoiseMakerConfig.Instance.Ico4VertexMesh;
@@ -574,7 +585,8 @@ namespace LunraGames.NoiseMaker
 			// Check if node has been updated since the last time we had drawn it.
 			if (lastUpdate != PreviewLastUpdated) 
 			{
-				PreviewTexture = GetSphereTexture(node.GetModule(Graph.Nodes));
+				PreviewUpdating = true;
+				PreviewTexture = GetSphereTexture(node.GetModule(Graph.Nodes), completed: () => PreviewUpdating = PreviewSelected == index ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -599,7 +611,7 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		/// <param name="node">Node to draw, typically the root.</param>
 		/// <param name="area">Area the editor should take up.</param>
-		void DrawElevationPreview(Node node, Rect area)
+		void DrawElevationPreview(Node node, Rect area, int index)
 		{
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
 			// todo: remove these duplicate update checks.
@@ -625,7 +637,8 @@ namespace LunraGames.NoiseMaker
 				}
 				PreviewMesh.vertices = newVerts;
 
-				PreviewTexture = GetSphereTexture(module);
+				PreviewUpdating = true;
+				PreviewTexture = GetSphereTexture(module, completed: () => PreviewUpdating = PreviewSelected == index ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -665,7 +678,6 @@ namespace LunraGames.NoiseMaker
 			var result = existing == null || existing.width != width || existing.height != width * 2 ? new Texture2D(width, width * 2) : existing;
 
 			var sphere = new Sphere(module);
-			sphere.GetValue(0.0, 0.0);
 			var resultWidth = result.width;
 			var resultHeight = result.height;
 			var unmodifiedMap = map;
@@ -680,25 +692,6 @@ namespace LunraGames.NoiseMaker
 						{
 							var lat = SphereUtils.GetLatitude(y, resultHeight);
 							var lon = SphereUtils.GetLongitude(x, resultWidth);
-							/*
-							// We do this try catch to avoid an issue with unity recompiling and causing weird serialization problems and spamming errors.
-							float? value = null;
-							int tries = 0;
-							while (value == null && tries < 3)
-							{
-								try { value = (float)sphere.GetValue((double)lat, (double)lon); }
-								catch 
-								{
-									value = null;
-									tries++;
-									Thread.Sleep(20);
-								}
-								tries++;
-							}
-							if (value == null) throw new InvalidOperationException("Something went wrong trying to access the value of a sphere.");
-							pixels[(resultWidth * y) + x] = unmodifiedMap == null ? NodeEditor.Previewer.Calculate(value.Value, NodeEditor.Previewer) : unmodifiedMap.GetColor(lat, lon, value.Value);
-							*/
-							if (sphere == null) Debug.Log("sphere is null?");
 							var value = (float)sphere.GetValue((double)lat, (double)lon);
 							var index = (resultWidth * y) + x;
 							pixels[index] = unmodifiedMap == null ? NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer) : unmodifiedMap.GetColor(lat, lon, value);
