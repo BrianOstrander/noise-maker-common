@@ -11,10 +11,10 @@ namespace LunraGames.NoiseMaker
 	{
 		[SerializeField]
 		MercatorMap MercatorMap;
+		[SerializeField]
+		NoiseGraph NoiseGraph;
 
-		string LastGraph;
 		Graph Graph;
-
 		long PreviewLastUpdated;
 		Texture2D PreviewTexture;
 		Mesh PreviewMesh;
@@ -33,34 +33,49 @@ namespace LunraGames.NoiseMaker
 		#region Messages
 		void OnGUI()
 		{
-			var selections = Selection.assetGUIDs;
-			if (selections == null || selections.Length == 0)
-			{
-				DrawCentered("Select a Noise Maker\nFile to Preview");
-				return;
-			}
-			else if (1 < selections.Length)
-			{
-				DrawCentered("Select Only a Single\nNoise Maker File to Preview");
-				return;
-			}
-
-			var selection = Selection.activeObject as NoiseGraph;
-
-			if (selection == null)
-			{
-				DrawCentered("Selection is an Invalid\nNoise Maker File");
-				return;
-			}
-
 			var overridePreview = false;
 
-			if (LastGraph != selection.GraphJson) 
+			var noise = EditorGUILayout.ObjectField("Noise", NoiseGraph, typeof(NoiseGraph), false);
+			var wasNoise = NoiseGraph;
+			NoiseGraph = noise == null ? null : noise as NoiseGraph;
+
+			var map = EditorGUILayout.ObjectField("Mercator", MercatorMap, typeof(MercatorMap), false);
+			var wasMap = MercatorMap;
+			MercatorMap = map == null ? null : map as MercatorMap;
+
+			if (NoiseGraph == null)
 			{
-				Graph = selection.GraphInstantiation;
-				LastGraph = selection.GraphJson;
-				overridePreview = true;
+				var selections = Selection.assetGUIDs;
+				if (selections == null || selections.Length == 0)
+				{
+					DrawCentered("Select a Noise Maker\nFile to Preview");
+					return;
+				}
+				else if (1 < selections.Length)
+				{
+					DrawCentered("Select Only a Single\nNoise Maker File to Preview");
+					return;
+				}
+
+				var selection = Selection.activeObject as NoiseGraph;
+
+				if (selection == null)
+				{
+					DrawCentered("Selection is an Invalid\nNoise Maker File");
+					return;
+				}
+				else NoiseGraph = selection;
 			}
+
+			overridePreview = overridePreview || wasNoise != NoiseGraph || wasMap != MercatorMap;
+
+			if (NoiseGraph == null)
+			{
+				DrawCentered("Select or specify a\nNoise Maker File to Preview");
+				return;
+			}
+
+			if (overridePreview || Graph == null) Graph = NoiseGraph.GraphInstantiation;
 
 			if (Graph == null)
 			{
@@ -68,22 +83,13 @@ namespace LunraGames.NoiseMaker
 				return;
 			}
 
-			var root = Graph.Nodes.FirstOrDefault(n => n.Id == Graph.RootId);
-
-			if (root == null)
+			if (Graph.RootNode == null)
 			{
 				DrawCentered("No Root Node Found");
 				return;
 			}
 
-			var map = EditorGUILayout.ObjectField("Mercator", MercatorMap, typeof(MercatorMap), false);
-			var wasMap = MercatorMap;
-			MercatorMap = map == null ? null : map as MercatorMap;
-			overridePreview = overridePreview || wasMap != MercatorMap;
-
-			overridePreview = GUILayout.Button("Reset preview hack") || overridePreview;
-
-			DrawElevationPreview(root, new Rect(0f, 32f, position.width, position.height - 32f), overridePreview);
+			DrawElevationPreview(Graph.RootNode, new Rect(0f, 48f, position.width, position.height - 32f), overridePreview);
 		}
 
 		void OnSelectionChange() { Repaint(); }
