@@ -586,7 +586,7 @@ namespace LunraGames.NoiseMaker
 			if (lastUpdate != PreviewLastUpdated) 
 			{
 				PreviewUpdating = true;
-				PreviewTexture = GetSphereTexture(node.GetModule(Graph.Nodes), completed: () => PreviewUpdating = PreviewSelected == index ? false : PreviewUpdating);
+				PreviewTexture = GetSphereTexture(node.GetModule(Graph.Nodes), completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -638,7 +638,7 @@ namespace LunraGames.NoiseMaker
 				PreviewMesh.vertices = newVerts;
 
 				PreviewUpdating = true;
-				PreviewTexture = GetSphereTexture(module, completed: () => PreviewUpdating = PreviewSelected == index ? false : PreviewUpdating);
+				PreviewTexture = GetSphereTexture(module, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
