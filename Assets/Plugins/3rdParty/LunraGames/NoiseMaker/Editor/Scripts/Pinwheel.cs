@@ -16,9 +16,10 @@ namespace LunraGames.NoiseMaker
 
 			for (var i = 0f; i < NoiseMakerConfig.Instance.LoadingPinwheels.Length; i++) 
 			{
-				var alpha = (secondScalar + (i * 0.618033988749895f)) % 1f;
+				var alpha = (secondScalar + (i * 0.77f)) % 1f;
+				var easing = alpha < 0.5f ? Easing.EasingType.Sine : Easing.EasingType.Quartic;
 				alpha = alpha < 0.5f ? alpha / 0.5f : 1f - ((alpha - 0.5f) / 0.5f);
-				alpha = Easing.EaseIn(alpha, Easing.EasingType.Sine);
+				alpha = Easing.EaseIn(alpha, easing);
 				alphas.Add(alpha);
 			}
 
