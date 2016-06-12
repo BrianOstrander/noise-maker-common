@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GraphJson: '{"$type":"LunraGames.NoiseMaker.Graph, Assembly-CSharp-firstpass","Nodes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Node,
     Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.RootNode,
-    Assembly-CSharp-firstpass","EditorPosition":{"x":436.3991,"y":196.800049},"Id":"be06db44-e4a8-47b4-9d13-af2a23392edc","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    Assembly-CSharp-firstpass","EditorPosition":{"x":436.39917,"y":196.800049},"Id":"be06db44-e4a8-47b4-9d13-af2a23392edc","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
     mscorlib]], mscorlib","$values":["8a6b67e7-2e39-48a8-8667-2071741ce9f4"]}},{"$type":"LunraGames.NoiseMaker.BillowNode,
     Assembly-CSharp-firstpass","Frequency":0.02,"Lacunarity":0.0,"Quality":1,"OctaveCount":1,"Persistence":0.0,"Seed":-1298397888,"EditorPosition":{"x":-351.639526,"y":-160.032837},"Id":"5f296553-7b83-4529-b8d4-dd8c35159ab3","ModuleType":null,"SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
     mscorlib]], mscorlib","$values":[]}},{"$type":"LunraGames.NoiseMaker.CurveSimpleNode,
