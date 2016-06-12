@@ -11,6 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1cf7838657b8494db8d0753cd21b787, type: 3}
   m_Name: LunraGamesNoiseMakerSettings
   m_EditorClassIdentifier: 
+  LoadingPinwheels:
+  - {fileID: 2800000, guid: 8b15f23f8680c46a9b19756043f16c25, type: 3}
+  - {fileID: 2800000, guid: 2f51b325d864a48e48ccf44e9288e32c, type: 3}
+  - {fileID: 2800000, guid: 8b316819a10c64ed099d8c931bb86cdb, type: 3}
   Ico4Vertex: {fileID: 150354, guid: e4d5615eab2c84ba7aea59810cfcfee2, type: 2}
   Ico4VertexMesh: {fileID: 4300000, guid: c7aaa1def987848d69eeb62440374ba8, type: 2}
   Ico5Vertex: {fileID: 150354, guid: a94f2b651dcec4484b54fd927f09a8b5, type: 2}

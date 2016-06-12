@@ -21,6 +21,8 @@ namespace LunraGames.NoiseMaker
 
 		}
 
+		public Texture2D[] LoadingPinwheels;
+
 		#region Elevation preview resources
 		public GameObject Ico4Vertex;
 		public Mesh Ico4VertexMesh;

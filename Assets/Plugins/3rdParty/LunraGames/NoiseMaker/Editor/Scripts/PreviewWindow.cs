@@ -19,6 +19,7 @@ namespace LunraGames.NoiseMaker
 		Texture2D PreviewTexture;
 		Mesh PreviewMesh;
 		Editor PreviewObjectEditor;
+		bool Updating;
 
 		[MenuItem ("Window/Lunra Games/Noise Maker/Preview")]
 		static void Init () 
@@ -113,7 +114,8 @@ namespace LunraGames.NoiseMaker
 				PreviewMesh.vertices = newVerts;
 				//PreviewMesh.SetVertices(new List<Vector3>(newVerts));
 
-				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, 512, MercatorMap == null ? null : MercatorMap.MercatorInstantiation, PreviewTexture);
+				Updating = true;
+				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, 512, MercatorMap == null ? null : MercatorMap.MercatorInstantiation, PreviewTexture, () => Updating = false);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -138,7 +140,19 @@ namespace LunraGames.NoiseMaker
 
 			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico5Vertex);
 
-			PreviewObjectEditor.OnPreviewGUI(new Rect(area.x, area.y, area.width, area.height), Styles.OptionBox);
+			var previewArea = new Rect(area.x, area.y, area.width, area.height);
+			PreviewObjectEditor.OnPreviewGUI(previewArea, Styles.OptionBox);
+
+			if (Updating) 
+			{
+				Pinwheel.Draw(previewArea.center);
+				Repaint();
+			}
+			/*
+			Pinwheel.Draw(previewArea);
+
+			Repaint();
+			*/
 		}
 		#endregion
 

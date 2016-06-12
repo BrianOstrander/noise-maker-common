@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace LunraGames
 {
@@ -14,8 +15,8 @@ namespace LunraGames
 		{
 			public Texture2D Target;
 			public Color[] Replacements;
-			//public int XProgress;
 			public int YProgress;
+			public Action Completed;
 		}
 
 		static List<Entry> Entries = new List<Entry>();
@@ -53,10 +54,14 @@ namespace LunraGames
 				if (remainingBudget <= 0) break;
 			}
 
-			foreach (var deletion in deletions) Entries.Remove(deletion);
+			foreach (var deletion in deletions) 
+			{
+				if (deletion.Completed != null) deletion.Completed();
+				Entries.Remove(deletion);
+			}
 		}
 
-		public static void Queue(Texture2D target, Color[] replacements)
+		public static void Queue(Texture2D target, Color[] replacements, Action completed = null)
 		{
 			var entry = Entries.FirstOrDefault(e => target == e.Target);
 
@@ -64,15 +69,16 @@ namespace LunraGames
 			{
 				entry = new Entry {
 					Target = target,
-					Replacements = replacements
+					Replacements = replacements,
+					Completed = completed
 				};
 				Entries.Add(entry);
 			}
 			else
 			{
 				entry.Replacements = replacements;
-				//entry.XProgress = 0;
 				entry.YProgress = 0;
+				entry.Completed = completed;
 			}
 		}
 	}

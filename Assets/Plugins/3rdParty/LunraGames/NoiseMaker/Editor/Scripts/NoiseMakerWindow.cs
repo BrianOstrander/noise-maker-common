@@ -660,7 +660,7 @@ namespace LunraGames.NoiseMaker
 		/// <returns>The sphere texture.</returns>
 		/// <param name="module">Module to get the texture from.</param>
 		/// <param name="height">Height.</param>
-		public static Texture2D GetSphereTexture(IModule module, int width = 98, Mercator map = null, Texture2D existing = null)
+		public static Texture2D GetSphereTexture(IModule module, int width = 98, Mercator map = null, Texture2D existing = null, Action completed = null)
 		{
 			var result = existing == null || existing.width != width || existing.height != width * 2 ? new Texture2D(width, width * 2) : existing;
 
@@ -705,7 +705,7 @@ namespace LunraGames.NoiseMaker
 						}
 					}
 				},
-				() => TextureFarmer.Queue(result, pixels)
+				() => TextureFarmer.Queue(result, pixels, completed)
 			);
 			return result;
 		}
