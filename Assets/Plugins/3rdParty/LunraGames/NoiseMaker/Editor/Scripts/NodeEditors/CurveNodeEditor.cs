@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace LunraGames.NoiseMaker
 {
 	// I've hidden this class because there are problems with the LibNoise end of things when multithreading is used...
-	[NodeDrawer(typeof(CurveNode), Strings.Hidden, "Curve")]
+	[NodeDrawer(typeof(CurveNode), Strings.Modifiers, "Curve")]
 	public class CurveNodeEditor : NodeEditor
 	{
 		static Dictionary<string, Vector2> ScrollPositions = new Dictionary<string, Vector2>();

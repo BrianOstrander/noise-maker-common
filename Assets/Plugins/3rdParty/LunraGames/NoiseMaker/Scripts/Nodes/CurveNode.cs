@@ -40,8 +40,15 @@ namespace LunraGames.NoiseMaker
 				};
 			}
 
-			curve.ControlPoints = new List<CurveControlPoint>();
-			foreach (var point in Points) curve.ControlPoints.Add(new CurveControlPoint { Input = point.x, Output = point.y });
+			curve.ControlPoints = curve.ControlPoints ?? new List<CurveControlPoint>();
+
+			for (var i = 0; i < Points.Count; i++)
+			{
+				var point = Points[i];
+
+				if (i < curve.ControlPoints.Count) curve.ControlPoints[i] = new CurveControlPoint { Input = point.x, Output = point.y };
+				else curve.ControlPoints.Add(new CurveControlPoint { Input = point.x, Output = point.y });
+			}
 
 			Module = curve;
 

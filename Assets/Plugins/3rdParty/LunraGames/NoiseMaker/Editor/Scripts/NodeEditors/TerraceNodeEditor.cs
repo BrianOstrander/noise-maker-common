@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace LunraGames.NoiseMaker
 {
 	// I've hidden this because the LibNoise side of things keeps breaking when using multithreading.
-	[NodeDrawer(typeof(TerraceNode), Strings.Hidden, "Terrace")]
+	[NodeDrawer(typeof(TerraceNode), Strings.Modifiers, "Terrace")]
 	public class TerraceNodeEditor : NodeEditor
 	{
 		static Dictionary<string, Vector2> ScrollPositions = new Dictionary<string, Vector2>();

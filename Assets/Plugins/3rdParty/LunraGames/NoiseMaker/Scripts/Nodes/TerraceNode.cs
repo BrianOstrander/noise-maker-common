@@ -34,8 +34,13 @@ namespace LunraGames.NoiseMaker
 				Points = new List<float> { -1f, 1f };
 			}
 
-			terrace.ControlPoints = new List<double>();
-			foreach (var point in Points) terrace.ControlPoints.Add(point);
+			terrace.ControlPoints = terrace.ControlPoints ?? new List<double>();
+
+			for (var i = 0; i < Points.Count; i++)
+			{
+				if (i < terrace.ControlPoints.Count) terrace.ControlPoints[i] = Points[i];
+				else terrace.ControlPoints.Add(Points[i]);
+			}
 
 			Module = terrace;
 
