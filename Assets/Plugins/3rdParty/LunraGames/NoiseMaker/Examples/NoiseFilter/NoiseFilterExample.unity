@@ -246,7 +246,7 @@ GameObject:
   - 23: {fileID: 1520222620}
   - 114: {fileID: 1520222619}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Noise
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -266,12 +266,14 @@ MonoBehaviour:
   GenerateOnAwake: 1
   NoiseGraph: {fileID: 11400000, guid: c6ba37949395e4373abe546cdf497f8b, type: 2}
   MercatorMap: {fileID: 11400000, guid: 9bfa9aa5163774178b1a40c5c6b7b3d2, type: 2}
-  MapWidth: 512
-  MapHeight: 256
+  MapWidth: 200
+  MapHeight: 100
   Translation: {x: 0, y: 0, z: 0}
   Rotation: {x: 0, y: 0, z: 0}
   Scale: {x: 1, y: 1, z: 1}
   Filtering: 0
+  Datum: 1
+  Deviation: 0.2
 --- !u!23 &1520222620
 MeshRenderer:
   m_ObjectHideFlags: 0

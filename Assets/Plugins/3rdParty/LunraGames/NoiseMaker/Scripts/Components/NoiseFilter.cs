@@ -7,6 +7,9 @@ namespace LunraGames.NoiseMaker
 	[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 	public class NoiseFilter : MonoBehaviour 
 	{
+		public const float DefaultDatum = 0.5f;
+		public const float DefaultDeviation = 0.1f;
+
 		#region Inspector
 		public bool GenerateOnAwake;
 		public NoiseGraph NoiseGraph;
@@ -17,6 +20,8 @@ namespace LunraGames.NoiseMaker
 		public Vector3 Rotation;
 		public Vector3 Scale = Vector3.one;
 		public Filtering Filtering;
+		public float Datum = DefaultDatum;
+		public float Deviation = DefaultDeviation;
 		#endregion
 
 		Mesh CachedMesh;
@@ -58,7 +63,7 @@ namespace LunraGames.NoiseMaker
 			var mesh = Instantiate<Mesh>(CachedMesh);
 
 			var verts = mesh.vertices;
-			graph.GetSphereAltitudes(ref verts);
+			graph.GetSphereAltitudes(ref verts, Datum, Deviation);
 			mesh.vertices = verts;
 
 			meshFilter.sharedMesh = mesh;
