@@ -26,7 +26,7 @@ namespace LunraGames.NoiseMaker
 		}
 
 		// todo: support more than one latitude.
-		public Color GetColor(float latitude, float longitude, float altitude)
+		public Color GetSphereColor(float latitude, float longitude, float altitude)
 		{
 			if (Latitudes == null || Latitudes.FirstOrDefault() == null) return Color.white;
 
@@ -34,7 +34,7 @@ namespace LunraGames.NoiseMaker
 			return lat.GetColor(latitude, longitude, altitude);
 		}
 
-		public void GetColors(int height, int width, Sphere sphere, ref Color[] colors)
+		public void GetSphereColors(int width, int height, Sphere sphere, ref Color[] colors)
 		{
 			if (colors == null) throw new ArgumentNullException("colors");
 			if (height * width != colors.Length) throw new ArgumentOutOfRangeException("colors");
@@ -47,7 +47,7 @@ namespace LunraGames.NoiseMaker
 					var lon = SphereUtils.GetLongitude(x, width);
 					var value = (float)sphere.GetValue((double)lat, (double)lon);
 					var index = (width * y) + x;
-					colors[index] = GetColor(lat, lon, value);
+					colors[index] = GetSphereColor(lat, lon, value);
 				}
 			}
 		}

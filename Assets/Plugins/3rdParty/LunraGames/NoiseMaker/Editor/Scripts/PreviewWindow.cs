@@ -109,6 +109,11 @@ namespace LunraGames.NoiseMaker
 				var sphere = new Sphere(module);
 
 				var verts = PreviewMesh.vertices;
+				Graph.GetSphereAltitudes(sphere, ref verts, 0.75f);
+				PreviewMesh.vertices = verts;
+
+				/*
+				var verts = PreviewMesh.vertices;
 				var newVerts = new Vector3[verts.Length];
 				for (var i = 0; i < verts.Length; i++)
 				{
@@ -119,7 +124,7 @@ namespace LunraGames.NoiseMaker
 				// todo: figure out what's faster, setting vertices with method or the direct array
 				PreviewMesh.vertices = newVerts;
 				//PreviewMesh.SetVertices(new List<Vector3>(newVerts));
-
+				*/
 				Updating = true;
 				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, 512, MercatorMap == null ? null : MercatorMap.MercatorInstantiation, PreviewTexture, () => Updating = false);
 

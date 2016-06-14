@@ -627,6 +627,11 @@ namespace LunraGames.NoiseMaker
 				var sphere = new Sphere(module);
 
 				var verts = PreviewMesh.vertices;
+				Graph.GetSphereAltitudes(sphere, ref verts, 0.75f);
+				PreviewMesh.vertices = verts;
+
+				/*
+				var verts = PreviewMesh.vertices;
 				var newVerts = new Vector3[verts.Length];
 				for (var i = 0; i < verts.Length; i++)
 				{
@@ -636,7 +641,7 @@ namespace LunraGames.NoiseMaker
 					newVerts[i] = (vert.normalized * SphereScalar) + (vert.normalized * (float)sphere.GetValue(latLong.x, latLong.y) * 0.1f);
 				}
 				PreviewMesh.vertices = newVerts;
-
+				*/
 				PreviewUpdating = true;
 				PreviewTexture = GetSphereTexture(module, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
 
@@ -700,7 +705,7 @@ namespace LunraGames.NoiseMaker
 							}
 						}
 					}
-					else unmodifiedMap.GetColors(resultHeight, resultWidth, sphere, ref pixels);
+					else unmodifiedMap.GetSphereColors(resultWidth, resultHeight, sphere, ref pixels);
 				},
 				() => TextureFarmer.Queue(result, pixels, completed)
 			);

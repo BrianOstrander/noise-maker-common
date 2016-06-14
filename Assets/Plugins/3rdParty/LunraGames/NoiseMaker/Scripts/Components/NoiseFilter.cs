@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using LibNoise.Models;
 
 namespace LunraGames.NoiseMaker
 {
@@ -9,6 +10,8 @@ namespace LunraGames.NoiseMaker
 		#region Inspector
 		public NoiseGraph NoiseGraph;
 		public MercatorMap MercatorMap;
+		public int MapWidth;
+		public int MapHeight;
 		public Vector3 Translation;
 		public Vector3 Rotation;
 		public Vector3 Scale;
@@ -41,6 +44,21 @@ namespace LunraGames.NoiseMaker
 			if (map == null) throw new NullReferenceException("Couldn't instantiate the MercatorMap");
 
 			var root = graph.Root;
+
+			if (root == null) throw new NullReferenceException("Couldn't find root IModule");
+
+			var sphere = new Sphere(root);
+
+			var mesh = Instantiate<Mesh>(CachedMesh);
+
+
+
+			var texture = new Texture2D(MapWidth, MapHeight);
+			var colors = new Color[MapWidth * MapHeight];
+
+			map.GetSphereColors(MapWidth, MapHeight, sphere, ref colors);
+			texture.SetPixels(colors);
+			texture.Apply();
 
 		}
 	}
