@@ -5,6 +5,7 @@ using Atesh;
 using Newtonsoft.Json;
 using System.Linq;
 using UnityEngine;
+using LibNoise.Models;
 
 namespace LunraGames.NoiseMaker
 {
@@ -31,6 +32,24 @@ namespace LunraGames.NoiseMaker
 
 			var lat = Latitudes.FirstOrDefault();
 			return lat.GetColor(latitude, longitude, altitude);
+		}
+
+		public void GetColors(int height, int width, Sphere sphere, ref Color[] colors)
+		{
+			if (colors == null) throw new ArgumentNullException("colors");
+			if (height * width != colors.Length) throw new ArgumentOutOfRangeException("colors");
+
+			for (var x = 0; x < width; x++)
+			{
+				for (var y = 0; y < height; y++)
+				{
+					var lat = SphereUtils.GetLatitude(y, height);
+					var lon = SphereUtils.GetLongitude(x, width);
+					var value = (float)sphere.GetValue((double)lat, (double)lon);
+					var index = (width * y) + x;
+					colors[index] = GetColor(lat, lon, value);
+				}
+			}
 		}
 	}
 }

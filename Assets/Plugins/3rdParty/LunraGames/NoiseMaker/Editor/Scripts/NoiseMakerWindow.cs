@@ -686,17 +686,21 @@ namespace LunraGames.NoiseMaker
 			Thrifty.Queue(
 				() =>
 				{
-					for (var x = 0; x < resultWidth; x++)
+					if (unmodifiedMap == null)
 					{
-						for (var y = 0; y < resultHeight; y++)
+						for (var x = 0; x < resultWidth; x++)
 						{
-							var lat = SphereUtils.GetLatitude(y, resultHeight);
-							var lon = SphereUtils.GetLongitude(x, resultWidth);
-							var value = (float)sphere.GetValue((double)lat, (double)lon);
-							var index = (resultWidth * y) + x;
-							pixels[index] = unmodifiedMap == null ? NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer) : unmodifiedMap.GetColor(lat, lon, value);
+							for (var y = 0; y < resultHeight; y++)
+							{
+								var lat = SphereUtils.GetLatitude(y, resultHeight);
+								var lon = SphereUtils.GetLongitude(x, resultWidth);
+								var value = (float)sphere.GetValue((double)lat, (double)lon);
+								var index = (resultWidth * y) + x;
+								pixels[index] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+							}
 						}
 					}
+					else unmodifiedMap.GetColors(resultHeight, resultWidth, sphere, ref pixels);
 				},
 				() => TextureFarmer.Queue(result, pixels, completed)
 			);
