@@ -112,19 +112,6 @@ namespace LunraGames.NoiseMaker
 				Graph.GetSphereAltitudes(sphere, ref verts, 0.75f);
 				PreviewMesh.vertices = verts;
 
-				/*
-				var verts = PreviewMesh.vertices;
-				var newVerts = new Vector3[verts.Length];
-				for (var i = 0; i < verts.Length; i++)
-				{
-					var vert = verts[i];
-					var latLong = SphereUtils.CartesianToPolar(vert.normalized);
-					newVerts[i] = (vert.normalized * NoiseMakerWindow.SphereScalar) + (vert.normalized * (float)sphere.GetValue(latLong.x, latLong.y) * 0.1f);
-				}
-				// todo: figure out what's faster, setting vertices with method or the direct array
-				PreviewMesh.vertices = newVerts;
-				//PreviewMesh.SetVertices(new List<Vector3>(newVerts));
-				*/
 				Updating = true;
 				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, 512, MercatorMap == null ? null : MercatorMap.MercatorInstantiation, PreviewTexture, () => Updating = false);
 
@@ -159,11 +146,6 @@ namespace LunraGames.NoiseMaker
 				Pinwheel.Draw(previewArea.center);
 				Repaint();
 			}
-			/*
-			Pinwheel.Draw(previewArea);
-
-			Repaint();
-			*/
 		}
 		#endregion
 

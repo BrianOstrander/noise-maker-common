@@ -14,7 +14,7 @@ namespace LunraGames.NoiseMaker
 		public int MapHeight;
 		public Vector3 Translation;
 		public Vector3 Rotation;
-		public Vector3 Scale;
+		public Vector3 Scale = Vector3.one;
 		public Filtering Filtering;
 		#endregion
 
@@ -51,7 +51,11 @@ namespace LunraGames.NoiseMaker
 
 			var mesh = Instantiate<Mesh>(CachedMesh);
 
+			var verts = mesh.vertices;
+			graph.GetSphereAltitudes(ref verts);
+			mesh.vertices = verts;
 
+			meshFilter.sharedMesh = mesh;
 
 			var texture = new Texture2D(MapWidth, MapHeight);
 			var colors = new Color[MapWidth * MapHeight];
@@ -60,6 +64,7 @@ namespace LunraGames.NoiseMaker
 			texture.SetPixels(colors);
 			texture.Apply();
 
+			meshRenderer.sharedMaterial.mainTexture = texture;
 		}
 	}
 }

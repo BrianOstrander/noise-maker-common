@@ -500,14 +500,27 @@ namespace LunraGames.NoiseMaker
 						GUILayout.BeginArea(previewArea);
 						{
 							var rootNode = Graph == null ? null : Graph.Nodes.FirstOrDefault(n => n.Id == Graph.RootId);
-							if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()) || rootNode.GetModule(Graph.Nodes) == null)
+
+							try
+							{
+								if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()) || rootNode.GetModule(Graph.Nodes) == null)
+								{
+									rootNode = null;
+								}
+							}
+							catch
+							{
+								rootNode = null;
+							}
+
+							if (rootNode == null)
 							{
 								// A proper root with a source hasn't been defined.
 								GUILayout.FlexibleSpace();
 								GUILayout.BeginHorizontal();
 								{
 									GUILayout.FlexibleSpace();
-									GUILayout.Label("Invalid Root", Styles.NoPreviewLabel);
+									GUILayout.Label("Invalid Root", Styles.NoPreviewSmallLabel);
 									GUILayout.FlexibleSpace();
 								}
 								GUILayout.EndHorizontal();
@@ -630,18 +643,6 @@ namespace LunraGames.NoiseMaker
 				Graph.GetSphereAltitudes(sphere, ref verts, 0.75f);
 				PreviewMesh.vertices = verts;
 
-				/*
-				var verts = PreviewMesh.vertices;
-				var newVerts = new Vector3[verts.Length];
-				for (var i = 0; i < verts.Length; i++)
-				{
-					// Get the value of the specified vert, by converting it's euler position to a latitude and longitude.
-					var vert = verts[i];
-					var latLong = SphereUtils.CartesianToPolar(vert.normalized);
-					newVerts[i] = (vert.normalized * SphereScalar) + (vert.normalized * (float)sphere.GetValue(latLong.x, latLong.y) * 0.1f);
-				}
-				PreviewMesh.vertices = newVerts;
-				*/
 				PreviewUpdating = true;
 				PreviewTexture = GetSphereTexture(module, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
 

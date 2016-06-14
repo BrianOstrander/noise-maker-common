@@ -277,6 +277,23 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
+		static GUIStyle _NoPreviewSmallLabel;
+
+		public static GUIStyle NoPreviewSmallLabel
+		{
+			get 
+			{
+				if (_NoPreviewSmallLabel == null)
+				{
+					_NoPreviewSmallLabel = new GUIStyle(EditorStyles.label);
+					_NoPreviewSmallLabel.alignment = TextAnchor.MiddleCenter;
+					_NoPreviewSmallLabel.fontSize = 34;
+					_NoPreviewSmallLabel.fixedHeight = 128f;
+				}
+				return _NoPreviewSmallLabel;
+			}
+		}
+
 		static GUIStyle _PreviewToolbar;
 
 		public static GUIStyle PreviewToolbar
