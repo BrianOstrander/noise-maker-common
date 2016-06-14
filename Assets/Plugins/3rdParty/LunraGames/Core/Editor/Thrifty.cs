@@ -33,8 +33,6 @@ namespace LunraGames
 
 		static void Update()
 		{
-			if (EditorApplication.isPlayingOrWillChangePlaymode) Debug.Log("true");
-
 			if (EditorApplication.isCompiling || Actions == null || Actions.Count == 0) return;
 
 			if (!Running)

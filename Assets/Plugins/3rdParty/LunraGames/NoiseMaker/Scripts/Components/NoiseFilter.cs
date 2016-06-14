@@ -8,6 +8,7 @@ namespace LunraGames.NoiseMaker
 	public class NoiseFilter : MonoBehaviour 
 	{
 		#region Inspector
+		public bool GenerateOnAwake;
 		public NoiseGraph NoiseGraph;
 		public MercatorMap MercatorMap;
 		public int MapWidth;
@@ -20,6 +21,11 @@ namespace LunraGames.NoiseMaker
 
 		Mesh CachedMesh;
 		Material CachedMaterial;
+
+		void Awake()
+		{
+			if (GenerateOnAwake) Regenerate();
+		}
 
 		public void Regenerate()
 		{
