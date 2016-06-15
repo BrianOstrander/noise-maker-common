@@ -76,9 +76,7 @@ namespace LibNoise.Modifiers
                 throw new ArgumentNullException("A source module must be provided.");
 
             SourceModule = sourceModule;
-            XAngle = xAngle;
-            YAngle = yAngle;
-            ZAngle = zAngle;
+            SetAngles(xAngle, yAngle, zAngle);
         }
 
         public void SetAngles(double xAngle, double yAngle, double zAngle)
