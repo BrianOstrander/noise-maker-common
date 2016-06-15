@@ -13,7 +13,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var voronoi = node as VoronoiNode;
 
-			var preview = GetPreview(graph, node as Node<IModule>);
+			var preview = GetModulePreview(graph, node as Node<IModule>);
 
 			GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewWidth), GUILayout.ExpandWidth(true));
 

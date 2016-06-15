@@ -69,7 +69,7 @@ namespace LunraGames.NoiseMaker
 
 		protected static List<NodePreview> Previews = new List<NodePreview>();
 
-		protected NodePreview GetPreview(Graph graph, Node<LibNoise.IModule> node)
+		protected NodePreview GetModulePreview(Graph graph, Node<LibNoise.IModule> node)
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == node.Id);
 

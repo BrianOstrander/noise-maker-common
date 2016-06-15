@@ -15,7 +15,7 @@ namespace LunraGames.NoiseMaker
 
 			if (invert.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetPreview(graph, node as Node<IModule>);
+				var preview = GetModulePreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 			}
 			else 

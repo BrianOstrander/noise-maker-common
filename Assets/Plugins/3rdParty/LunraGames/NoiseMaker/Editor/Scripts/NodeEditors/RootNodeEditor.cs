@@ -20,7 +20,7 @@ namespace LunraGames.NoiseMaker
 			if (rootNode.GetValue(graph.Nodes) != null)// rootNode.SourceIds != null && !StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()))
 			{
 				//var targetNode = graph.Nodes.Find(n => n.Id == rootNode.SourceIds[0]);
-				var preview = GetPreview(graph, node as Node<IModule>);
+				var preview = GetModulePreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 
 				var source = rootNode.SourceIds.FirstOrDefault();
