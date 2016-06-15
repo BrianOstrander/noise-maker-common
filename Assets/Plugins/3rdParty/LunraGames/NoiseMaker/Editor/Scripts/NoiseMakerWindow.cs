@@ -24,9 +24,6 @@ namespace LunraGames.NoiseMaker
 			public const float PreviewHeight = PreviewWidth;
 		}
 
-		// todo: Make this dynamic and settable in editor
-		public const float SphereScalar = 0.65f;
-
 		enum States
 		{
 			Splash,
@@ -659,7 +656,6 @@ namespace LunraGames.NoiseMaker
 			}
 
 			var mat = NoiseMakerConfig.Instance.Ico5Vertex.GetComponent<MeshRenderer>().sharedMaterial;
-			mat.mainTextureOffset = new Vector2(0.5f, 0f);
 
 			if (mat.mainTexture != PreviewTexture)
 			{

@@ -21,7 +21,7 @@ namespace LunraGames.NoiseMaker
 
 		public static float GetLongitude(float x, float width) 
 		{
-			return (((width - x) / width) * 360f) - 180f;
+			return (((width - x) / width) * 360f);
 		}
 
 		// Taken from http://answers.unity3d.com/questions/189724/polar-spherical-coordinates-to-xyz-and-vice-versa.html
