@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using LibNoise.Models;
+using LibNoise.Modifiers;
 
 namespace LunraGames.NoiseMaker
 {
@@ -58,12 +59,16 @@ namespace LunraGames.NoiseMaker
 
 			if (root == null) throw new NullReferenceException("Couldn't find root IModule");
 
+			if (Translation != Vector3.zero) root = new TranslateInput(root, Translation.x, Translation.y, Translation.z);
+			if (Rotation != Vector3.zero) root = new RotateInput(root, Rotation.x, Rotation.y, Rotation.z);
+			if (Scale != Vector3.one) root = new ScaleInput(root, Scale.x, Scale.y, Scale.z);
+
 			var sphere = new Sphere(root);
 
 			var mesh = Instantiate<Mesh>(CachedMesh);
 
 			var verts = mesh.vertices;
-			graph.GetSphereAltitudes(ref verts, Datum, Deviation);
+			Graph.GetSphereAltitudes(sphere, ref verts, Datum, Deviation);
 			mesh.vertices = verts;
 
 			meshFilter.sharedMesh = mesh;

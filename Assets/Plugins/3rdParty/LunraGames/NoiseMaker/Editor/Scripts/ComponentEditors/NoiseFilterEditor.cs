@@ -38,6 +38,7 @@ namespace LunraGames.NoiseMaker
 		public override void OnInspectorGUI()
 		{
 			serializedObject.Update();
+
 			var changed = false;
 
 			Filtering.enumValueIndex = Deltas.DetectDelta<int>(Filtering.enumValueIndex, GUILayout.Toolbar(Filtering.enumValueIndex, Enum.GetNames(typeof(NoiseMaker.Filtering))), ref changed);
@@ -66,6 +67,10 @@ namespace LunraGames.NoiseMaker
 			}
 			changed = false;
 
+			EditorGUILayout.PropertyField(Translation);
+			EditorGUILayout.PropertyField(Rotation);
+			EditorGUILayout.PropertyField(Scale);
+
 			EditorGUILayout.PropertyField(MercatorMap);
 
 			MapWidth.intValue = Deltas.DetectDelta<int>(MapWidth.intValue, EditorGUILayout.DelayedIntField(new GUIContent("Texture Width", "The height in pixels of the texture to apply the specified Mercator to."), MapWidth.intValue), ref changed);
@@ -92,31 +97,6 @@ namespace LunraGames.NoiseMaker
 			}
 			changed = false;
 
-			//DrawDefaultInspector();
-			//serializedObject.Update();
-
-
-
-			/*
-			EditorGUILayout.PropertyField(TogglesProperty);
-			EditorGUILayout.PropertyField(DelayDurationProperty);
-			EditorGUILayout.PropertyField(DurationProperty);
-			EditorGUILayout.LabelField("Total time", (DelayDurationProperty.floatValue + DurationProperty.floatValue)+" seconds");
-
-			if (TogglesProperty.boolValue)
-			{
-				EditorGUILayout.PropertyField(EaseToTypeProperty);
-				EditorGUILayout.PropertyField(EaseFromTypeProperty);
-				EditorGUILayout.HelpBox("\"Ping Pongs\" does not work for toggling eases.", MessageType.Info);
-				PingPongsProperty.boolValue = false;
-			}
-			else
-			{
-				EditorGUILayout.PropertyField(EaseToTypeProperty, new GUIContent("Ease"));
-				EaseFromTypeProperty.enumValueIndex = EaseToTypeProperty.enumValueIndex;
-				EditorGUILayout.PropertyField(PingPongsProperty);
-			}
-			*/
 			serializedObject.ApplyModifiedProperties();
 		}
 	}

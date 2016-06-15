@@ -42,5 +42,21 @@ namespace LunraGames.NoiseMaker
 
 			return polar;
 		}
+
+		/*
+		// This is untested, so I'm leaving it commented until it is...
+		// Taken from http://answers.unity3d.com/questions/189724/polar-spherical-coordinates-to-xyz-and-vice-versa.html
+		public static Vector3 PolarToCartesian(Vector2 polar)
+		{
+			//an origin vector, representing lat,lon of 0,0. 
+			var origin = new Vector3(0f, 0f, 1f);
+			//build a quaternion using euler angles for lat,lon
+			var rotation = Quaternion.Euler(polar.x, polar.y, 0f);
+			//transform our reference vector by the rotation. Easy-peasy!
+			var point = rotation * origin;
+
+			return point;
+		}
+		*/
 	}
 }
