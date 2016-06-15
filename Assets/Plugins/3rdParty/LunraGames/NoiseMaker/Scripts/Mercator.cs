@@ -38,6 +38,7 @@ namespace LunraGames.NoiseMaker
 		{
 			if (colors == null) throw new ArgumentNullException("colors");
 			if (height * width != colors.Length) throw new ArgumentOutOfRangeException("colors");
+			if (sphere == null) throw new ArgumentNullException("sphere");
 
 			for (var x = 0; x < width; x++)
 			{
