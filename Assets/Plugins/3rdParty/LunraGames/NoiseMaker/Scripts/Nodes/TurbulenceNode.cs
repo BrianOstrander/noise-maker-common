@@ -7,14 +7,14 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class TurbulenceNode : Node
+	public class TurbulenceNode : Node<IModule>
 	{
 		public float Frequency = 0.02f;
 		public float Power;
 		public int Roughness = 1;
 		public int Seed = NoiseUtility.Seed;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 1)
 			{
@@ -25,17 +25,17 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var turbulence = Module == null ? new Turbulence(sources[0]) : Module as Turbulence;
+			var turbulence = Value == null ? new Turbulence(sources[0] as IModule) : Value as Turbulence;
 
-			turbulence.SourceModule = sources[0];
+			turbulence.SourceModule = sources[0] as IModule;
 
 			turbulence.Frequency = Frequency;
 			turbulence.Power = Power;
 			turbulence.Roughness = Roughness;
 			turbulence.Seed = Seed;
 
-			Module = turbulence;
-			return Module;
+			Value = turbulence;
+			return Value;
 		}
 	}
 }

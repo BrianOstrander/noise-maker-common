@@ -6,9 +6,9 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class InvertNode : Node 
+	public class InvertNode : Node<IModule> 
 	{
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 1)
 			{
@@ -19,13 +19,13 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var invert = Module == null ? new InvertOutput(sources[0]) : Module as InvertOutput;
+			var invert = Value == null ? new InvertOutput(sources[0] as IModule) : Value as InvertOutput;
 
-			invert.SourceModule = sources[0];
+			invert.SourceModule = sources[0] as IModule;
 
-			Module = invert;
+			Value = invert;
 
-			return Module;
+			return Value;
 		}
 	}
 }

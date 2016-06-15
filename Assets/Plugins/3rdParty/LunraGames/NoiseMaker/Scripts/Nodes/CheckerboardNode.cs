@@ -6,14 +6,14 @@ using System;
 
 namespace LunraGames.NoiseMaker
 {
-	public class CheckerboardNode : Node
+	public class CheckerboardNode : Node<IModule>
 	{
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
-			var checkerboard = Module == null ? new Checkerboard() : Module as Checkerboard;
+			var checkerboard = Value == null ? new Checkerboard() : Value as Checkerboard;
 
-			Module = checkerboard;
-			return Module;
+			Value = checkerboard;
+			return Value;
 		}
 	}
 }

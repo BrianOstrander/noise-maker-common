@@ -9,13 +9,13 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(AbsoluteNode), Strings.Modifiers, "Absolute")]
 	public class AbsoluteNodeEditor : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var absolute = node as AbsoluteNode;
 
-			if (absolute.GetModule(graph.Nodes) != null)
+			if (absolute.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetPreview(graph, node);
+				var preview = GetPreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 			}
 			else EditorGUILayout.HelpBox("Specify an input.", MessageType.Warning);

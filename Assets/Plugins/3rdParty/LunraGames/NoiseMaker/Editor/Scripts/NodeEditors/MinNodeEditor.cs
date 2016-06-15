@@ -9,13 +9,13 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(MinNode), Strings.Combiners, "Min")]
 	public class MinNodeEditor : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var min = node as MinNode;
 
-			if (min.GetModule(graph.Nodes) != null)
+			if (min.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetPreview(graph, node);
+				var preview = GetPreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 			}
 			else EditorGUILayout.HelpBox(Strings.SpecifyTwoInputs, MessageType.Warning);

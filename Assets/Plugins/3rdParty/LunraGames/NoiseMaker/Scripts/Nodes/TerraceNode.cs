@@ -6,14 +6,14 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class TerraceNode : Node 
+	public class TerraceNode : Node<IModule> 
 	{
 		/// <summary>
 		/// The points that define the terraced output, where X is input/time, Y is output/value.
 		/// </summary>
 		public List<float> Points;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 1)
 			{
@@ -24,9 +24,9 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var terrace = Module == null ? new Terrace(sources[0]) : Module as Terrace;
+			var terrace = Value == null ? new Terrace(sources[0] as IModule) : Value as Terrace;
 
-			terrace.SourceModule = sources[0];
+			terrace.SourceModule = sources[0] as IModule;
 
 			if (Points == null)
 			{
@@ -42,9 +42,9 @@ namespace LunraGames.NoiseMaker
 				else terrace.ControlPoints.Add(Points[i]);
 			}
 
-			Module = terrace;
+			Value = terrace;
 
-			return Module;
+			return Value;
 		}
 	}
 }

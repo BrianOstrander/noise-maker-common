@@ -9,11 +9,11 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(BillowNode), Strings.Generators, "Billow")]
 	public class BillowNodeEditor : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var billow = node as BillowNode;
 
-			var preview = GetPreview(graph, node);
+			var preview = GetPreview(graph, node as Node<IModule>);
 
 			GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewWidth), GUILayout.ExpandWidth(true));
 

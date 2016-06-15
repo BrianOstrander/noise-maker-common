@@ -16,13 +16,13 @@ namespace LunraGames.NoiseMaker
 	{
 		static Dictionary<string, Vector2> ScrollPositions = new Dictionary<string, Vector2>();
 
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var curve = node as CurveNode;
 
-			if (curve.GetModule(graph.Nodes) != null)
+			if (curve.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetPreview(graph, node);
+				var preview = GetPreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 
 				GUILayout.FlexibleSpace();

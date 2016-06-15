@@ -5,7 +5,7 @@ using System;
 
 namespace LunraGames.NoiseMaker
 {
-	public class BillowNode : Node
+	public class BillowNode : Node<IModule>
 	{
 		public float Frequency = 0.02f;
 		public float Lacunarity;
@@ -14,9 +14,9 @@ namespace LunraGames.NoiseMaker
 		public float Persistence;
 		public int Seed = NoiseUtility.Seed;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
-			var billow = Module == null ? new Billow() : Module as Billow;
+			var billow = Value == null ? new Billow() : Value as Billow;
 			billow.Frequency = Frequency;
 			billow.Lacunarity = Lacunarity;
 			billow.NoiseQuality = Quality;
@@ -24,8 +24,8 @@ namespace LunraGames.NoiseMaker
 			billow.Persistence = Persistence;
 			billow.Seed = Seed;
 
-			Module = billow;
-			return Module;
+			Value = billow;
+			return Value;
 		}
 	}
 }

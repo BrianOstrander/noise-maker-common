@@ -7,11 +7,11 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class RotatePointNode : Node
+	public class RotatePointNode : Node<IModule>
 	{
 		public Vector3 Rotation = Vector3.zero;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 1)
 			{
@@ -22,14 +22,14 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var rotatePoint = Module == null ? new RotateInput(sources[0], Rotation.x, Rotation.y, Rotation.z) : Module as RotateInput;
+			var rotatePoint = Value == null ? new RotateInput(sources[0] as IModule, Rotation.x, Rotation.y, Rotation.z) : Value as RotateInput;
 
-			rotatePoint.SourceModule = sources[0];
+			rotatePoint.SourceModule = sources[0] as IModule;
 
 			rotatePoint.SetAngles(Rotation.x, Rotation.y, Rotation.z);
 
-			Module = rotatePoint;
-			return Module;
+			Value = rotatePoint;
+			return Value;
 		}
 	}
 }

@@ -6,12 +6,12 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class ClampNode : Node 
+	public class ClampNode : Node<IModule> 
 	{
 		public float LowerBound = -1f;
 		public float UpperBound = 1f;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 1)
 			{
@@ -22,15 +22,15 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var clamp = Module == null ? new ClampOutput(sources[0]) : Module as ClampOutput;
+			var clamp = Value == null ? new ClampOutput(sources[0] as IModule) : Value as ClampOutput;
 
-			clamp.SourceModule = sources[0];
+			clamp.SourceModule = sources[0] as IModule;
 
 			clamp.SetBounds(LowerBound, UpperBound);
 
-			Module = clamp;
+			Value = clamp;
 
-			return Module;
+			return Value;
 		}
 	}
 }

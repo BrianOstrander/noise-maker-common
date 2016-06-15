@@ -9,13 +9,13 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(InvertNode), Strings.Modifiers, "Invert")]
 	public class InvertNodeEditer : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var invert = node as InvertNode;
 
-			if (invert.GetModule(graph.Nodes) != null)
+			if (invert.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetPreview(graph, node);
+				var preview = GetPreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 			}
 			else 

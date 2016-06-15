@@ -7,11 +7,11 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class ExponentNode : Node
+	public class ExponentNode : Node<IModule>
 	{
 		public float Exponent;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 1)
 			{
@@ -22,13 +22,13 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var exponent = Module == null ? new ExponentialOutput(sources[0], Exponent) : Module as ExponentialOutput;
+			var exponent = Value == null ? new ExponentialOutput(sources[0] as IModule, Exponent) : Value as ExponentialOutput;
 
-			exponent.SourceModule = sources[0];
+			exponent.SourceModule = sources[0] as IModule;
 			exponent.Exponent = Exponent;
 
-			Module = exponent;
-			return Module;
+			Value = exponent;
+			return Value;
 		}
 	}
 }

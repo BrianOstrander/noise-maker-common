@@ -14,7 +14,7 @@ namespace LunraGames.NoiseMaker
 		const float DefaultDatum = 0.5f;
 		const float DefaultDeviation = 0.1f;
 
-		public List<Node> Nodes = new List<Node>();
+		public List<INode> Nodes = new List<INode>();
 		public string RootId;
 
 		IModule _Root;
@@ -29,16 +29,16 @@ namespace LunraGames.NoiseMaker
 				{
 					var node = Nodes.FirstOrDefault(n => n.Id == RootId);
 					if (node == null) throw new NullReferenceException("No node found for the RootId \""+RootId+"\"");
-					_Root = node.GetModule(Nodes);
+					_Root = node.GetRawValue(Nodes) as IModule;
 				}
 				return _Root;
 			}
 		}
 
-		Node _RootNode;
+		INode _RootNode;
 
 		[JsonIgnore]
-		public Node RootNode
+		public INode RootNode
 		{
 			get
 			{
@@ -53,7 +53,7 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		public void Remove(Node node)
+		public void Remove(INode node)
 		{
 			if (node == null) throw new ArgumentNullException("node");
 

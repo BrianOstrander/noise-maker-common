@@ -7,11 +7,11 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class ScalePointNode : Node
+	public class ScalePointNode : Node<IModule>
 	{
 		public Vector3 Scale = Vector3.one;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 1)
 			{
@@ -22,16 +22,16 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var scalePoint = Module == null ? new ScaleInput(sources[0], Scale.x, Scale.y, Scale.z) : Module as ScaleInput;
+			var scalePoint = Value == null ? new ScaleInput(sources[0] as IModule, Scale.x, Scale.y, Scale.z) : Value as ScaleInput;
 
-			scalePoint.SourceModule = sources[0];
+			scalePoint.SourceModule = sources[0] as IModule;
 
 			scalePoint.X = Scale.x;
 			scalePoint.Y = Scale.y;
 			scalePoint.Z = Scale.z;
 
-			Module = scalePoint;
-			return Module;
+			Value = scalePoint;
+			return Value;
 		}
 	}
 }

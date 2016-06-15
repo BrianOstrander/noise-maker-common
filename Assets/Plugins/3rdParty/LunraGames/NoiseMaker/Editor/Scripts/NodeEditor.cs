@@ -69,7 +69,7 @@ namespace LunraGames.NoiseMaker
 
 		protected static List<NodePreview> Previews = new List<NodePreview>();
 
-		protected NodePreview GetPreview(Graph graph, Node node)
+		protected NodePreview GetPreview(Graph graph, Node<LibNoise.IModule> node)
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == node.Id);
 
@@ -96,7 +96,7 @@ namespace LunraGames.NoiseMaker
 					Previews.Add(preview);
 				}
 
-				var module = node.GetModule(graph.Nodes);
+				var module = node.GetValue(graph.Nodes);
 				var width = preview.Preview.width;
 				var height = preview.Preview.height;
 				var pixels = new Color[width * height];
@@ -157,6 +157,6 @@ namespace LunraGames.NoiseMaker
 			return preview == null ? long.MinValue : preview.LastUpdated;
 		}
 
-		public abstract Node Draw(Graph graph, Node node);
+		public abstract INode Draw(Graph graph, INode node);
 	}
 }

@@ -9,13 +9,13 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(ScalePointNode), Strings.Transformers, "Scale Point")]
 	public class ScalePointNodeEditor : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var scalePoint = node as ScalePointNode;
 
-			if (scalePoint.GetModule(graph.Nodes) != null)
+			if (scalePoint.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetPreview(graph, node);
+				var preview = GetPreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 
 				GUILayout.FlexibleSpace();

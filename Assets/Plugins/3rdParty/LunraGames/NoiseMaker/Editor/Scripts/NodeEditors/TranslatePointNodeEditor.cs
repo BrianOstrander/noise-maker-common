@@ -9,13 +9,13 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(TranslatePointNode), Strings.Transformers, "Translate Point")]
 	public class TranslatePointNodeEditor : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var translatePoint = node as TranslatePointNode;
 
-			if (translatePoint.GetModule(graph.Nodes) != null)
+			if (translatePoint.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetPreview(graph, node);
+				var preview = GetPreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 
 				GUILayout.FlexibleSpace();

@@ -6,18 +6,18 @@ using System;
 
 namespace LunraGames.NoiseMaker
 {
-	public class CylindersNode : Node
+	public class CylindersNode : Node<IModule>
 	{
 		public float Frequency = 0.02f;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
-			var cylinders = Module == null ? new Cylinders() : Module as Cylinders;
+			var cylinders = Value == null ? new Cylinders() : Value as Cylinders;
 
 			cylinders.Frequency = Frequency;
 
-			Module = cylinders;
-			return Module;
+			Value = cylinders;
+			return Value;
 		}
 	}
 }

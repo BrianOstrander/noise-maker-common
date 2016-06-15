@@ -9,13 +9,13 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(PowerNode), Strings.Combiners, "Power")]
 	public class PowerNodeEditor : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var power = node as PowerNode;
 
-			if (power.GetModule(graph.Nodes) != null)
+			if (power.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetPreview(graph, node);
+				var preview = GetPreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 			}
 			else EditorGUILayout.HelpBox(Strings.SpecifyTwoInputs, MessageType.Warning);

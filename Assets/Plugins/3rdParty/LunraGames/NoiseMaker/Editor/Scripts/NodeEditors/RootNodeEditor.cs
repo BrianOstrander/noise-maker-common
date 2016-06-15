@@ -13,14 +13,14 @@ namespace LunraGames.NoiseMaker
 	{
 		static string LastRootSource;
 
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var rootNode = node as RootNode;
 
-			if (rootNode.GetModule(graph.Nodes) != null)// rootNode.SourceIds != null && !StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()))
+			if (rootNode.GetValue(graph.Nodes) != null)// rootNode.SourceIds != null && !StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()))
 			{
 				//var targetNode = graph.Nodes.Find(n => n.Id == rootNode.SourceIds[0]);
-				var preview = GetPreview(graph, node);
+				var preview = GetPreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 
 				var source = rootNode.SourceIds.FirstOrDefault();

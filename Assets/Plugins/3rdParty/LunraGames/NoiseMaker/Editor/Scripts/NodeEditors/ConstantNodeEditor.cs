@@ -9,17 +9,17 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(ConstantNode), Strings.Generators, "Constant")]
 	public class ConstantNodeEditor : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var constant = node as ConstantNode;
 
-			var preview = GetPreview(graph, node);
+			var preview = GetPreview(graph, node as Node<IModule>);
 
 			GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewWidth), GUILayout.ExpandWidth(true));
 
 			GUILayout.FlexibleSpace();
 
-			constant.Value = Deltas.DetectDelta<float>(constant.Value, EditorGUILayout.FloatField("Value", constant.Value), ref preview.Stale);
+			constant.Constant = Deltas.DetectDelta<float>(constant.Constant, EditorGUILayout.FloatField("Value", constant.Constant), ref preview.Stale);
 
 			return constant;
 		}

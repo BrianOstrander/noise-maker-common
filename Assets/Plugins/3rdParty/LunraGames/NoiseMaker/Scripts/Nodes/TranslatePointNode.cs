@@ -7,11 +7,11 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class TranslatePointNode : Node
+	public class TranslatePointNode : Node<IModule>
 	{
 		public Vector3 Position = Vector3.zero;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 1)
 			{
@@ -22,16 +22,16 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var translatePoint = Module == null ? new TranslateInput(sources[0], Position.x, Position.y, Position.z) : Module as TranslateInput;
+			var translatePoint = Value == null ? new TranslateInput(sources[0] as IModule, Position.x, Position.y, Position.z) : Value as TranslateInput;
 
-			translatePoint.SourceModule = sources[0];
+			translatePoint.SourceModule = sources[0] as IModule;
 
 			translatePoint.X = Position.x;
 			translatePoint.Y = Position.y;
 			translatePoint.Z = Position.z;
 
-			Module = translatePoint;
-			return Module;
+			Value = translatePoint;
+			return Value;
 		}
 	}
 }

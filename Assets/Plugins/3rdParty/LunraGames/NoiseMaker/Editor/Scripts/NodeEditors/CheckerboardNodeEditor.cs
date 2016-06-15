@@ -9,9 +9,9 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(CheckerboardNode), Strings.Generators, "Checkerboard")]
 	public class CheckerboardNodeEditor : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
-			var preview = GetPreview(graph, node);
+			var preview = GetPreview(graph, node as Node<IModule>);
 			GUILayout.Box(preview.Preview);
 			return node as CheckerboardNode;
 		}

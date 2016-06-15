@@ -10,13 +10,13 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(CurveSimpleNode), Strings.Modifiers, "Curve Simple")]
 	public class CurveSimpleNodeEditor : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var curveSimple = node as CurveSimpleNode;
 
-			if (curveSimple.GetModule(graph.Nodes) != null)
+			if (curveSimple.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetPreview(graph, node);
+				var preview = GetPreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 
 				GUILayout.FlexibleSpace();

@@ -6,14 +6,14 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class CurveNode : Node 
+	public class CurveNode : Node<IModule> 
 	{
 		/// <summary>
 		/// The points that define the curved output, where X is input/time, Y is output/value.
 		/// </summary>
 		public List<Vector2> Points;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 1)
 			{
@@ -24,9 +24,9 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 1) return null;
 
-			var curve = Module == null ? new CurveOutput(sources[0]) : Module as CurveOutput;
+			var curve = Value == null ? new CurveOutput(sources[0] as IModule) : Value as CurveOutput;
 
-			curve.SourceModule = sources[0];
+			curve.SourceModule = sources[0] as IModule;
 
 			if (Points == null)
 			{
@@ -50,9 +50,9 @@ namespace LunraGames.NoiseMaker
 				else curve.ControlPoints.Add(new CurveControlPoint { Input = point.x, Output = point.y });
 			}
 
-			Module = curve;
+			Value = curve;
 
-			return Module;
+			return Value;
 		}
 	}
 }

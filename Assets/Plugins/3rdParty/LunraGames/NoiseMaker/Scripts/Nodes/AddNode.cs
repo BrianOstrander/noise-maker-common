@@ -7,9 +7,9 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class AddNode : Node
+	public class AddNode : Node<IModule>
 	{
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 2)
 			{
@@ -21,14 +21,14 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 2) return null;
 
-			var addModule = Module == null ? new Add(sources[0], sources[1]) : Module as Add;
+			var addModule = Value == null ? new Add(sources[0] as IModule, sources[1] as IModule) : Value as Add;
 
-			addModule.SourceModule1 = sources[0];
-			addModule.SourceModule2 = sources[1];
+			addModule.SourceModule1 = sources[0] as IModule;
+			addModule.SourceModule2 = sources[1] as IModule;
 
-			Module = addModule;
+			Value = addModule;
 
-			return Module;
+			return Value;
 		}
 	}
 }

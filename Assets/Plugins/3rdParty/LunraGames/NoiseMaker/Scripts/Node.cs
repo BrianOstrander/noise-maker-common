@@ -9,22 +9,60 @@ using Newtonsoft.Json;
 namespace LunraGames.NoiseMaker
 {
 	[Serializable]
-	public abstract class Node
+	public abstract class Node<T> : INode
+	{
+
+		#region Inspector
+		public Vector2 EditorPosition { get; set; }
+		#endregion
+
+		public string Id { get; set; }
+		public List<string> SourceIds { get { return _SourceIds; } set { _SourceIds = value; } }
+
+		List<string> _SourceIds = new List<string>();
+
+		[NonSerialized]
+		protected T Value;
+
+		public abstract T GetValue(List<INode> nodes);
+
+		public object GetRawValue(List<INode> nodes)
+		{
+			return GetValue(nodes);
+		}
+
+		protected List<object> Sources(List<INode> nodes, params string[] sources)
+		{
+			if (nodes == null) throw new ArgumentNullException("nodes");
+			var result = new List<object>();
+			var ids = sources.Length == 0 ? SourceIds.ToArray() : sources;
+			foreach (var source in ids)
+			{
+				if (StringExtensions.IsNullOrWhiteSpace(source)) throw new ArgumentNullOrEmptyException("sources", "Array \"sources\" can't contain a null or empty string");
+				var node = nodes.FirstOrDefault(n => n.Id == source);
+				if (node == null) throw new ArgumentOutOfRangeException("sources", "No node found for \""+sources+"\"");
+				result.Add(node.GetRawValue(nodes));
+			}
+			return result;
+		}
+	}
+	/*
+	[Serializable]
+	public abstract class INode
 	{
 		#region Inspector
 		public Vector2 EditorPosition = Vector2.zero;
 		#endregion
 
 		public string Id;
-		public string ModuleType;
 		public List<string> SourceIds = new List<string>();
 
 		[NonSerialized]
-		protected IModule Module;
+		protected IModule Value;
 
-		public abstract IModule GetModule(List<Node> nodes);
+		public abstract IModule GetValue(List<INode> nodes);
 
-		protected List<IModule> Sources(List<Node> nodes, params string[] sources)
+		protected List<IModule> Sources(List<INode> nodes, params string[] sources)
 		{
 			if (nodes == null) throw new ArgumentNullException("nodes");
 			var result = new List<IModule>();
@@ -34,9 +72,10 @@ namespace LunraGames.NoiseMaker
 				if (StringExtensions.IsNullOrWhiteSpace(source)) throw new ArgumentNullOrEmptyException("sources", "Array \"sources\" can't contain a null or empty string");
 				var node = nodes.FirstOrDefault(n => n.Id == source);
 				if (node == null) throw new ArgumentOutOfRangeException("sources", "No node found for \""+sources+"\"");
-				result.Add(node.GetModule(nodes));
+				result.Add(node.GetValue(nodes));
 			}
 			return result;
 		}
 	}
+	*/
 }

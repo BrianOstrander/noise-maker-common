@@ -5,7 +5,7 @@ using System;
 
 namespace LunraGames.NoiseMaker
 {
-	public class RidgedMultifractalNode : Node
+	public class RidgedMultifractalNode : Node<IModule>
 	{
 		public float Frequency = 0.02f;
 		public float Lacunarity;
@@ -13,17 +13,17 @@ namespace LunraGames.NoiseMaker
 		public int OctaveCount = 1;
 		public int Seed = NoiseUtility.Seed;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
-			var ridged = Module == null ? new RidgedMultifractal() : Module as RidgedMultifractal;
+			var ridged = Value == null ? new RidgedMultifractal() : Value as RidgedMultifractal;
 			ridged.Frequency = Frequency;
 			ridged.Lacunarity = Lacunarity;
 			ridged.OctaveCount = OctaveCount;
 			ridged.NoiseQuality = Quality;
 			ridged.Seed = Seed;
 
-			Module = ridged;
-			return Module;
+			Value = ridged;
+			return Value;
 		}
 	}
 }

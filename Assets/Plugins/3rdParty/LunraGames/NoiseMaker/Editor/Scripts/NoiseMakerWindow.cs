@@ -44,11 +44,11 @@ namespace LunraGames.NoiseMaker
 		Vector3 GraphPosition = Vector3.zero;
 
 		Graph Graph;
-		Node ConnectingFrom;
-		Node ConnectingTo;
+		INode ConnectingFrom;
+		INode ConnectingTo;
 		Dictionary<string, bool> ShownCategories = new Dictionary<string, bool>();
 		int PreviewSelected;
-		Dictionary<string, Action<Node, Rect, int>> Previews;
+		Dictionary<string, Action<Node<IModule>, Rect, int>> Previews;
 		long PreviewLastUpdated;
 		Texture2D PreviewTexture;
 		Mesh PreviewMesh;
@@ -204,7 +204,7 @@ namespace LunraGames.NoiseMaker
 				var outDict = new Dictionary<string, Rect>();
 				var inDict = new Dictionary<string, List<Rect>>();
 
-				Node deletedNode = null;
+				INode deletedNode = null;
 
 				foreach (var node in Graph.Nodes)
 				{
@@ -375,7 +375,7 @@ namespace LunraGames.NoiseMaker
 									{
 										if (GUILayout.Button(option.Details.Name, Styles.OptionButton)) 
 										{
-											var node = Activator.CreateInstance(option.Details.Target) as Node;
+											var node = Activator.CreateInstance(option.Details.Target) as INode;
 											node.Id = Guid.NewGuid().ToString();
 											node.EditorPosition = GraphCenter();
 											Graph.Nodes.Add(node);
@@ -467,7 +467,7 @@ namespace LunraGames.NoiseMaker
 					{
 						if (Previews == null) 
 						{
-							Previews = new Dictionary<string, Action<Node, Rect, int>> {
+							Previews = new Dictionary<string, Action<Node<IModule>, Rect, int>> {
 								{ "Flat", DrawFlatPreview },
 								{ "Sphere", DrawSpherePreview },
 								{ "Elevation", DrawElevationPreview }
@@ -500,7 +500,7 @@ namespace LunraGames.NoiseMaker
 
 							try
 							{
-								if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()) || rootNode.GetModule(Graph.Nodes) == null)
+								if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()) || (rootNode as Node<IModule>).GetValue(Graph.Nodes) == null)
 								{
 									rootNode = null;
 								}
@@ -525,7 +525,7 @@ namespace LunraGames.NoiseMaker
 							}
 							else 
 							{
-								Previews[keys[PreviewSelected]](rootNode, new Rect(0f, 0f, previewArea.width, previewArea.height), PreviewSelected);
+								Previews[keys[PreviewSelected]](rootNode as Node<IModule>, new Rect(0f, 0f, previewArea.width, previewArea.height), PreviewSelected);
 
 								if (PreviewUpdating)
 								{
@@ -550,7 +550,7 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		/// <param name="node">Node to draw, typically the root.</param>
 		/// <param name="area">Area the editor should take up.</param>
-		void DrawFlatPreview(Node node, Rect area, int index)
+		void DrawFlatPreview(Node<IModule> node, Rect area, int index)
 		{
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
 			// todo: remove these duplicate update checks.
@@ -559,7 +559,7 @@ namespace LunraGames.NoiseMaker
 			{
 				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)area.width, (int)area.height);
 
-				var module = node.GetModule(Graph.Nodes);
+				var module = node.GetValue(Graph.Nodes);
 				var pixels = new Color[PreviewTexture.width * PreviewTexture.height];
 				for (var x = 0; x < PreviewTexture.width; x++)
 				{
@@ -585,7 +585,7 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		/// <param name="node">Node to draw, typically the root.</param>
 		/// <param name="area">Area the editor should take up.</param>
-		void DrawSpherePreview(Node node, Rect area, int index)
+		void DrawSpherePreview(Node<IModule> node, Rect area, int index)
 		{
 			// Reset mesh, incase another preview has modified it.
 			NoiseMakerConfig.Instance.Ico4Vertex.GetComponent<MeshFilter>().sharedMesh = NoiseMakerConfig.Instance.Ico4VertexMesh;
@@ -596,7 +596,7 @@ namespace LunraGames.NoiseMaker
 			if (lastUpdate != PreviewLastUpdated) 
 			{
 				PreviewUpdating = true;
-				PreviewTexture = GetSphereTexture(node.GetModule(Graph.Nodes), completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
+				PreviewTexture = GetSphereTexture(node.GetValue(Graph.Nodes), completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -621,7 +621,7 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		/// <param name="node">Node to draw, typically the root.</param>
 		/// <param name="area">Area the editor should take up.</param>
-		void DrawElevationPreview(Node node, Rect area, int index)
+		void DrawElevationPreview(Node<IModule> node, Rect area, int index)
 		{
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
 			// todo: remove these duplicate update checks.
@@ -633,7 +633,7 @@ namespace LunraGames.NoiseMaker
 
 				if (PreviewMesh == null) PreviewMesh = Instantiate(NoiseMakerConfig.Instance.Ico5VertexMesh);
 
-				var module = node.GetModule(Graph.Nodes);
+				var module = node.GetValue(Graph.Nodes);
 				var sphere = new Sphere(module);
 
 				var verts = PreviewMesh.vertices;

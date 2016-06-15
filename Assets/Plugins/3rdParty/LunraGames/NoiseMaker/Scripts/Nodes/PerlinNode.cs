@@ -5,7 +5,7 @@ using System;
 
 namespace LunraGames.NoiseMaker
 {
-	public class PerlinNode : Node
+	public class PerlinNode : Node<IModule>
 	{
 		public float Frequency = 0.02f;
 		public float Lacunarity;
@@ -14,9 +14,9 @@ namespace LunraGames.NoiseMaker
 		public float Persistence;
 		public int Seed = NoiseUtility.Seed;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
-			var perlin = Module == null ? new Perlin() : Module as Perlin;
+			var perlin = Value == null ? new Perlin() : Value as Perlin;
 			perlin.Frequency = Frequency;
 			perlin.Lacunarity = Lacunarity;
 			perlin.NoiseQuality = Quality;
@@ -24,8 +24,8 @@ namespace LunraGames.NoiseMaker
 			perlin.Persistence = Persistence;
 			perlin.Seed = Seed;
 
-			Module = perlin;
-			return Module;
+			Value = perlin;
+			return Value;
 		}
 	}
 }

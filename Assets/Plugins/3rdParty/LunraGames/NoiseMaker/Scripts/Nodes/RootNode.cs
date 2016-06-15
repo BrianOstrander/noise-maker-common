@@ -8,9 +8,9 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class RootNode : Node
+	public class RootNode : Node<IModule>
 	{
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 1)
 			{
@@ -22,13 +22,13 @@ namespace LunraGames.NoiseMaker
 			if (sources.Count != 1 || sources[0] == null) return null;
 
 			// This is my lazy hack, I couldn't grok how I can do a root node without actually defining a new IModule...
-			var root = Module == null ?  new TranslateInput(sources[0], 0f, 0f ,0f) : Module as TranslateInput;
+			var root = Value == null ?  new TranslateInput(sources[0] as IModule, 0f, 0f ,0f) : Value as TranslateInput;
 
-			root.SourceModule = sources[0];
+			root.SourceModule = sources[0] as IModule;
 
-			Module = root;
+			Value = root;
 
-			return Module;
+			return Value;
 		}
 	}
 }

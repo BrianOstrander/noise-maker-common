@@ -7,13 +7,13 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	public class SelectNode : Node
+	public class SelectNode : Node<IModule>
 	{
 		public float EdgeFalloff = 0f;
 		public float LowerBound = -1f;
 		public float UpperBound = 1f;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
 			if (SourceIds == null || SourceIds.Count != 3)
 			{
@@ -30,17 +30,17 @@ namespace LunraGames.NoiseMaker
 			var sources = Sources(nodes);
 			if (sources.Count != 3) return null;
 
-			var selector = Module == null ? new Select(sources[0], sources[1], sources[2]) : Module as Select;
+			var selector = Value == null ? new Select(sources[0] as IModule, sources[1] as IModule, sources[2] as IModule) : Value as Select;
 
-			selector.SourceModule1 = sources[0];
-			selector.SourceModule2 = sources[1];
-			selector.ControlModule = sources[2];
+			selector.SourceModule1 = sources[0] as IModule;
+			selector.SourceModule2 = sources[1] as IModule;
+			selector.ControlModule = sources[2] as IModule;
 			selector.EdgeFalloff = EdgeFalloff;
 			selector.SetBounds(LowerBound, UpperBound);
 
-			Module = selector;
+			Value = selector;
 
-			return Module;
+			return Value;
 		}
 	}
 }

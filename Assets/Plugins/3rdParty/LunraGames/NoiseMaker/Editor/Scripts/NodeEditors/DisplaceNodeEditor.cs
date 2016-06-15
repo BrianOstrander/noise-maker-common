@@ -9,13 +9,13 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(DisplaceNode), Strings.Transformers, "Displace")]
 	public class DisplaceNodeEditor : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var blend = node as DisplaceNode;
 
-			if (blend.GetModule(graph.Nodes) != null)
+			if (blend.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetPreview(graph, node);
+				var preview = GetPreview(graph, node as Node<IModule>);
 				GUILayout.Box(preview.Preview);
 			}
 			else EditorGUILayout.HelpBox("Specify a source and an x, y, and z source.", MessageType.Warning);

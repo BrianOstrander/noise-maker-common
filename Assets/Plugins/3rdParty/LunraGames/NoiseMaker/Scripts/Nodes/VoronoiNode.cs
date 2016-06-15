@@ -5,24 +5,24 @@ using System;
 
 namespace LunraGames.NoiseMaker
 {
-	public class VoronoiNode : Node
+	public class VoronoiNode : Node<IModule>
 	{
 		public float Displacement = 1f;
 		public bool DistanceEnabled;
 		public float Frequency = 0.02f;
 		public int Seed = NoiseUtility.Seed;
 
-		public override IModule GetModule (List<Node> nodes)
+		public override IModule GetValue (List<INode> nodes)
 		{
-			var voronoi = Module == null ? new Voronoi() : Module as Voronoi;
+			var voronoi = Value == null ? new Voronoi() : Value as Voronoi;
 
 			voronoi.Displacement = Displacement;
 			voronoi.DistanceEnabled = DistanceEnabled;
 			voronoi.Frequency = Frequency;
 			voronoi.Seed = Seed;
 
-			Module = voronoi;
-			return Module;
+			Value = voronoi;
+			return Value;
 		}
 	}
 }

@@ -9,11 +9,11 @@ namespace LunraGames.NoiseMaker
 	[NodeDrawer(typeof(RidgedMultifractalNode), Strings.Generators, "Ridged Multifractal")]
 	public class RidgedMultifractalNodeEditor : NodeEditor
 	{
-		public override Node Draw(Graph graph, Node node)
+		public override INode Draw(Graph graph, INode node)
 		{
 			var ridged = node as RidgedMultifractalNode;
 
-			var preview = GetPreview(graph, node);
+			var preview = GetPreview(graph, node as Node<IModule>);
 
 			GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewWidth), GUILayout.ExpandWidth(true));
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using LibNoise.Models;
+using LibNoise;
 
 namespace LunraGames.NoiseMaker
 {
@@ -89,14 +90,14 @@ namespace LunraGames.NoiseMaker
 				return;
 			}
 
-			DrawElevationPreview(Graph.RootNode, new Rect(0f, 48f, position.width, position.height - 32f), overridePreview);
+			DrawElevationPreview(Graph.RootNode as Node<IModule>, new Rect(0f, 48f, position.width, position.height - 32f), overridePreview);
 		}
 
 		void OnSelectionChange() { Repaint(); }
 		#endregion
 
 		#region Previews
-		void DrawElevationPreview(Node node, Rect area, bool overridePreview)
+		void DrawElevationPreview(Node<IModule> node, Rect area, bool overridePreview)
 		{
 			var lastUpdate = overridePreview ? DateTime.Now.Ticks : NodeEditor.LastUpdated(node.Id);
 			if (lastUpdate != PreviewLastUpdated) 
@@ -105,7 +106,7 @@ namespace LunraGames.NoiseMaker
 
 				if (PreviewMesh == null) PreviewMesh = (Mesh)Instantiate(NoiseMakerConfig.Instance.Ico5VertexMesh);
 
-				var module = node.GetModule(Graph.Nodes);
+				var module = node.GetValue(Graph.Nodes);
 				var sphere = new Sphere(module);
 
 				var verts = PreviewMesh.vertices;
@@ -128,7 +129,6 @@ namespace LunraGames.NoiseMaker
 			}
 
 			var mat = NoiseMakerConfig.Instance.Ico5Vertex.GetComponent<MeshRenderer>().sharedMaterial;
-			mat.mainTextureOffset = new Vector2(0.5f, 0f);
 
 			if (mat.mainTexture != PreviewTexture)
 			{
