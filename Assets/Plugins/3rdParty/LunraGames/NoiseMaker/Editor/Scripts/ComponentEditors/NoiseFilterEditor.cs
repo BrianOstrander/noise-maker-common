@@ -5,7 +5,6 @@ using System;
 namespace LunraGames.NoiseMaker
 {
 	[CustomEditor(typeof(NoiseFilter), true)]
-	[CanEditMultipleObjects]
 	public class NoiseFilterEditor : Editor
 	{
 		SerializedProperty GenerateOnAwake;
@@ -44,12 +43,17 @@ namespace LunraGames.NoiseMaker
 			Filtering.enumValueIndex = Deltas.DetectDelta<int>(Filtering.enumValueIndex, GUILayout.Toolbar(Filtering.enumValueIndex, Enum.GetNames(typeof(NoiseMaker.Filtering))), ref changed);
 			var filtering = (NoiseMaker.Filtering)Filtering.enumValueIndex;
 			if (changed && filtering == NoiseMaker.Filtering.Sphere && MapWidth.intValue != (MapHeight.intValue * 2)) MapWidth.intValue = MapHeight.intValue * 2;
-
 			changed = false;
+
+			GUI.enabled = Application.isPlaying && NoiseGraph.objectReferenceValue != null && MercatorMap.objectReferenceValue != null;
+			if (GUILayout.Button("Regenerate")) (target as NoiseFilter).Regenerate();
+			GUI.enabled = true;
+
 			EditorGUILayout.PropertyField(GenerateOnAwake);
 
-			EditorGUILayout.PropertyField(NoiseGraph);
+			if (GenerateOnAwake.boolValue && NoiseGraph.objectReferenceValue == null) EditorGUILayout.HelpBox("A Noise Graph must be specified before the gameobject is enabled for the first time, or an error will occur.", MessageType.Warning);
 
+			EditorGUILayout.PropertyField(NoiseGraph);
 
 			Datum.floatValue = Deltas.DetectDelta<float>(Datum.floatValue, EditorGUILayout.DelayedFloatField(new GUIContent("Datum", "Datum is similar to a \"sea level\" that all values are relative to."), Datum.floatValue), ref changed);
 			if (changed && Datum.floatValue <= 0f)
@@ -70,6 +74,8 @@ namespace LunraGames.NoiseMaker
 			EditorGUILayout.PropertyField(Translation);
 			EditorGUILayout.PropertyField(Rotation);
 			EditorGUILayout.PropertyField(Scale);
+
+			if (GenerateOnAwake.boolValue && MercatorMap.objectReferenceValue == null) EditorGUILayout.HelpBox("A Mercator Map must be specified before the gameobject is enabled for the first time, or an error will occur.", MessageType.Warning);
 
 			EditorGUILayout.PropertyField(MercatorMap);
 
