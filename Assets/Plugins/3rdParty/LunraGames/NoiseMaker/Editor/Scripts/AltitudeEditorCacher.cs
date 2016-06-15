@@ -14,7 +14,7 @@ namespace LunraGames.NoiseMaker
 
 		static AltitudeEditorCacher()
 		{
-			if (!EditorApplication.isPlayingOrWillChangePlaymode) Refresh();
+			Refresh();
 		}
 
 		static void Refresh()
