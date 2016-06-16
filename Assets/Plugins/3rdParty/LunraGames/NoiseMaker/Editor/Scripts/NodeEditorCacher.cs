@@ -35,7 +35,25 @@ namespace LunraGames.NoiseMaker
 							continue;
 						}
 						var attribute = attributes[0] as NodeDrawer;
-						_Editors.Add(attribute.Target, new NodeEditorEntry { Details = attribute, Editor = Activator.CreateInstance(type) as NodeEditor } );
+
+						var linkers = new List<NodeLinker>();
+
+						var fields = attribute.Target.GetFields();
+						foreach (var field in fields)
+						{
+							var unmodifiedField = field;
+							var fieldAttributes = unmodifiedField.GetCustomAttributes(typeof(NodeLinker), true);
+							if (0 < fieldAttributes.Length) 
+							{
+								var fieldAttribute = fieldAttributes[0] as NodeLinker;
+								fieldAttribute.Type = unmodifiedField.FieldType;
+								fieldAttribute.Name = fieldAttribute.Name ?? ObjectNames.NicifyVariableName(unmodifiedField.Name);
+								fieldAttribute.Field = unmodifiedField;
+								linkers.Add(fieldAttribute);
+							}
+						}
+
+						_Editors.Add(attribute.Target, new NodeEditorEntry { Details = attribute, Editor = Activator.CreateInstance(type) as NodeEditor, Linkers = linkers } );
 					}
 				}
 			}

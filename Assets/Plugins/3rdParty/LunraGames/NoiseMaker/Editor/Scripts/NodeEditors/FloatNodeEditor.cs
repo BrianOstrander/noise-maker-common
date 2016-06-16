@@ -1,8 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
-using UnityEditor;
-using LibNoise;
+﻿using UnityEditor;
 
 namespace LunraGames.NoiseMaker
 {
@@ -15,18 +11,7 @@ namespace LunraGames.NoiseMaker
 
 			var preview = GetPreview<float>(graph, node);
 
-			floatNode.FloatValue = Deltas.DetectDelta<float>(floatNode.FloatValue, EditorGUILayout.FloatField("Value", floatNode.FloatValue), ref preview.Stale);
-
-//			if (exponent.GetValue(graph.Nodes) != null)
-//			{
-//				var preview = GetModulePreview(graph, node as Node<IModule>);
-//				GUILayout.Box(preview.Preview);
-//
-//				GUILayout.FlexibleSpace();
-//
-//				exponent.Exponent = Deltas.DetectDelta<float>(exponent.Exponent, EditorGUILayout.FloatField("Exponent", exponent.Exponent), ref preview.Stale);
-//			}
-//			else EditorGUILayout.HelpBox(Strings.SpecifyAnInput, MessageType.Warning);
+			floatNode.Value = Deltas.DetectDelta<float>(floatNode.Value, EditorGUILayout.FloatField("Value", floatNode.Value), ref preview.Stale);
 
 			return floatNode;
 		}

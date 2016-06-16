@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using Atesh;
 using LibNoise;
+using UnityEditor;
 
 namespace LunraGames.NoiseMaker
 {
@@ -70,7 +71,7 @@ namespace LunraGames.NoiseMaker
 
 		protected static List<NodePreview> Previews = new List<NodePreview>();
 
-		protected NodePreview GetPreview<T>(Graph graph, INode node)
+		protected NodePreview GetPreview(Type type, Graph graph, INode node)
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == node.Id);
 
@@ -97,7 +98,7 @@ namespace LunraGames.NoiseMaker
 
 			if (preview.Stale)
 			{
-				if (typeof(T) == typeof(IModule))
+				if (type == typeof(IModule))
 				{
 					var module = node.GetRawValue(graph.Nodes) as IModule;
 					var width = preview.Preview.width;
@@ -111,8 +112,13 @@ namespace LunraGames.NoiseMaker
 							{
 								for (var y = 0; y < height; y++)
 								{
-									var value = (float)module.GetValue((double)x, (double)y, 0.0);
-									pixels[(width * y) + x] = Previewer.Calculate(value, Previewer);
+									var index = (width * y) + x;
+									if (module == null) pixels[index] = Color.clear;
+									else 
+									{
+										var value = (float)module.GetValue((double)x, (double)y, 0.0);
+										pixels[index] = Previewer.Calculate(value, Previewer);
+									}
 								}
 							}
 						},
@@ -129,14 +135,38 @@ namespace LunraGames.NoiseMaker
 			return preview;
 		}
 
+		protected NodePreview GetPreview<T>(Graph graph, INode node)
+		{
+			return GetPreview(typeof(T), graph, node);
+		}
+
 		public List<Rect> DrawInputs(Rect position, params NodeIo[] inputs)
 		{
-			var currRect = new Rect(position.x - IoWidth + 1, position.y + IoStartOffset, IoWidth, IoHeight);
+			var startRect = new Rect(position.x - IoWidth + 1, position.y + IoStartOffset, IoWidth, IoHeight);
+			var currRect = new Rect(startRect);
 			var rects = new List<Rect>();
 			foreach (var input in inputs)
 			{
+				var wasColor = GUI.color;
+				GUI.color = input.MatchedType ? Color.cyan : Color.white;
+				if (input.MatchedType)
+				{
+					var width = Styles.BoxButton.CalcSize(new GUIContent(input.Name)).x;
+					currRect.x = Mathf.Min(currRect.x, (currRect.x + currRect.width) - width);
+					currRect.width = Mathf.Max(currRect.width, width);
+					if (GUI.Button(currRect, input.Name, Styles.BoxButton)) input.OnClick();
+				}
+				else if (GUI.Button(currRect, input.Active ? new GUIContent("x", input.Name) : new GUIContent(string.Empty, input.Name), Styles.BoxButton)) 
+				{
+					if (input.Active) input.OnClick();
+					else UnityEditor.EditorUtility.DisplayDialog("Invalid", "An input of type \""+input.Type.Name+"\" is required for "+input.Name, "Okay");
+				}
+				GUI.color = wasColor;
+
 				rects.Add(new Rect(currRect));
-				if (GUI.Button(currRect, input.Active ? new GUIContent("x") : GUIContent.none, Styles.BoxButton)) input.OnClick();
+
+				currRect.x = startRect.x;
+				currRect.width = startRect.width;
 				currRect.y += IoDivider + IoHeight;
 			}
 			return rects;
@@ -148,6 +178,46 @@ namespace LunraGames.NoiseMaker
 			var currRect = new Rect(position.x + position.width - 2, position.y + IoStartOffset, IoWidth, IoHeight);
 			if (GUI.Button(currRect, GUIContent.none, output.Connecting ? Styles.BoxButtonHovered : Styles.BoxButton)) output.OnClick();
 			return currRect;
+		}
+
+		public INode DrawFields(Graph graph, INode node, bool showPreview = true)
+		{
+			var preview = GetPreview(node.OutputType, graph, node);
+
+			if (showPreview) GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewWidth), GUILayout.ExpandWidth(true));
+
+			var entry = NodeEditorCacher.Editors[node.GetType()];
+			var links = entry.Linkers.OrderBy(l => l.Index).ToList();
+
+			foreach (var link in links)
+			{
+				if (link.Hide) continue;
+
+				GUI.enabled = StringExtensions.IsNullOrWhiteSpace(node.SourceIds[link.Index]);
+
+				var linkValue = link.Field.GetValue(node);
+				if (link.Type == typeof(float))
+				{
+					var typedValue = (float)linkValue;
+					link.Field.SetValue(node, Deltas.DetectDelta<float>(typedValue, EditorGUILayout.FloatField(link.Name, typedValue), ref preview.Stale));
+				}
+				else if (link.Type == typeof(int))
+				{
+					var typedValue = (int)linkValue;
+					link.Field.SetValue(node, Deltas.DetectDelta<int>(typedValue, EditorGUILayout.IntField(link.Name, typedValue), ref preview.Stale));
+				}
+				else if (link.Type == typeof(bool))
+				{
+					var typedValue = (bool)linkValue;
+					link.Field.SetValue(node, Deltas.DetectDelta<bool>(typedValue, EditorGUILayout.Toggle(link.Name, typedValue), ref preview.Stale));
+				}
+				else
+				{
+					EditorGUILayout.HelpBox("Field of unrecognized type: "+link.Type.Name, MessageType.Error);
+				}
+			}
+
+			return node;
 		}
 
 		public bool DrawCloseControl(Rect position)

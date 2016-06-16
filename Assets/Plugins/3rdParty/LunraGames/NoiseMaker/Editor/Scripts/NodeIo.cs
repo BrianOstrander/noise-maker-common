@@ -12,5 +12,7 @@ namespace LunraGames.NoiseMaker
 		public bool Connecting;
 		public bool Active;
 		public Action OnClick;
+		public bool MatchedType;
+		public Type Type;
 	}
 }

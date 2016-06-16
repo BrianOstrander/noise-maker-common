@@ -5,7 +5,6 @@ using Atesh;
 using LibNoise;
 using System.Linq;
 using Newtonsoft.Json;
-using Newtonsoft;
 
 namespace LunraGames.NoiseMaker
 {
@@ -23,8 +22,12 @@ namespace LunraGames.NoiseMaker
 
 		List<string> _SourceIds;
 
+		/// <summary>
+		/// The value that represents this Node. It could be stored locally, or derived from several input nodes. 
+		/// This really shouldn't be set or retrived directly unless you know what you're doing!
+		/// </summary>
 		[NonSerialized]
-		protected T Value;
+		public T Value;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="LunraGames.NoiseMaker.Node`1"/> class and creates an empty SourceIds array.
@@ -54,6 +57,8 @@ namespace LunraGames.NoiseMaker
 				}
 			}
 		}
+
+		public Type OutputType { get { return typeof(T); } }
 
 		public abstract T GetValue(List<INode> nodes);
 
@@ -181,7 +186,7 @@ namespace LunraGames.NoiseMaker
 
 			var value = values[valueIndex];
 			if (value == null) return localValue;
-			if (value.GetType() != typeof(S)) throw new ArgumentException("Specified source is not the correct type", "sources["+valueIndex+"]");
+			if (!typeof(S).IsAssignableFrom(value.GetType())) throw new ArgumentException("Specified source is not the correct type", "sources["+valueIndex+"]");
 			return (S)value;
 		}
 	}

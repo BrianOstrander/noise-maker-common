@@ -15,6 +15,8 @@ namespace LunraGames.NoiseMaker
 
 		public override INode Draw(Graph graph, INode node)
 		{
+			return DrawFields(graph, node);
+		/*
 			var rootNode = node as RootNode;
 
 			if (rootNode.GetValue(graph.Nodes) != null)// rootNode.SourceIds != null && !StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()))
@@ -32,6 +34,7 @@ namespace LunraGames.NoiseMaker
 			else EditorGUILayout.HelpBox(Strings.SpecifyAnInput, MessageType.Warning);
 
 			return rootNode;
+			*/
 		}
 	}
 }

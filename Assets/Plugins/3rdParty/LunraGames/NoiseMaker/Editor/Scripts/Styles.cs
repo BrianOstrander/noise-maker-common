@@ -19,6 +19,7 @@ namespace LunraGames.NoiseMaker
 				if (_BoxButton == null)
 				{
 					_BoxButton = new GUIStyle(GUI.skin.box);
+					_BoxButton.alignment = TextAnchor.MiddleLeft;
 					_BoxButton.padding.top -= 2;
 					var normal = new Texture2D(_BoxButton.normal.background.width, _BoxButton.normal.background.height);
 					var active = new Texture2D(_BoxButton.normal.background.width, _BoxButton.normal.background.height);

@@ -8,9 +8,13 @@ namespace LunraGames.NoiseMaker
 {
 	public class VoronoiNode : Node<IModule>
 	{
+		[NodeLinker(0)]
 		public float Displacement = 1f;
+		[NodeLinker(1)]
 		public bool DistanceEnabled;
+		[NodeLinker(2)]
 		public float Frequency = 0.02f;
+		[NodeLinker(3)]
 		public int Seed = NoiseUtility.Seed;
 
 		public VoronoiNode()
@@ -27,7 +31,7 @@ namespace LunraGames.NoiseMaker
 			voronoi.Displacement = GetLocalIfValueNull<float>(Displacement, 0, values);
 			voronoi.DistanceEnabled = DistanceEnabled;
 			voronoi.Frequency = Frequency;
-			voronoi.Seed = Seed;
+			voronoi.Seed = GetLocalIfValueNull<int>(Seed, 3, values);
 
 			Value = voronoi;
 			return Value;

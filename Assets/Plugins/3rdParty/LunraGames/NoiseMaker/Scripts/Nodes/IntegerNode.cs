@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace LunraGames.NoiseMaker
 {
-	public class FloatNode : Node<float>
+	public class IntegerNode : Node<int>
 	{
-		public override float GetValue (List<INode> nodes)
+		public override int GetValue (List<INode> nodes)
 		{
 			return Value;
 		}

@@ -11,20 +11,7 @@ namespace LunraGames.NoiseMaker
 	{
 		public override INode Draw(Graph graph, INode node)
 		{
-			var voronoi = node as VoronoiNode;
-
-			var preview = GetPreview<IModule>(graph, node);
-
-			GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewWidth), GUILayout.ExpandWidth(true));
-
-			GUILayout.FlexibleSpace();
-
-			voronoi.Displacement = Deltas.DetectDelta<float>(voronoi.Displacement, EditorGUILayout.FloatField("Displacement", voronoi.Displacement), ref preview.Stale);
-			voronoi.DistanceEnabled = Deltas.DetectDelta<bool>(voronoi.DistanceEnabled, EditorGUILayout.Toggle("Distance Enabled", voronoi.DistanceEnabled), ref preview.Stale);
-			voronoi.Frequency = Deltas.DetectDelta<float>(voronoi.Frequency, EditorGUILayout.FloatField("Frequency", voronoi.Frequency), ref preview.Stale);
-			voronoi.Seed = Deltas.DetectDelta<int>(voronoi.Seed, EditorGUILayout.IntField("Seed", voronoi.Seed), ref preview.Stale);
-
-			return voronoi;
+			return DrawFields(graph, node);
 		}
 	}
 }

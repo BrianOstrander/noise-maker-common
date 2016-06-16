@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 namespace LunraGames.NoiseMaker
 {
@@ -13,5 +14,6 @@ namespace LunraGames.NoiseMaker
 		string Id { get; set; }
 		List<string> SourceIds { get; set; }
 		object GetRawValue(List<INode> nodes);
+		Type OutputType { get; }
 	}
 }

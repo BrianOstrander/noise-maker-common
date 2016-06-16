@@ -213,13 +213,14 @@ namespace LunraGames.NoiseMaker
 					var drawer = NodeEditorCacher.Editors[unmodifiedNode.GetType()];
 					var windowRect = new Rect(unmodifiedNode.EditorPosition + graphPos, new Vector2(216f, 77f));
 					// Checks if this node has inputs we need to draw.
-					if (unmodifiedNode.SourceIds != null && 0 < unmodifiedNode.SourceIds.Count)
+					if (unmodifiedNode.SourceIds != null && 0 < unmodifiedNode.SourceIds.Count && drawer.Linkers.Count == unmodifiedNode.SourceIds.Count)
 					{
 						var inputs = new List<NodeIo>();
 
 						for (var i = 0; i < unmodifiedNode.SourceIds.Count; i++)
 						{
 							var unmodifiedI = i;
+							var linker = drawer.Linkers[unmodifiedI];
 
 							inputs.Add(new NodeIo 
 							{
@@ -238,7 +239,10 @@ namespace LunraGames.NoiseMaker
 										unmodifiedNode.SourceIds[unmodifiedI] = null;
 										ResetConnections();
 									}
-								}
+								},
+								MatchedType = ConnectingFrom != null && ConnectingFrom.OutputType == linker.Type,
+								Name = linker.Name,
+								Type = linker.Type
 							});
 						}
 						// DrawInputs does what it sounds like, then returns a list of their positions.
