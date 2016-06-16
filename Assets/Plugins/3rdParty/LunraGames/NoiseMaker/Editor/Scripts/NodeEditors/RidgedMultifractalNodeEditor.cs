@@ -13,7 +13,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var ridged = node as RidgedMultifractalNode;
 
-			var preview = GetModulePreview(graph, node as Node<IModule>);
+			var preview = GetPreview<IModule>(graph, node);
 
 			GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewWidth), GUILayout.ExpandWidth(true));
 

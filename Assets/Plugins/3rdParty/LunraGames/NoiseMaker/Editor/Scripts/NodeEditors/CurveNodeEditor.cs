@@ -22,7 +22,7 @@ namespace LunraGames.NoiseMaker
 
 			if (curve.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetModulePreview(graph, node as Node<IModule>);
+				var preview = GetPreview<IModule>(graph, node);
 				GUILayout.Box(preview.Preview);
 
 				GUILayout.FlexibleSpace();

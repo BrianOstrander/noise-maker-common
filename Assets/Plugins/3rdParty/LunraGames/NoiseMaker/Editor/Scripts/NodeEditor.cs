@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using Atesh;
+using LibNoise;
 
 namespace LunraGames.NoiseMaker
 {
@@ -69,7 +70,7 @@ namespace LunraGames.NoiseMaker
 
 		protected static List<NodePreview> Previews = new List<NodePreview>();
 
-		protected NodePreview GetModulePreview(Graph graph, Node<LibNoise.IModule> node)
+		protected NodePreview GetPreview<T>(Graph graph, INode node)
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == node.Id);
 
@@ -87,40 +88,44 @@ namespace LunraGames.NoiseMaker
 				}
 			}
 
-			if (preview == null || preview.Stale)
+			if (preview == null)
 			{
-				if (preview == null)
+				preview = new NodePreview { Id = node.Id, Stale = true };
+				preview.Preview = new Texture2D(PreviewWidth, PreviewHeight);
+				Previews.Add(preview);
+			}
+
+			if (preview.Stale)
+			{
+				if (typeof(T) == typeof(IModule))
 				{
-					preview = new NodePreview { Id = node.Id };
-					preview.Preview = new Texture2D(PreviewWidth, PreviewHeight);
-					Previews.Add(preview);
-				}
+					var module = node.GetRawValue(graph.Nodes) as IModule;
+					var width = preview.Preview.width;
+					var height = preview.Preview.height;
+					var pixels = new Color[width * height];
 
-				var module = node.GetValue(graph.Nodes);
-				var width = preview.Preview.width;
-				var height = preview.Preview.height;
-				var pixels = new Color[width * height];
-
-				Thrifty.Queue(
-					() =>
-					{
-						for (var x = 0; x < width; x++)
+					Thrifty.Queue(
+						() =>
 						{
-							for (var y = 0; y < height; y++)
+							for (var x = 0; x < width; x++)
 							{
-								var value = (float)module.GetValue((double)x, (double)y, 0.0);
-								pixels[(width * y) + x] = Previewer.Calculate(value, Previewer);
+								for (var y = 0; y < height; y++)
+								{
+									var value = (float)module.GetValue((double)x, (double)y, 0.0);
+									pixels[(width * y) + x] = Previewer.Calculate(value, Previewer);
+								}
 							}
-						}
-					},
-					() => TextureFarmer.Queue(preview.Preview, pixels)
-				);
+						},
+						() => TextureFarmer.Queue(preview.Preview, pixels)
+					);
+				}
 
 				preview.Stale = false;
 				preview.LastUpdated = DateTime.Now.Ticks;
 				preview.LastSourceIds = new List<string>(node.SourceIds);
 				preview.LastVisualizer = Previewer;
 			}
+
 			return preview;
 		}
 

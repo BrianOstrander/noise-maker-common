@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 	{
 		public override INode Draw(Graph graph, INode node)
 		{
-			var preview = GetModulePreview(graph, node as Node<IModule>);
+			var preview = GetPreview<IModule>(graph, node);
 			GUILayout.Box(preview.Preview);
 			return node as CheckerboardNode;
 		}

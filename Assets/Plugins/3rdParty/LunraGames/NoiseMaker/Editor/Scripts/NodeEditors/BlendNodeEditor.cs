@@ -15,7 +15,7 @@ namespace LunraGames.NoiseMaker
 
 			if (blend.GetValue(graph.Nodes) != null)
 			{
-				var preview = GetModulePreview(graph, node as Node<IModule>);
+				var preview = GetPreview<IModule>(graph, node);
 				GUILayout.Box(preview.Preview);
 			}
 			else EditorGUILayout.HelpBox("Specify two sources and a weight.", MessageType.Warning);
