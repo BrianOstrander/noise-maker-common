@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58a6f9f05ecae4ee8a8e783e1667fede, type: 3}
+  m_Name: Noise
+  m_EditorClassIdentifier: 
+  GraphJson: '{"$type":"LunraGames.NoiseMaker.Graph, Assembly-CSharp-firstpass","Nodes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.INode,
+    Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.RootNode,
+    Assembly-CSharp-firstpass","EditorPosition":{"x":428.400024,"y":295.800049},"Id":"ea67af19-4a45-4af2-9526-21b649c15ca4","SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":[null]}},{"$type":"LunraGames.NoiseMaker.VoronoiNode,
+    Assembly-CSharp-firstpass","Displacement":1.0,"DistanceEnabled":false,"Frequency":0.02,"Seed":1298654360,"EditorPosition":{"x":101.955933,"y":105.179108},"Id":"bfd94c67-d7f4-45fb-a710-4b5f9dbcdf07","SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":["be769d32-ebc3-44a3-9750-8d716a8692d4",null,null,null]}},{"$type":"LunraGames.NoiseMaker.FloatNode,
+    Assembly-CSharp-firstpass","FloatValue":0.0,"EditorPosition":{"x":-300.044067,"y":-40.22049},"Id":"be769d32-ebc3-44a3-9750-8d716a8692d4","SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":[]}}]},"RootId":"ea67af19-4a45-4af2-9526-21b649c15ca4"}'

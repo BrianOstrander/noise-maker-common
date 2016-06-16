@@ -22,7 +22,7 @@ namespace LunraGames.NoiseMaker
 				SourceIds.Add(null);
 			}
 			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
-			var sources = Sources(nodes);
+			var sources = Values(nodes);
 			if (sources.Count != 1) return null;
 
 			var turbulence = Value == null ? new Turbulence(sources[0] as IModule) : Value as Turbulence;

@@ -24,7 +24,7 @@ namespace LunraGames.NoiseMaker
 				if (StringExtensions.IsNullOrWhiteSpace(curr)) return null;
 			}
 
-			var sources = Sources(nodes);
+			var sources = Values(nodes);
 			if (sources.Count != 4) return null;
 
 			var displace = Value == null ? new DisplaceInput(sources[0] as IModule, sources[1] as IModule, sources[2] as IModule, sources[3] as IModule) : Value as DisplaceInput;

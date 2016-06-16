@@ -18,7 +18,7 @@ namespace LunraGames.NoiseMaker
 				SourceIds.Add(null);
 			}
 			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
-			var sources = Sources(nodes);
+			var sources = Values(nodes);
 			if (sources.Count != 1 || sources[0] == null) return null;
 
 			// This is my lazy hack, I couldn't grok how I can do a root node without actually defining a new IModule...

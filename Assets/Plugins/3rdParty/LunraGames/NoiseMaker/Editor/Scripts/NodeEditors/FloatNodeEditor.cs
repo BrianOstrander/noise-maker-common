@@ -13,7 +13,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var floatNode = node as FloatNode;
 
-			var preview = GetPreview<IModule>(graph, node);
+			var preview = GetPreview<float>(graph, node);
 
 			floatNode.FloatValue = Deltas.DetectDelta<float>(floatNode.FloatValue, EditorGUILayout.FloatField("Value", floatNode.FloatValue), ref preview.Stale);
 

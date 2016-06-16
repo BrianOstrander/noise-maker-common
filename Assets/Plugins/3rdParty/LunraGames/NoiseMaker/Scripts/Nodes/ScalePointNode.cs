@@ -19,7 +19,7 @@ namespace LunraGames.NoiseMaker
 				SourceIds.Add(null);
 			}
 			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
-			var sources = Sources(nodes);
+			var sources = Values(nodes);
 			if (sources.Count != 1) return null;
 
 			var scalePoint = Value == null ? new ScaleInput(sources[0] as IModule, Scale.x, Scale.y, Scale.z) : Value as ScaleInput;

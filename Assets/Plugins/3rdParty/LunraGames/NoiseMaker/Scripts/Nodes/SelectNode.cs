@@ -27,7 +27,7 @@ namespace LunraGames.NoiseMaker
 				if (StringExtensions.IsNullOrWhiteSpace(curr)) return null;
 			}
 
-			var sources = Sources(nodes);
+			var sources = Values(nodes);
 			if (sources.Count != 3) return null;
 
 			var selector = Value == null ? new Select(sources[0] as IModule, sources[1] as IModule, sources[2] as IModule) : Value as Select;

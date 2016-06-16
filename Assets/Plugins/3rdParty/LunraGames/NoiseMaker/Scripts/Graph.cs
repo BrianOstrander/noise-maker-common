@@ -59,6 +59,7 @@ namespace LunraGames.NoiseMaker
 
 			foreach (var curr in Nodes)
 			{
+				if (curr.SourceIds == null) continue;
 				for (var i = 0; i < curr.SourceIds.Count; i++)
 				{
 					if (curr.SourceIds[i] == node.Id) curr.SourceIds[i] = null;

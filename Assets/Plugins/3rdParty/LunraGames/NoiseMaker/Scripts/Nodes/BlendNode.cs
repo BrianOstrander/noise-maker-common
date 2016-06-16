@@ -19,7 +19,7 @@ namespace LunraGames.NoiseMaker
 				SourceIds.Add(null);
 			}
 			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0]) || StringExtensions.IsNullOrWhiteSpace(SourceIds[1]) || StringExtensions.IsNullOrWhiteSpace(SourceIds[2])) return null;
-			var sources = Sources(nodes);
+			var sources = Values(nodes);
 			if (sources.Count != 3) return null;
 
 			var blend = Value == null ? new Blend(sources[0] as IModule, sources[1] as IModule, sources[2] as IModule) : Value as Blend;
