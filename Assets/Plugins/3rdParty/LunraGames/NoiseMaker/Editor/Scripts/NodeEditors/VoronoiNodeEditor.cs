@@ -7,7 +7,7 @@ using LibNoise;
 namespace LunraGames.NoiseMaker
 {
 	[NodeDrawer(typeof(VoronoiNode), Strings.Generators, "Voronoi")]
-	public class VoronoiNoiseEditor : NodeEditor
+	public class VoronoiNodeEditor : NodeEditor
 	{
 		public override INode Draw(Graph graph, INode node)
 		{
