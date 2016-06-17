@@ -195,7 +195,11 @@ namespace LunraGames.NoiseMaker
 
 				GUI.enabled = StringExtensions.IsNullOrWhiteSpace(node.SourceIds[link.Index]);
 
+				var wasColor = GUI.color;
+				GUI.color = link.Type == NoiseMakerWindow.ConnectingFromOutputType ? Color.cyan : Color.white;
+
 				var linkValue = link.Field.GetValue(node);
+
 				if (link.Type == typeof(float))
 				{
 					var typedValue = (float)linkValue;
@@ -215,6 +219,8 @@ namespace LunraGames.NoiseMaker
 				{
 					EditorGUILayout.HelpBox("Field of unrecognized type: "+link.Type.Name, MessageType.Error);
 				}
+
+				GUI.color = wasColor;
 			}
 
 			return node;

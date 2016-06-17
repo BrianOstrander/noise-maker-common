@@ -29,8 +29,8 @@ namespace LunraGames.NoiseMaker
 			var voronoi = Value == null ? new Voronoi() : Value as Voronoi;
 
 			voronoi.Displacement = GetLocalIfValueNull<float>(Displacement, 0, values);
-			voronoi.DistanceEnabled = DistanceEnabled;
-			voronoi.Frequency = Frequency;
+			voronoi.DistanceEnabled = GetLocalIfValueNull<bool>(DistanceEnabled, 1, values);
+			voronoi.Frequency = GetLocalIfValueNull<float>(Frequency, 2, values);
 			voronoi.Seed = GetLocalIfValueNull<int>(Seed, 3, values);
 
 			Value = voronoi;

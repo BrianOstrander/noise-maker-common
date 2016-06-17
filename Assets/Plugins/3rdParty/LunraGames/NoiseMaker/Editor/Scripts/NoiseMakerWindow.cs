@@ -30,6 +30,13 @@ namespace LunraGames.NoiseMaker
 			Idle
 		}
 
+		static NoiseMakerWindow Instance;
+
+		NoiseMakerWindow()
+		{
+			Instance = this;
+		}
+
 		[SerializeField]
 		States State = States.Splash;
 		[SerializeField]
@@ -778,5 +785,7 @@ namespace LunraGames.NoiseMaker
     	{
 			return new Vector2(-(GraphPosition.x - (position.width * 0.3f)), -(GraphPosition.y - (position.height * 0.3f)));
     	}
+
+		public static Type ConnectingFromOutputType { get { return Instance == null || Instance.ConnectingFrom == null ? null : Instance.ConnectingFrom.OutputType; } }
 	}
 }
