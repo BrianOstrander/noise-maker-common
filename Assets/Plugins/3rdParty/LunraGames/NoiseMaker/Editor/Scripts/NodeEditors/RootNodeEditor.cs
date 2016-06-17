@@ -8,33 +8,6 @@ using Atesh;
 
 namespace LunraGames.NoiseMaker
 {
-	[NodeDrawer(typeof(RootNode), Strings.Hidden, "Root")]
-	public class RootNodeEditor : NodeEditor
-	{
-		static string LastRootSource;
-
-		public override INode Draw(Graph graph, INode node)
-		{
-			return DrawFields(graph, node);
-		/*
-			var rootNode = node as RootNode;
-
-			if (rootNode.GetValue(graph.Nodes) != null)// rootNode.SourceIds != null && !StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()))
-			{
-				//var targetNode = graph.Nodes.Find(n => n.Id == rootNode.SourceIds[0]);
-				var preview = GetPreview<IModule>(graph, node);
-				GUILayout.Box(preview.Preview);
-
-				var source = rootNode.SourceIds.FirstOrDefault();
-
-				preview.Stale = preview.Stale || LastRootSource != source;
-
-				LastRootSource = source;
-			}
-			else EditorGUILayout.HelpBox(Strings.SpecifyAnInput, MessageType.Warning);
-
-			return rootNode;
-			*/
-		}
-	}
+	[NodeDrawer(typeof(RootNode), Strings.Hidden, "Root", Strings.SpecifyAnInput)]
+	public class RootNodeEditor : NodeEditor {}
 }

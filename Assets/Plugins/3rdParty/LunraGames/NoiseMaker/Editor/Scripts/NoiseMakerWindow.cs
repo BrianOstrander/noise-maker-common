@@ -255,6 +255,7 @@ namespace LunraGames.NoiseMaker
 						// DrawInputs does what it sounds like, then returns a list of their positions.
 						inDict.Add(unmodifiedNode.Id, drawer.Editor.DrawInputs(windowRect, inputs.ToArray()));
 					}
+//					else Debug.Log(drawer.Linkers.Count+" , "+unmodifiedNode.SourceIds.Count);
 					// A single rect is returned when drawing an output: its position.
 					var outRect = drawer.Editor.DrawOutput(
 						windowRect,

@@ -101,29 +101,29 @@ namespace LunraGames.NoiseMaker
 				if (type == typeof(IModule))
 				{
 					var module = node.GetRawValue(graph.Nodes) as IModule;
-					var width = preview.Preview.width;
-					var height = preview.Preview.height;
-					var pixels = new Color[width * height];
+					if (module == null) preview.Warning = NodeEditorCacher.Editors[node.GetType()].Details.Warning;
+					else
+					{
+						preview.Warning = null;
+						var width = preview.Preview.width;
+						var height = preview.Preview.height;
+						var pixels = new Color[width * height];
 
-					Thrifty.Queue(
-						() =>
-						{
-							for (var x = 0; x < width; x++)
+						Thrifty.Queue(
+							() =>
 							{
-								for (var y = 0; y < height; y++)
+								for (var x = 0; x < width; x++)
 								{
-									var index = (width * y) + x;
-									if (module == null) pixels[index] = Color.clear;
-									else 
+									for (var y = 0; y < height; y++)
 									{
 										var value = (float)module.GetValue((double)x, (double)y, 0.0);
-										pixels[index] = Previewer.Calculate(value, Previewer);
+										pixels[(width * y) + x] = Previewer.Calculate(value, Previewer);
 									}
 								}
-							}
-						},
-						() => TextureFarmer.Queue(preview.Preview, pixels)
-					);
+							},
+							() => TextureFarmer.Queue(preview.Preview, pixels)
+						);
+					}
 				}
 
 				preview.Stale = false;
@@ -184,7 +184,11 @@ namespace LunraGames.NoiseMaker
 		{
 			var preview = GetPreview(node.OutputType, graph, node);
 
-			if (showPreview) GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewWidth), GUILayout.ExpandWidth(true));
+			if (showPreview) 
+			{
+				if (StringExtensions.IsNullOrWhiteSpace(preview.Warning)) GUILayout.Box(preview.Preview, GUILayout.MaxWidth(PreviewWidth), GUILayout.ExpandWidth(true));
+				else EditorGUILayout.HelpBox(preview.Warning, MessageType.Warning);
+			}
 
 			var entry = NodeEditorCacher.Editors[node.GetType()];
 			var links = entry.Linkers.OrderBy(l => l.Index).ToList();

@@ -6,21 +6,6 @@ using LibNoise;
 
 namespace LunraGames.NoiseMaker
 {
-	[NodeDrawer(typeof(AbsoluteNode), Strings.Modifiers, "Absolute")]
-	public class AbsoluteNodeEditor : NodeEditor
-	{
-		public override INode Draw(Graph graph, INode node)
-		{
-			var absolute = node as AbsoluteNode;
-
-			if (absolute.GetValue(graph.Nodes) != null)
-			{
-				var preview = GetPreview<IModule>(graph, node);
-				GUILayout.Box(preview.Preview);
-			}
-			else EditorGUILayout.HelpBox("Specify an input.", MessageType.Warning);
-
-			return absolute;
-		}
-	}
+	[NodeDrawer(typeof(AbsoluteNode), Strings.Modifiers, "Absolute", Strings.SpecifyAnInput)]
+	public class AbsoluteNodeEditor : NodeEditor {}
 }

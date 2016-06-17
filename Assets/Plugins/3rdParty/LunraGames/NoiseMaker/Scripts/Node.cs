@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 	[Serializable]
 	public abstract class Node<T> : INode
 	{
-		static int? CachedSourceCount = null;
+		static Dictionary<Type, int> CachedSourceCounts = new Dictionary<Type, int>();
 
 		#region Inspector
 		public Vector2 EditorPosition { get; set; }
@@ -27,7 +27,7 @@ namespace LunraGames.NoiseMaker
 		/// The value that represents this Node. It could be stored locally, or derived from several input nodes. 
 		/// This really shouldn't be set or retrived directly unless you know what you're doing!
 		/// </summary>
-		[NonSerialized]
+		[NonSerialized, JsonIgnore]
 		public T Value;
 
 		/// <summary>
@@ -35,17 +35,19 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		public Node()
 		{
-			if (!CachedSourceCount.HasValue)
+			if (!CachedSourceCounts.ContainsKey(GetType()))
 			{
-				CachedSourceCount = 0;
+				var count = 0;
 				var fields = GetType().GetFields();
 				foreach (var field in fields)
 				{
 					var attributes = field.GetCustomAttributes(typeof(NodeLinker), true);
-					if (0 < attributes.Length) CachedSourceCount++;
+					if (0 < attributes.Length) count++;
 				}
+				CachedSourceCounts.Add(GetType(), count);
+				InitializeSources(count);
 			}
-			InitializeSources(CachedSourceCount.Value);
+			else InitializeSources(CachedSourceCounts[GetType()]);
 		}
 
 		/// <summary>
