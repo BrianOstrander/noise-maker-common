@@ -193,7 +193,16 @@ namespace LunraGames.NoiseMaker
 			{
 				if (link.Hide) continue;
 
-				GUI.enabled = StringExtensions.IsNullOrWhiteSpace(node.SourceIds[link.Index]);
+				var usingLinkedNode = !StringExtensions.IsNullOrWhiteSpace(node.SourceIds[link.Index]);
+				object usedNodeValue = null;
+
+				if (usingLinkedNode)
+				{
+					var originNode = graph.Nodes.FirstOrDefault(n => n.Id == node.SourceIds[link.Index]);
+					if (originNode != null) usedNodeValue = originNode.GetRawValue(graph.Nodes);
+				}
+
+				GUI.enabled = !usingLinkedNode;
 
 				var wasColor = GUI.color;
 				GUI.color = link.Type == NoiseMakerWindow.ConnectingFromOutputType ? Color.cyan : Color.white;
@@ -202,18 +211,55 @@ namespace LunraGames.NoiseMaker
 
 				if (link.Type == typeof(float))
 				{
-					var typedValue = (float)linkValue;
-					link.Field.SetValue(node, Deltas.DetectDelta<float>(typedValue, EditorGUILayout.FloatField(link.Name, typedValue), ref preview.Stale));
+					float min = link.Min == null ? float.MinValue : (float)link.Min;
+					float max = link.Max == null ? float.MaxValue : (float)link.Max;
+					float typedValue;
+
+					if (usedNodeValue != null)
+					{
+						typedValue = (float)usedNodeValue;
+						var outOfRange = typedValue < min || max < typedValue;
+						GUI.contentColor = outOfRange ? Color.red : Color.white;
+						EditorGUILayout.FloatField(link.Name, Mathf.Clamp(typedValue, min, max));
+						GUI.contentColor = Color.white;
+					}
+					else
+					{
+						typedValue = (float)linkValue;
+						if (link.Min != null || link.Max != null) link.Field.SetValue(node, Deltas.DetectDelta<float>(typedValue, Mathf.Clamp(EditorGUILayout.FloatField(link.Name, typedValue), min, max), ref preview.Stale));
+						else link.Field.SetValue(node, Deltas.DetectDelta<float>(typedValue, EditorGUILayout.FloatField(link.Name, typedValue), ref preview.Stale));
+					}
 				}
 				else if (link.Type == typeof(int))
 				{
-					var typedValue = (int)linkValue;
-					link.Field.SetValue(node, Deltas.DetectDelta<int>(typedValue, EditorGUILayout.IntField(link.Name, typedValue), ref preview.Stale));
+					int min = link.Min == null ? int.MinValue : (int)link.Min;
+					int max = link.Max == null ? int.MaxValue : (int)link.Max;
+					int typedValue;
+
+					if (usedNodeValue != null)
+					{
+						typedValue = (int)usedNodeValue;
+						var outOfRange = typedValue < min || max < typedValue;
+						GUI.contentColor = outOfRange ? Color.red : Color.white;
+						EditorGUILayout.IntField(link.Name, Mathf.Clamp(typedValue, min, max));
+						GUI.contentColor = Color.white;
+					}
+					else
+					{
+						typedValue = (int)linkValue;
+						if (link.Min != null || link.Max != null) link.Field.SetValue(node, Deltas.DetectDelta<int>(typedValue, EditorGUILayout.IntSlider(link.Name, typedValue, min, max), ref preview.Stale));
+						else link.Field.SetValue(node, Deltas.DetectDelta<int>(typedValue, EditorGUILayout.IntField(link.Name, typedValue), ref preview.Stale));
+					}
 				}
 				else if (link.Type == typeof(bool))
 				{
 					var typedValue = (bool)linkValue;
 					link.Field.SetValue(node, Deltas.DetectDelta<bool>(typedValue, EditorGUILayout.Toggle(link.Name, typedValue), ref preview.Stale));
+				}
+				else if (typeof(Enum).IsAssignableFrom(link.Type))
+				{
+					var typedValue = (Enum)linkValue;
+					link.Field.SetValue(node, Deltas.DetectDelta<Enum>(typedValue, EditorGUILayout.EnumPopup(link.Name, typedValue), ref preview.Stale));
 				}
 				else
 				{

@@ -14,7 +14,7 @@ namespace LunraGames.NoiseMaker
 		/// <summary>
 		/// The source used if SourceIds[0] is null.
 		/// </summary>
-		[NodeLinker(0, true), JsonIgnore]
+		[NodeLinker(0, hide: true), JsonIgnore]
 		public IModule Source;
 
 		public RootNode()

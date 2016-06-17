@@ -11,10 +11,14 @@ namespace LunraGames.NoiseMaker
 		public Type Type;
 		public FieldInfo Field;
 		public bool Hide;
+		public object Min;
+		public object Max;
 
-		public NodeLinker(int index, bool hide = false, string name = null)
+		public NodeLinker(int index, object min = null, object max = null, bool hide = false, string name = null)
 		{
 			Index = index;
+			Min = min;
+			Max = max;
 			Name = name;
 			Hide = hide;
 		}
