@@ -280,8 +280,13 @@ namespace LunraGames.NoiseMaker
 						}
 						catch (Exception e)
 						{
-							EditorGUILayout.HelpBox("Exception occured: \n"+e.Message, MessageType.Error);
-							if (GUILayout.Button("Print Exception")) Debug.LogException(e);
+							// if we errored inside a guilayout begin / end, we want to try and print our helpbox inside a catch statement.
+							try 
+							{ 
+								EditorGUILayout.HelpBox("Exception occured: \n"+e.Message, MessageType.Error); 
+								if (GUILayout.Button("Print Exception")) Debug.LogException(e);
+							}
+							catch {}
 						}
 						GUI.DragWindow();
 					}, (drawer == null || StringExtensions.IsNullOrWhiteSpace(drawer.Details.Name)) ? "Node" : drawer.Details.Name);

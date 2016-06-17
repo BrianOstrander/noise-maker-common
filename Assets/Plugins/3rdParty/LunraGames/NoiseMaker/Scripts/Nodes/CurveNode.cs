@@ -3,11 +3,17 @@ using LibNoise;
 using System.Collections.Generic;
 using LibNoise.Modifiers;
 using Atesh;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
 	public class CurveNode : Node<IModule> 
 	{
+		/// <summary>
+		/// The source used if SourceIds[0] is null.
+		/// </summary>
+		[NodeLinker(0, hide: true), JsonIgnore]
+		public IModule Source;
 		/// <summary>
 		/// The points that define the curved output, where X is input/time, Y is output/value.
 		/// </summary>
@@ -15,18 +21,15 @@ namespace LunraGames.NoiseMaker
 
 		public override IModule GetValue (List<INode> nodes)
 		{
-			if (SourceIds == null || SourceIds.Count != 1)
-			{
-				if (SourceIds == null) SourceIds = new List<string>();
-				SourceIds.Add(null);
-			}
-			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
-			var sources = Values(nodes);
-			if (sources.Count != 1) return null;
+			var values = NullableValues(nodes);
 
-			var curve = Value == null ? new CurveOutput(sources[0] as IModule) : Value as CurveOutput;
+			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
 
-			curve.SourceModule = sources[0] as IModule;
+			if (source == null) return null;
+
+			var curve = Value == null ? new CurveOutput(source) : Value as CurveOutput;
+
+			curve.SourceModule = source;
 
 			if (Points == null)
 			{

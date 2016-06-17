@@ -16,7 +16,7 @@ MonoBehaviour:
     Assembly-CSharp-firstpass","EditorPosition":{"x":428.3999,"y":295.800049},"Id":"44ea0956-d484-444a-8bf2-98b53442c63b","SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
     mscorlib]], mscorlib","$values":["cd0b4472-23b8-4622-9dd0-378deb11bf38"]},"OutputType":"LibNoise.IModule,
     Assembly-CSharp-firstpass, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"},{"$type":"LunraGames.NoiseMaker.ClampNode,
-    Assembly-CSharp-firstpass","LowerBound":-0.29,"UpperBound":1.0,"EditorPosition":{"x":85.1600342,"y":268.982361},"Id":"cd0b4472-23b8-4622-9dd0-378deb11bf38","SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    Assembly-CSharp-firstpass","LowerBound":-3.96,"UpperBound":3.56,"EditorPosition":{"x":85.1600342,"y":268.982361},"Id":"cd0b4472-23b8-4622-9dd0-378deb11bf38","SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
     mscorlib]], mscorlib","$values":["a266041a-0eab-4b23-89fd-2635ca9c5f33","82195273-d9df-43e1-8810-2fbae24ce645",null]},"OutputType":"LibNoise.IModule,
     Assembly-CSharp-firstpass, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"},{"$type":"LunraGames.NoiseMaker.BillowNode,
     Assembly-CSharp-firstpass","Frequency":0.02,"Lacunarity":0.0,"Quality":1,"OctaveCount":1,"Persistence":0.0,"Seed":1583092889,"EditorPosition":{"x":-190.839966,"y":2.98233032},"Id":"a266041a-0eab-4b23-89fd-2635ca9c5f33","SourceIds":{"$type":"System.Collections.Generic.List`1[[System.String,
