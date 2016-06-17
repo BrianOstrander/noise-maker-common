@@ -20,11 +20,6 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(5)]
 		public int Seed = NoiseUtility.Seed;
 
-		public BillowNode()
-		{
-			InitializeSources(6);
-		}
-
 		public override IModule GetValue (List<INode> nodes)
 		{
 			var values = NullableValues(nodes);

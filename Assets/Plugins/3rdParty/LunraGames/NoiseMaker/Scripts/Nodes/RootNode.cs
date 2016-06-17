@@ -17,11 +17,6 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(0, hide: true), JsonIgnore]
 		public IModule Source;
 
-		public RootNode()
-		{
-			InitializeSources(1);
-		}
-
 		public override IModule GetValue (List<INode> nodes)
 		{
 			var values = NullableValues(nodes);

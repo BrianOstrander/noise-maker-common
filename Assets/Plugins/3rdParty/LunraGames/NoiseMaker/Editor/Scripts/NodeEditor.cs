@@ -284,6 +284,9 @@ namespace LunraGames.NoiseMaker
 			return preview == null ? long.MinValue : preview.LastUpdated;
 		}
 
-		public abstract INode Draw(Graph graph, INode node);
+		public virtual INode Draw(Graph graph, INode node)
+		{
+			return DrawFields(graph, node);
+		}
 	}
 }

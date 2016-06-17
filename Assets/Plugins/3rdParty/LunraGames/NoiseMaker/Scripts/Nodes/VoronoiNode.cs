@@ -17,11 +17,6 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(3)]
 		public int Seed = NoiseUtility.Seed;
 
-		public VoronoiNode()
-		{
-			InitializeSources(4);
-		}
-
 		public override IModule GetValue (List<INode> nodes)
 		{
 			var values = NullableValues(nodes);

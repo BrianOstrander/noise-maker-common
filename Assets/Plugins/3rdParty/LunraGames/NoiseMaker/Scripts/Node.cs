@@ -11,6 +11,7 @@ namespace LunraGames.NoiseMaker
 	[Serializable]
 	public abstract class Node<T> : INode
 	{
+		static int? CachedSourceCount = null;
 
 		#region Inspector
 		public Vector2 EditorPosition { get; set; }
@@ -34,14 +35,24 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		public Node()
 		{
-			InitializeSources();
+			if (!CachedSourceCount.HasValue)
+			{
+				CachedSourceCount = 0;
+				var fields = GetType().GetFields();
+				foreach (var field in fields)
+				{
+					var attributes = field.GetCustomAttributes(typeof(NodeLinker), true);
+					if (0 < attributes.Length) CachedSourceCount++;
+				}
+			}
+			InitializeSources(CachedSourceCount.Value);
 		}
 
 		/// <summary>
 		/// Used to set the initial size of SourceIds and populate it with the default null values.
 		/// </summary>
 		/// <param name="count">Count.</param>
-		protected void InitializeSources(int count = 0)
+		void InitializeSources(int count = 0)
 		{
 			if (count < 0) throw new ArgumentOutOfRangeException("count can't be negative");
 			SourceCount = count;
@@ -177,6 +188,11 @@ namespace LunraGames.NoiseMaker
 		}
 
 		protected bool InvalidSourceCount { get { return SourceIds == null || SourceIds.Count != SourceCount; } }
+
+		protected S GetLocalIfValueNull<S>(S localValue, int valueIndex,  List<INode> nodes)
+		{
+			return GetLocalIfValueNull<S>(localValue, valueIndex, NullableValues(nodes));
+		}
 
 		protected S GetLocalIfValueNull<S>(S localValue, int valueIndex,  List<object> values)
 		{

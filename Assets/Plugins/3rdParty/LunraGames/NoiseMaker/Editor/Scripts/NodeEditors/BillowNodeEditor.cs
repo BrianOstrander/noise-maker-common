@@ -7,11 +7,5 @@ using LibNoise;
 namespace LunraGames.NoiseMaker
 {
 	[NodeDrawer(typeof(BillowNode), Strings.Generators, "Billow")]
-	public class BillowNodeEditor : NodeEditor
-	{
-		public override INode Draw(Graph graph, INode node)
-		{
-			return DrawFields(graph, node);
-		}
-	}
+	public class BillowNodeEditor : NodeEditor {}
 }
