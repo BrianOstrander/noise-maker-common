@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 
 			var preview = GetPreview<bool>(graph, node);
 
-			booleanNode.BooleanValue = Deltas.DetectDelta<bool>(booleanNode.BooleanValue, EditorGUILayout.Toggle("Value", booleanNode.BooleanValue), ref preview.Stale);
+			booleanNode.PropertyValue = Deltas.DetectDelta<bool>(booleanNode.PropertyValue, EditorGUILayout.Toggle("Value", booleanNode.PropertyValue), ref preview.Stale);
 
 			return booleanNode;
 		}

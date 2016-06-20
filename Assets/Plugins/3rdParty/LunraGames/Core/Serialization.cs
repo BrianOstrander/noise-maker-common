@@ -35,7 +35,22 @@ namespace LunraGames
 				return _SerializerSettings;
 			}
 		}
-		
+
+		public static object DeserializeJson(Type type, string json, object defaultValue = null)
+		{
+			if (StringExtensions.IsNullOrWhiteSpace(json)) return defaultValue;
+
+			try 
+			{
+				return JsonConvert.DeserializeObject(json, type, SerializerSettings);
+			}
+			catch (Exception e)
+			{
+				Debug.LogError("Problem parsing value: \n\t"+json+"\nReturning default value\n Exception:\n"+e.Message);
+				return defaultValue;
+			}
+		}
+
 		public static T DeserializeJson<T>(string json, T defaultValue = default(T))
 		{
 			if (StringExtensions.IsNullOrWhiteSpace(json)) return defaultValue;

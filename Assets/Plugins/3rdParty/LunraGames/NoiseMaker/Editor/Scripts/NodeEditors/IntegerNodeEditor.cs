@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 
 			var preview = GetPreview<float>(graph, node);
 
-			integerNode.IntegerValue = Deltas.DetectDelta<int>(integerNode.IntegerValue, EditorGUILayout.IntField("Value", integerNode.IntegerValue), ref preview.Stale);
+			integerNode.PropertyValue = Deltas.DetectDelta<int>(integerNode.PropertyValue, EditorGUILayout.IntField("Value", integerNode.PropertyValue), ref preview.Stale);
 
 			return integerNode;
 		}

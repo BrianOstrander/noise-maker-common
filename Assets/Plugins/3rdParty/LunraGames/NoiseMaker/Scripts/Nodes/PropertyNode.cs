@@ -1,14 +1,30 @@
-﻿namespace LunraGames.NoiseMaker
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace LunraGames.NoiseMaker
 {
 	public abstract class PropertyNode<T> : Node<T>, IPropertyNode
 	{
 		public bool IsEditable { get; set; }
+		public T PropertyValue { get; set; }
 
-		public abstract void SetProperty(T value);
+		[JsonIgnore]
+		public object RawPropertyValue 
+		{ 
+			get { return PropertyValue; } 
+			set 
+			{ 
+				Debug.Log(typeof(T).FullName+" _ "+value.GetType().FullName);
+				PropertyValue = (T)value; 
+				Value = PropertyValue;
+			}
+		}
 
-		public void SetProperty(object value)
+		public override T GetValue (List<INode> nodes)
 		{
-			SetProperty((T) value);
+			Value = PropertyValue;
+			return Value;
 		}
 	}
 }
