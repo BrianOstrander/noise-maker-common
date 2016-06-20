@@ -2,33 +2,33 @@
 using System.Collections.Generic;
 using LibNoise;
 using LibNoise.Modifiers;
-using System;
-using Atesh;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
 	public class TranslatePointNode : Node<IModule>
 	{
+		[NodeLinker(0, hide: true), JsonIgnore]
+		public IModule Source;
+		[NodeLinker(1)]
 		public Vector3 Position = Vector3.zero;
 
 		public override IModule GetValue (List<INode> nodes)
 		{
-			if (SourceIds == null || SourceIds.Count != 1)
-			{
-				if (SourceIds == null) SourceIds = new List<string>();
-				SourceIds.Add(null);
-			}
-			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
-			var sources = Values(nodes);
-			if (sources.Count != 1) return null;
+			var values = NullableValues(nodes);
+			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
 
-			var translatePoint = Value == null ? new TranslateInput(sources[0] as IModule, Position.x, Position.y, Position.z) : Value as TranslateInput;
+			if (source == null) return null;
 
-			translatePoint.SourceModule = sources[0] as IModule;
+			var position = GetLocalIfValueNull<Vector3>(Position, 1, values);
 
-			translatePoint.X = Position.x;
-			translatePoint.Y = Position.y;
-			translatePoint.Z = Position.z;
+			var translatePoint = Value == null ? new TranslateInput(source, position.x, position.y, position.z) : Value as TranslateInput;
+
+			translatePoint.SourceModule = source;
+
+			translatePoint.X = position.x;
+			translatePoint.Y = position.y;
+			translatePoint.Z = position.z;
 
 			Value = translatePoint;
 			return Value;
