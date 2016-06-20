@@ -4,29 +4,31 @@ using LibNoise;
 using LibNoise.Modifiers;
 using System;
 using Atesh;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
 	public class RotatePointNode : Node<IModule>
 	{
+		[NodeLinker(0, hide: true), JsonIgnore]
+		public IModule Source;
+		[NodeLinker(1)]
 		public Vector3 Rotation = Vector3.zero;
 
 		public override IModule GetValue (List<INode> nodes)
 		{
-			if (SourceIds == null || SourceIds.Count != 1)
-			{
-				if (SourceIds == null) SourceIds = new List<string>();
-				SourceIds.Add(null);
-			}
-			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
-			var sources = Values(nodes);
-			if (sources.Count != 1) return null;
+			var values = NullableValues(nodes);
+			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
 
-			var rotatePoint = Value == null ? new RotateInput(sources[0] as IModule, Rotation.x, Rotation.y, Rotation.z) : Value as RotateInput;
+			if (source == null) return null;
 
-			rotatePoint.SourceModule = sources[0] as IModule;
+			var rotation = GetLocalIfValueNull<Vector3>(Rotation, 1, values);
 
-			rotatePoint.SetAngles(Rotation.x, Rotation.y, Rotation.z);
+			var rotatePoint = Value == null ? new RotateInput(source, rotation.x, rotation.y, rotation.z) : Value as RotateInput;
+
+			rotatePoint.SourceModule = source;
+
+			rotatePoint.SetAngles(rotation.x, rotation.y, rotation.z);
 
 			Value = rotatePoint;
 			return Value;

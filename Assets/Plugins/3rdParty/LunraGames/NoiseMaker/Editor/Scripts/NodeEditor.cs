@@ -265,6 +265,15 @@ namespace LunraGames.NoiseMaker
 					var typedValue = (Enum)linkValue;
 					link.Field.SetValue(node, Deltas.DetectDelta<Enum>(typedValue, EditorGUILayout.EnumPopup(link.Name, typedValue), ref preview.Stale));
 				}
+				else if (link.Type == typeof(Vector3))
+				{
+					if (usedNodeValue != null) EditorGUILayout.Vector3Field(link.Name, (Vector3)usedNodeValue);
+					else 
+					{
+						var typedValue = (Vector3) linkValue;
+						link.Field.SetValue(node, Deltas.DetectDelta<Vector3>(typedValue, EditorGUILayout.Vector3Field(link.Name, typedValue), ref preview.Stale));
+					}
+				}
 				else
 				{
 					EditorGUILayout.HelpBox("Field of unrecognized type: "+link.Type.Name, MessageType.Error);
