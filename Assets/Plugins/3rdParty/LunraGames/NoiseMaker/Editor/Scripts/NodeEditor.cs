@@ -257,8 +257,12 @@ namespace LunraGames.NoiseMaker
 				}
 				else if (link.Type == typeof(bool))
 				{
-					var typedValue = (bool)linkValue;
-					link.Field.SetValue(node, Deltas.DetectDelta<bool>(typedValue, EditorGUILayout.Toggle(link.Name, typedValue), ref preview.Stale));
+					if (usedNodeValue != null) EditorGUILayout.Toggle(link.Name, (bool)usedNodeValue);
+					else 
+					{
+						var typedValue = (bool)linkValue;
+						link.Field.SetValue(node, Deltas.DetectDelta<bool>(typedValue, EditorGUILayout.Toggle(link.Name, typedValue), ref preview.Stale));
+					}
 				}
 				else if (typeof(Enum).IsAssignableFrom(link.Type))
 				{
