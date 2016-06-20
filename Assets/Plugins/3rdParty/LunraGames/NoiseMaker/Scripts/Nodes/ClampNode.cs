@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-using LibNoise;
+﻿using LibNoise;
 using System.Collections.Generic;
 using LibNoise.Modifiers;
-using Atesh;
 using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
@@ -22,7 +20,6 @@ namespace LunraGames.NoiseMaker
 		public override IModule GetValue (List<INode> nodes)
 		{
 			var values = NullableValues(nodes);
-
 			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
 
 			if (source == null) return null;

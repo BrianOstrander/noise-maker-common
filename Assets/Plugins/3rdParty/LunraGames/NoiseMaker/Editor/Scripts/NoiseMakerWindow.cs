@@ -6,7 +6,6 @@ using UnityEngine;
 using LibNoise;
 using Atesh;
 using LibNoise.Models;
-using System.Threading;
 
 namespace LunraGames.NoiseMaker
 {
@@ -255,7 +254,6 @@ namespace LunraGames.NoiseMaker
 						// DrawInputs does what it sounds like, then returns a list of their positions.
 						inDict.Add(unmodifiedNode.Id, drawer.Editor.DrawInputs(windowRect, inputs.ToArray()));
 					}
-//					else Debug.Log(drawer.Linkers.Count+" , "+unmodifiedNode.SourceIds.Count);
 					// A single rect is returned when drawing an output: its position.
 					var outRect = drawer.Editor.DrawOutput(
 						windowRect,
@@ -274,6 +272,7 @@ namespace LunraGames.NoiseMaker
 					// Draw the node and cache its position incase it got dragged around.
 					windowRect = GUILayout.Window(unmodifiedNode.Id.GetHashCode(), windowRect, id =>
 					{
+						GUI.DragWindow(new Rect(0f, 0f, windowRect.width, 20f));
 						try
 						{
 							drawer.Editor.Draw(Graph, unmodifiedNode);
@@ -288,7 +287,6 @@ namespace LunraGames.NoiseMaker
 							}
 							catch {}
 						}
-						GUI.DragWindow();
 					}, (drawer == null || StringExtensions.IsNullOrWhiteSpace(drawer.Details.Name)) ? "Node" : drawer.Details.Name);
 
 					GUI.color = Color.white;

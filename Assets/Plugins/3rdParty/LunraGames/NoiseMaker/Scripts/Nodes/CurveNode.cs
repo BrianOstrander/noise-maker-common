@@ -21,9 +21,7 @@ namespace LunraGames.NoiseMaker
 
 		public override IModule GetValue (List<INode> nodes)
 		{
-			var values = NullableValues(nodes);
-
-			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
+			var source = GetLocalIfValueNull<IModule>(Source, 0, nodes);
 
 			if (source == null) return null;
 

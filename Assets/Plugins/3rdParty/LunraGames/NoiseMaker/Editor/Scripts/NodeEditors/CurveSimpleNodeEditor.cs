@@ -25,7 +25,6 @@ namespace LunraGames.NoiseMaker
 				{
 					unmodifiedCurve.AddKey(new Keyframe(key.time, key.value, key.inTangent, key.outTangent));
 				}
-				//var currCurve = EditorGUILayout.CurveField("Curve", curveSimple.Curve);
 				curveSimple.Curve = EditorGUILayout.CurveField("Curve", unmodifiedCurve);
 				preview.Stale = preview.Stale || CurvesEqual(unmodifiedCurve, curveSimple.Curve);
 			}

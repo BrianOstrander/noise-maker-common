@@ -1,31 +1,30 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using LibNoise;
 using LibNoise.Modifiers;
-using System;
-using Atesh;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
 	public class ExponentNode : Node<IModule>
 	{
+		[NodeLinker(0, hide: true), JsonIgnore]
+		public IModule Source;
+		[NodeLinker(1)]
 		public float Exponent;
 
 		public override IModule GetValue (List<INode> nodes)
 		{
-			if (SourceIds == null || SourceIds.Count != 1)
-			{
-				if (SourceIds == null) SourceIds = new List<string>();
-				SourceIds.Add(null);
-			}
-			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
-			var sources = Values(nodes);
-			if (sources.Count != 1) return null;
+			var values = NullableValues(nodes);
+			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
 
-			var exponent = Value == null ? new ExponentialOutput(sources[0] as IModule, Exponent) : Value as ExponentialOutput;
+			if (source == null) return null;
 
-			exponent.SourceModule = sources[0] as IModule;
-			exponent.Exponent = Exponent;
+			var value = GetLocalIfValueNull<float>(Exponent, 1, values);
+
+			var exponent = Value == null ? new ExponentialOutput(source, value) : Value as ExponentialOutput;
+
+			exponent.SourceModule = source;
+			exponent.Exponent = value;
 
 			Value = exponent;
 			return Value;
