@@ -3,25 +3,24 @@ using LibNoise;
 using System.Collections.Generic;
 using LibNoise.Modifiers;
 using Atesh;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
 	public class InvertNode : Node<IModule> 
 	{
+		[NodeLinker(0, hide: true), JsonIgnore]
+		public IModule Source;
+
 		public override IModule GetValue (List<INode> nodes)
 		{
-			if (SourceIds == null || SourceIds.Count != 1)
-			{
-				if (SourceIds == null) SourceIds = new List<string>();
-				SourceIds.Add(null);
-			}
-			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
-			var sources = Values(nodes);
-			if (sources.Count != 1) return null;
+			var source = GetLocalIfValueNull<IModule>(Source, 0, nodes);
 
-			var invert = Value == null ? new InvertOutput(sources[0] as IModule) : Value as InvertOutput;
+			if (source == null) return null;
 
-			invert.SourceModule = sources[0] as IModule;
+			var invert = Value == null ? new InvertOutput(source) : Value as InvertOutput;
+
+			invert.SourceModule = source;
 
 			Value = invert;
 

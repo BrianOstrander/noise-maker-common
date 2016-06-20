@@ -7,24 +7,5 @@ using LibNoise;
 namespace LunraGames.NoiseMaker
 {
 	[NodeDrawer(typeof(InvertNode), Strings.Modifiers, "Invert")]
-	public class InvertNodeEditer : NodeEditor
-	{
-		public override INode Draw(Graph graph, INode node)
-		{
-			var invert = node as InvertNode;
-
-			if (invert.GetValue(graph.Nodes) != null)
-			{
-				var preview = GetPreview<IModule>(graph, node);
-				GUILayout.Box(preview.Preview);
-			}
-			else 
-			{
-				EditorGUILayout.HelpBox(Strings.SpecifyAnInput, MessageType.Warning);
-				GUILayout.FlexibleSpace();
-			}
-
-			return invert;
-		}
-	}
+	public class InvertNodeEditer : NodeEditor {}
 }
