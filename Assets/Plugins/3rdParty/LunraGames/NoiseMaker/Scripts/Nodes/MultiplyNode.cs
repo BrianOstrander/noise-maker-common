@@ -1,30 +1,36 @@
-﻿using UnityEngine;
-using System.Collections;
-using LibNoise;
+﻿using LibNoise;
 using LibNoise.Modifiers;
 using System.Collections.Generic;
-using Atesh;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
 	public class MultiplyNode : Node<IModule>
 	{
+		/// <summary>
+		/// The source used if SourceIds[0] is null.
+		/// </summary>
+		[NodeLinker(0, hide: true), JsonIgnore]
+		public IModule Source0;
+		/// <summary>
+		/// The source used if SourceIds[1] is null.
+		/// </summary>
+		[NodeLinker(1, hide: true), JsonIgnore]
+		public IModule Source1;
+
 		public override IModule GetValue (List<INode> nodes)
 		{
-			if (SourceIds == null || SourceIds.Count != 2)
-			{
-				if (SourceIds == null) SourceIds = new List<string>();
-				SourceIds.Add(null);
-				SourceIds.Add(null);
-			}
-			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0]) || StringExtensions.IsNullOrWhiteSpace(SourceIds[1])) return null;
-			var sources = Values(nodes);
-			if (sources.Count != 2) return null;
+			var values = NullableValues(nodes);
 
-			var multiply = Value == null ? new Multiply(sources[0] as IModule, sources[1] as IModule) : Value as Multiply;
+			var source0 = GetLocalIfValueNull<IModule>(Source0, 0, values);
+			var source1 = GetLocalIfValueNull<IModule>(Source1, 1, values);
 
-			multiply.SourceModule1 = sources[0] as IModule;
-			multiply.SourceModule2 = sources[1] as IModule;
+			if (source0 == null || source1 == null) return null;
+
+			var multiply = Value == null ? new Multiply(source0, source1) : Value as Multiply;
+
+			multiply.SourceModule1 = source0;
+			multiply.SourceModule2 = source1;
 
 			Value = multiply;
 

@@ -1,26 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
-using UnityEditor;
-using LibNoise;
-
-namespace LunraGames.NoiseMaker
+﻿namespace LunraGames.NoiseMaker
 {
 	[NodeDrawer(typeof(PowerNode), Strings.Combiners, "Power")]
-	public class PowerNodeEditor : NodeEditor
-	{
-		public override INode Draw(Graph graph, INode node)
-		{
-			var power = node as PowerNode;
-
-			if (power.GetValue(graph.Nodes) != null)
-			{
-				var preview = GetPreview<IModule>(graph, node);
-				GUILayout.Box(preview.Preview);
-			}
-			else EditorGUILayout.HelpBox(Strings.SpecifyTwoInputs, MessageType.Warning);
-
-			return power;
-		}
-	}
+	public class PowerNodeEditor : NodeEditor {}
 }
