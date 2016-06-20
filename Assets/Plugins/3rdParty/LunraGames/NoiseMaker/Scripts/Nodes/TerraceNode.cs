@@ -1,13 +1,14 @@
-﻿using UnityEngine;
-using LibNoise;
+﻿using LibNoise;
 using System.Collections.Generic;
 using LibNoise.Modifiers;
-using Atesh;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
 	public class TerraceNode : Node<IModule> 
 	{
+		[NodeLinker(0, hide: true), JsonIgnore]
+		public IModule Source;
 		/// <summary>
 		/// The points that define the terraced output, where X is input/time, Y is output/value.
 		/// </summary>
@@ -15,18 +16,13 @@ namespace LunraGames.NoiseMaker
 
 		public override IModule GetValue (List<INode> nodes)
 		{
-			if (SourceIds == null || SourceIds.Count != 1)
-			{
-				if (SourceIds == null) SourceIds = new List<string>();
-				SourceIds.Add(null);
-			}
-			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
-			var sources = Values(nodes);
-			if (sources.Count != 1) return null;
+			var source = GetLocalIfValueNull<IModule>(Source, 0, nodes);
 
-			var terrace = Value == null ? new Terrace(sources[0] as IModule) : Value as Terrace;
+			if (source == null) return null;
 
-			terrace.SourceModule = sources[0] as IModule;
+			var terrace = Value == null ? new Terrace(source) : Value as Terrace;
+
+			terrace.SourceModule = source;
 
 			if (Points == null)
 			{
