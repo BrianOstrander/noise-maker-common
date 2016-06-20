@@ -1,38 +1,37 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using LibNoise;
-using LibNoise.Modifiers;
-using System;
-using Atesh;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
 	public class TurbulenceNode : Node<IModule>
 	{
+		[NodeLinker(0, hide: true), JsonIgnore]
+		public IModule Source;
+		[NodeLinker(1)]
 		public float Frequency = 0.02f;
+		[NodeLinker(2)]
 		public float Power;
+		[NodeLinker(3, 1, 29)]
 		public int Roughness = 1;
+		[NodeLinker(4)]
 		public int Seed = NoiseUtility.Seed;
 
 		public override IModule GetValue (List<INode> nodes)
 		{
-			if (SourceIds == null || SourceIds.Count != 1)
-			{
-				if (SourceIds == null) SourceIds = new List<string>();
-				SourceIds.Add(null);
-			}
-			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
-			var sources = Values(nodes);
-			if (sources.Count != 1) return null;
+			var values = NullableValues(nodes);
+			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
 
-			var turbulence = Value == null ? new Turbulence(sources[0] as IModule) : Value as Turbulence;
+			if (source == null) return null;
 
-			turbulence.SourceModule = sources[0] as IModule;
+			var turbulence = Value == null ? new Turbulence(source) : Value as Turbulence;
 
-			turbulence.Frequency = Frequency;
-			turbulence.Power = Power;
-			turbulence.Roughness = Roughness;
-			turbulence.Seed = Seed;
+			turbulence.SourceModule = source;
+
+			turbulence.Frequency = GetLocalIfValueNull<float>(Frequency, 1, values);
+			turbulence.Power = GetLocalIfValueNull<float>(Power, 2, values);
+			turbulence.Roughness = GetLocalIfValueNull<int>(Roughness, 3, values);
+			turbulence.Seed = GetLocalIfValueNull<int>(Seed, 4, values);
 
 			Value = turbulence;
 			return Value;
