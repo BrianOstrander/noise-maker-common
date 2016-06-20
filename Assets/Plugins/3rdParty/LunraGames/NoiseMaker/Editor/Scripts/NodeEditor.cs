@@ -262,8 +262,12 @@ namespace LunraGames.NoiseMaker
 				}
 				else if (typeof(Enum).IsAssignableFrom(link.Type))
 				{
-					var typedValue = (Enum)linkValue;
-					link.Field.SetValue(node, Deltas.DetectDelta<Enum>(typedValue, EditorGUILayout.EnumPopup(link.Name, typedValue), ref preview.Stale));
+					if (usedNodeValue != null) EditorGUILayout.EnumPopup(link.Name, (Enum)usedNodeValue);
+					else 
+					{
+						var typedValue = (Enum)linkValue;
+						link.Field.SetValue(node, Deltas.DetectDelta<Enum>(typedValue, EditorGUILayout.EnumPopup(link.Name, typedValue), ref preview.Stale));
+					}
 				}
 				else if (link.Type == typeof(Vector3))
 				{
