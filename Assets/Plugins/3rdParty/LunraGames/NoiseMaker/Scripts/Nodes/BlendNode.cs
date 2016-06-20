@@ -1,32 +1,43 @@
-﻿using UnityEngine;
-using System.Collections;
-using LibNoise;
+﻿using LibNoise;
 using LibNoise.Modifiers;
 using System.Collections.Generic;
-using Atesh;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
 	public class BlendNode : Node<IModule>
 	{
+		/// <summary>
+		/// The source used if SourceIds[0] is null.
+		/// </summary>
+		[NodeLinker(0, hide: true), JsonIgnore]
+		public IModule Source0;
+		/// <summary>
+		/// The source used if SourceIds[1] is null.
+		/// </summary>
+		[NodeLinker(1, hide: true), JsonIgnore]
+		public IModule Source1;
+		/// <summary>
+		/// The source used if SourceIds[2] is null.
+		/// </summary>
+		[NodeLinker(2, hide: true), JsonIgnore]
+		public IModule Weight;
+
 		public override IModule GetValue (List<INode> nodes)
 		{
-			if (SourceIds == null || SourceIds.Count != 3)
-			{
-				if (SourceIds == null) SourceIds = new List<string>();
-				SourceIds.Add(null);
-				SourceIds.Add(null);
-				SourceIds.Add(null);
-			}
-			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0]) || StringExtensions.IsNullOrWhiteSpace(SourceIds[1]) || StringExtensions.IsNullOrWhiteSpace(SourceIds[2])) return null;
-			var sources = Values(nodes);
-			if (sources.Count != 3) return null;
+			var values = NullableValues(nodes);
 
-			var blend = Value == null ? new Blend(sources[0] as IModule, sources[1] as IModule, sources[2] as IModule) : Value as Blend;
+			var source0 = GetLocalIfValueNull<IModule>(Source0, 0, values);
+			var source1 = GetLocalIfValueNull<IModule>(Source1, 1, values);
+			var weight = GetLocalIfValueNull<IModule>(Weight, 2, values);
 
-			blend.SourceModule1 = sources[0] as IModule;
-			blend.SourceModule2 = sources[1] as IModule;
-			blend.WeightModule = sources[2] as IModule;
+			if (source0 == null || source1 == null || weight == null) return null;
+
+			var blend = Value == null ? new Blend(source0, source1, weight) : Value as Blend;
+
+			blend.SourceModule1 = source0;
+			blend.SourceModule2 = source1;
+			blend.WeightModule = weight;
 
 			Value = blend;
 
