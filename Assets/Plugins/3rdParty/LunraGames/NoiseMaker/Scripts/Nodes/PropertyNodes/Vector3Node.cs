@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LunraGames.NoiseMaker
 {
-	public class Vector3Node : Node<Vector3>
+	public class Vector3Node : PropertyNode<Vector3>
 	{
 		public Vector3 Vector3Value;
 
@@ -11,6 +11,11 @@ namespace LunraGames.NoiseMaker
 		{
 			Value = Vector3Value;
 			return Value;
+		}
+
+		public override void SetProperty (Vector3 value)
+		{
+			Vector3Value = value;
 		}
 	}
 }

@@ -155,20 +155,37 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		static GUIStyle _OptionButton;
+		static GUIStyle _OptionButtonMiddle;
 
-		public static GUIStyle OptionButton
+		public static GUIStyle OptionButtonMiddle
 		{
 			get
 			{
-				if (_OptionButton == null)
+				if (_OptionButtonMiddle == null)
 				{
-					_OptionButton = new GUIStyle(EditorStyles.miniButtonRight);
-					_OptionButton.alignment = TextAnchor.MiddleLeft;
-					_OptionButton.fontSize = 16;
+					_OptionButtonMiddle = new GUIStyle(EditorStyles.miniButtonMid);
+					_OptionButtonMiddle.alignment = TextAnchor.MiddleLeft;
+					_OptionButtonMiddle.fontSize = 16;
 				}
 
-				return _OptionButton;
+				return _OptionButtonMiddle;
+			}
+		}
+
+		static GUIStyle _OptionButtonRight;
+
+		public static GUIStyle OptionButtonRight
+		{
+			get
+			{
+				if (_OptionButtonRight == null)
+				{
+					_OptionButtonRight = new GUIStyle(EditorStyles.miniButtonRight);
+					_OptionButtonRight.alignment = TextAnchor.MiddleLeft;
+					_OptionButtonRight.fontSize = 16;
+				}
+
+				return _OptionButtonRight;
 			}
 		}
 

@@ -15,6 +15,7 @@ namespace LunraGames.NoiseMaker
 		const float DefaultDeviation = 0.1f;
 
 		public List<INode> Nodes = new List<INode>();
+		public List<Property> Properties = new List<Property>();
 		public string RootId;
 
 		IModule _Root;
@@ -27,6 +28,23 @@ namespace LunraGames.NoiseMaker
 				if (StringExtensions.IsNullOrWhiteSpace(RootId)) throw new NullReferenceException("No RootId has been set");
 				if (_Root == null)
 				{
+					foreach (var property in Properties)
+					{
+						if (property.Value == null) 
+						{
+							Debug.LogWarning("Can't set a null value for the property \""+property.Name+"\", skipping");	
+							continue;
+						}
+
+						var propertyNode = Nodes.FirstOrDefault(n => n.Id == property.Id);
+						if (propertyNode == null) Debug.LogWarning("A property node named \""+property.Name+"\" was not found, skipping.");
+						else
+						{
+							var typedNode = propertyNode as IPropertyNode;
+							typedNode.SetProperty(property.Value);
+						}
+					}
+
 					var node = Nodes.FirstOrDefault(n => n.Id == RootId);
 					if (node == null) throw new NullReferenceException("No node found for the RootId \""+RootId+"\"");
 					_Root = node.GetRawValue(Nodes) as IModule;

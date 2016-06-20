@@ -53,5 +53,13 @@ namespace LunraGames.NoiseMaker
 		[SerializeField]
 		Texture2D MercatorTabPeasant;
 		#endregion
+
+		#region Property option icons
+		public Texture2D EditableOption { get { return EditorGUIUtility.isProSkin ? EditableOptionPro : EditableOptionPeasant; } }
+		[SerializeField]
+		Texture2D EditableOptionPro;
+		[SerializeField]
+		Texture2D EditableOptionPeasant;
+		#endregion
 	}
 }

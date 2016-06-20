@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LunraGames.NoiseMaker
 {
-	public class IntegerNode : Node<int>
+	public class IntegerNode : PropertyNode<int>
 	{
 		public int IntegerValue;
 
@@ -11,6 +11,11 @@ namespace LunraGames.NoiseMaker
 		{
 			Value = IntegerValue;
 			return Value;
+		}
+
+		public override void SetProperty (int value)
+		{
+			IntegerValue = value;
 		}
 	}
 }

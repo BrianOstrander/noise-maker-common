@@ -7,5 +7,6 @@ namespace LunraGames.NoiseMaker
 		public NodeDrawer Details;
 		public NodeEditor Editor;
 		public List<NodeLinker> Linkers;
+		public bool IsEditable;
 	}
 }

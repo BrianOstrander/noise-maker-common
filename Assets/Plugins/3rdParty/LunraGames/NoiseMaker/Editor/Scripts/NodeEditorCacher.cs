@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using System.Linq;
 
 namespace LunraGames.NoiseMaker
 {
@@ -53,7 +54,7 @@ namespace LunraGames.NoiseMaker
 							}
 						}
 
-						_Editors.Add(attribute.Target, new NodeEditorEntry { Details = attribute, Editor = Activator.CreateInstance(type) as NodeEditor, Linkers = linkers } );
+						_Editors.Add(attribute.Target, new NodeEditorEntry { Details = attribute, Editor = Activator.CreateInstance(type) as NodeEditor, Linkers = linkers, IsEditable = typeof(IPropertyNode).IsAssignableFrom(attribute.Target) } );
 					}
 				}
 			}

@@ -2,7 +2,7 @@
 
 namespace LunraGames.NoiseMaker
 {
-	public class FloatNode : Node<float>
+	public class FloatNode : PropertyNode<float>
 	{
 		public float FloatValue;
 
@@ -10,6 +10,11 @@ namespace LunraGames.NoiseMaker
 		{
 			Value = FloatValue;
 			return Value;
+		}
+
+		public override void SetProperty (float value)
+		{
+			FloatValue = value;
 		}
 	}
 }

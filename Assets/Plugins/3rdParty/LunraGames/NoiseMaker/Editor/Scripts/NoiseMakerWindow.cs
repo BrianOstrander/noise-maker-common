@@ -21,6 +21,7 @@ namespace LunraGames.NoiseMaker
 			public const float NodeOptionsWidth = 240f;
 			public const float PreviewWidth = NodeOptionsWidth + 13f;
 			public const float PreviewHeight = PreviewWidth;
+			public const float EditableOptionWidth = 32f;
 		}
 
 		enum States
@@ -268,7 +269,16 @@ namespace LunraGames.NoiseMaker
 					// Can't delete the root node, so don't show the delete button.
 					if (!(unmodifiedNode is RootNode) && drawer.Editor.DrawCloseControl(windowRect)) deletedNode = unmodifiedNode;
 
-					GUI.color = unmodifiedNode is RootNode ? Color.cyan : Color.white;
+					var nodeName = (drawer == null || StringExtensions.IsNullOrWhiteSpace(drawer.Details.Name)) ? "Node" : drawer.Details.Name;
+
+					if (unmodifiedNode is IPropertyNode)
+					{
+						var propertyNode = unmodifiedNode as IPropertyNode;
+						var foundProperty = Graph.Properties.FirstOrDefault(p => p.Id == unmodifiedNode.Id);
+						nodeName = propertyNode.IsEditable && foundProperty != null && !StringExtensions.IsNullOrWhiteSpace(foundProperty.Name) ? foundProperty.Name : nodeName;
+						GUI.color = propertyNode.IsEditable ? Color.green : Color.white;
+					}
+					else GUI.color = unmodifiedNode is RootNode ? Color.cyan : Color.white;
 					// Draw the node and cache its position incase it got dragged around.
 					windowRect = GUILayout.Window(unmodifiedNode.Id.GetHashCode(), windowRect, id =>
 					{
@@ -287,7 +297,7 @@ namespace LunraGames.NoiseMaker
 							}
 							catch {}
 						}
-					}, (drawer == null || StringExtensions.IsNullOrWhiteSpace(drawer.Details.Name)) ? "Node" : drawer.Details.Name);
+					}, nodeName);
 
 					GUI.color = Color.white;
 
@@ -388,12 +398,29 @@ namespace LunraGames.NoiseMaker
 								{
 									foreach (var option in category.Value)
 									{
-										if (GUILayout.Button(option.Details.Name, Styles.OptionButton)) 
+										if (option.IsEditable) GUILayout.BeginHorizontal();
+
+										if (GUILayout.Button(option.Details.Name, option.IsEditable ? Styles.OptionButtonMiddle : Styles.OptionButtonRight)) 
 										{
 											var node = Activator.CreateInstance(option.Details.Target) as INode;
 											node.Id = Guid.NewGuid().ToString();
 											node.EditorPosition = GraphCenter();
 											Graph.Nodes.Add(node);
+										}
+
+										if (option.IsEditable) 
+										{
+											if (GUILayout.Button(NoiseMakerConfig.Instance.EditableOption, Styles.OptionButtonRight, GUILayout.Width(Layouts.EditableOptionWidth), GUILayout.ExpandHeight(true))) 
+											{
+												var node = Activator.CreateInstance(option.Details.Target) as IPropertyNode;
+												node.Id = Guid.NewGuid().ToString();
+												node.EditorPosition = GraphCenter();
+												node.IsEditable = true;
+												Graph.Nodes.Add(node);
+
+												//Graph.Properties.Add(new Property { Name = "", Id = node.Id, Value = node.GetRawValue() });
+											}
+											GUILayout.EndHorizontal();
 										}
 									}
 								}

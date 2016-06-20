@@ -11,6 +11,7 @@
 		public const string Transformers = "Transformers";
 		public const string Properties = "Properties";
 		public const string Hidden = "Hidden";
+		public const string Utility = "Utility";
 
 		public const string SpecifyAnInput = "Specify an input.";
 		public const string SpecifyTwoInputs = "Specify two inputs.";

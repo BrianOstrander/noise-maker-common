@@ -2,7 +2,7 @@
 
 namespace LunraGames.NoiseMaker
 {
-	public class BooleanNode : Node<bool>
+	public class BooleanNode : PropertyNode<bool>
 	{
 		public bool BooleanValue;
 
@@ -10,6 +10,11 @@ namespace LunraGames.NoiseMaker
 		{
 			Value = BooleanValue;
 			return Value;
+		}
+
+		public override void SetProperty (bool value)
+		{
+			BooleanValue = value;
 		}
 	}
 }

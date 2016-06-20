@@ -27,3 +27,6 @@ MonoBehaviour:
   PreviewTabPeasant: {fileID: 2800000, guid: 790c59b1094384858b4fc5aa08f61529, type: 3}
   MercatorTabPro: {fileID: 2800000, guid: bb91c284e464c4d4ba412b1416c63095, type: 3}
   MercatorTabPeasant: {fileID: 2800000, guid: bb91c284e464c4d4ba412b1416c63095, type: 3}
+  EditableOptionPro: {fileID: 2800000, guid: 8a5f4c38482a946aabab62d2b8869487, type: 3}
+  EditableOptionPeasant: {fileID: 2800000, guid: 8a5f4c38482a946aabab62d2b8869487,
+    type: 3}
