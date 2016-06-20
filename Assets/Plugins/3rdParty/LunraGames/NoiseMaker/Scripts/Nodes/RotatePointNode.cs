@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using LibNoise;
 using LibNoise.Modifiers;
-using System;
-using Atesh;
 using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker

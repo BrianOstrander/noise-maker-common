@@ -2,33 +2,33 @@
 using System.Collections.Generic;
 using LibNoise;
 using LibNoise.Modifiers;
-using System;
-using Atesh;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
 	public class ScalePointNode : Node<IModule>
 	{
+		[NodeLinker(0, hide: true), JsonIgnore]
+		public IModule Source;
+		[NodeLinker(1)]
 		public Vector3 Scale = Vector3.one;
 
 		public override IModule GetValue (List<INode> nodes)
 		{
-			if (SourceIds == null || SourceIds.Count != 1)
-			{
-				if (SourceIds == null) SourceIds = new List<string>();
-				SourceIds.Add(null);
-			}
-			if (StringExtensions.IsNullOrWhiteSpace(SourceIds[0])) return null;
-			var sources = Values(nodes);
-			if (sources.Count != 1) return null;
+			var values = NullableValues(nodes);
+			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
 
-			var scalePoint = Value == null ? new ScaleInput(sources[0] as IModule, Scale.x, Scale.y, Scale.z) : Value as ScaleInput;
+			if (source == null) return null;
 
-			scalePoint.SourceModule = sources[0] as IModule;
+			var scale = GetLocalIfValueNull<Vector3>(Scale, 1, values);
 
-			scalePoint.X = Scale.x;
-			scalePoint.Y = Scale.y;
-			scalePoint.Z = Scale.z;
+			var scalePoint = Value == null ? new ScaleInput(source, scale.x, scale.y, scale.z) : Value as ScaleInput;
+
+			scalePoint.SourceModule = source;
+
+			scalePoint.X = scale.x;
+			scalePoint.Y = scale.y;
+			scalePoint.Z = scale.z;
 
 			Value = scalePoint;
 			return Value;
