@@ -85,7 +85,6 @@ namespace LunraGames.NoiseMaker
 				var typedNode = node as IPropertyNode;
 
 				typedNode.RawPropertyValue = property.Value;
-				Debug.Log(property.Value);
 			}
 		}
 

@@ -15,7 +15,6 @@ namespace LunraGames.NoiseMaker
 			get { return PropertyValue; } 
 			set 
 			{ 
-				Debug.Log(typeof(T).FullName+" _ "+value.GetType().FullName);
 				PropertyValue = (T)value; 
 				Value = PropertyValue;
 			}
