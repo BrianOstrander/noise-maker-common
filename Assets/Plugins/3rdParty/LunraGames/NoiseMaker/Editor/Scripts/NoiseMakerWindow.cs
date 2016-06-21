@@ -799,6 +799,14 @@ namespace LunraGames.NoiseMaker
 			if (State != States.Idle || Graph == null) return;
 			if (StringExtensions.IsNullOrWhiteSpace(SavePath)) throw new NullReferenceException("SavePath cannot be null");
 			var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
+
+			if (config == null) 
+			{
+				UnityEditor.EditorUtility.DisplayDialog("Missing Noise Graph", "The Noise Graph you were editing is now missing.", "Okay");
+				Reset();
+				return;
+			}
+
 			config.GraphInstantiation = Graph;
 			config.PropertiesInstantiation = Properties;
 			UnityEditor.EditorUtility.SetDirty(config);

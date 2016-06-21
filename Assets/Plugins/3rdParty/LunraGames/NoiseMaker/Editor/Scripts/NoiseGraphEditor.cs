@@ -86,12 +86,6 @@ namespace LunraGames.NoiseMaker
 
 		void DrawProperties()
 		{
-		/*
-			if (EditorApplication.isCompiling || EditorApplication.isPlayingOrWillChangePlaymode || Properties == null || Graph == null) 
-			{
-				EditorGUILayout.HelpBox("Cannot modify serialized data while compiling or in playmode.", MessageType.Warning);
-				return;
-			}*/
 			if (Graph == null) EditorGUILayout.HelpBox("There were errors deserializing the Graph", MessageType.Error);
 			else if (Properties == null) EditorGUILayout.HelpBox("There were errors deserializing the Properties", MessageType.Error);
 			else
