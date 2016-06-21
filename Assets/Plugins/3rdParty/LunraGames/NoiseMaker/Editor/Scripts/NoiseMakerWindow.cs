@@ -168,6 +168,7 @@ namespace LunraGames.NoiseMaker
 								Graph.Nodes.Add(root);
 								Graph.RootId = root.Id;
 								State = States.Idle;
+								Save();
 							}
 						}
 						// Open existing Noise Maker graph file
