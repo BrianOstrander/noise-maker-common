@@ -16,6 +16,9 @@ namespace LunraGames.NoiseMaker
 		SerializedProperty GraphJsonProperty;
 		SerializedProperty PropertiesJsonProperty;
 
+		string LastGraphJson;
+		string LastPropertiesJson;
+
 		Graph Graph;
 		List<Property> Properties;
 
@@ -23,6 +26,9 @@ namespace LunraGames.NoiseMaker
 		{
 			GraphJsonProperty = serializedObject.FindProperty("GraphJson");
 			PropertiesJsonProperty = serializedObject.FindProperty("PropertiesJson");
+
+			LastGraphJson = GraphJsonProperty.stringValue;
+			LastPropertiesJson = PropertiesJsonProperty.stringValue;
 
 			Properties = Serialization.DeserializeJson<List<Property>>(PropertiesJsonProperty.stringValue);
 			Graph = Serialization.DeserializeJson<Graph>(GraphJsonProperty.stringValue);
@@ -34,18 +40,20 @@ namespace LunraGames.NoiseMaker
 
 			var assetPath = AssetDatabase.GetAssetPath(target.GetInstanceID());
 			var activelyEditing = assetPath == NoiseMakerWindow.ActiveSavePath;
+			var editingAllowed = !(activelyEditing || EditorApplication.isCompiling || EditorApplication.isPlayingOrWillChangePlaymode || Properties == null || Graph == null);
 
 			if (activelyEditing) EditorGUILayout.HelpBox("Cannot modify serialized data while editing in Noise Maker.", MessageType.Warning);
+			else if (!editingAllowed) EditorGUILayout.HelpBox("Cannot modify serialized data while compiling or in playmode.", MessageType.Warning);
 
-			GUI.enabled = !activelyEditing;
+			GUI.enabled = editingAllowed;
 
 			if (GUILayout.Button("Open in Noise Maker"))
 			{
 
 			}
 
-			var graphChanged = false;
-			var propertiesChanged = false;
+			var graphChanged = LastGraphJson != GraphJsonProperty.stringValue;
+			var propertiesChanged = LastPropertiesJson != PropertiesJsonProperty.stringValue;
 
 			if (AdvancedShown = EditorGUILayout.Foldout(AdvancedShown, "Advanced"))
 			{
@@ -71,16 +79,20 @@ namespace LunraGames.NoiseMaker
 				if (GUILayout.Button("Print Exception")) Debug.LogException(e);
 			}
 
+			LastGraphJson = GraphJsonProperty.stringValue;
+			LastPropertiesJson = PropertiesJsonProperty.stringValue;
+
 			serializedObject.ApplyModifiedProperties();
 		}
 
 		void DrawProperties()
 		{
+		/*
 			if (EditorApplication.isCompiling || EditorApplication.isPlayingOrWillChangePlaymode || Properties == null || Graph == null) 
 			{
 				EditorGUILayout.HelpBox("Cannot modify serialized data while compiling or in playmode.", MessageType.Warning);
 				return;
-			}
+			}*/
 			if (Graph == null) EditorGUILayout.HelpBox("There were errors deserializing the Graph", MessageType.Error);
 			else if (Properties == null) EditorGUILayout.HelpBox("There were errors deserializing the Properties", MessageType.Error);
 			else
