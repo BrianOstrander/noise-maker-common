@@ -44,9 +44,11 @@ namespace LunraGames.NoiseMaker
 		[SerializeField]
 		Vector2 NodeOptionsScrollPosition = Vector2.zero;
 		[SerializeField]
-		string SavePath;
+		string SaveGuid;
 		[SerializeField]
 		Vector3 GraphPosition = Vector3.zero;
+
+		string SavePath { get { return StringExtensions.IsNullOrWhiteSpace(SaveGuid) ? null : AssetDatabase.GUIDToAssetPath(SaveGuid); } }
 
 		Graph Graph;
 		List<Property> Properties;
@@ -75,7 +77,7 @@ namespace LunraGames.NoiseMaker
 			try 
 			{
 				// If we're opening the editor from a cold start, and it looks like the user was editing something, load it.
-				if (State == States.Idle && Graph == null && !StringExtensions.IsNullOrWhiteSpace(SavePath))
+				if (State == States.Idle && Graph == null && !StringExtensions.IsNullOrWhiteSpace(SaveGuid))
 				{
 					var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
 					if (config == null) State = States.Splash;
@@ -155,9 +157,9 @@ namespace LunraGames.NoiseMaker
 							if (!StringExtensions.IsNullOrWhiteSpace(savePath))
 							{
 								// Create default save, add required root node, save it, and open it up for editing.
-								SavePath = savePath;
 								var config = NoiseGraph.CreateInstance<NoiseGraph>();
-								AssetDatabase.CreateAsset(config, SavePath);
+								AssetDatabase.CreateAsset(config, savePath);
+								SaveGuid = AssetDatabase.AssetPathToGUID(savePath);
 								Graph = new Graph();
 								Properties = new List<Property>();
 								var root = new RootNode();
@@ -172,20 +174,7 @@ namespace LunraGames.NoiseMaker
 						if (GUILayout.Button("Open"))
 						{
 							var openPath = UnityEditor.EditorUtility.OpenFilePanel("Open Noise Graph", Application.dataPath, "asset");
-							if (!StringExtensions.IsNullOrWhiteSpace(openPath))
-							{
-								if (openPath.StartsWith(Application.dataPath))
-								{
-									// Open up existing file for editing.
-									SavePath = "Assets"+openPath.Substring(Application.dataPath.Length);
-									var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
-									Graph = config.GraphInstantiation;
-									Properties = config.PropertiesInstantiation;
-									Graph.Apply(Properties.ToArray());
-									State = States.Idle;
-								}
-								else UnityEditor.EditorUtility.DisplayDialog("Invalid", "Selected noise graph must be inside project directory.", "Okay");
-							}
+							if (!StringExtensions.IsNullOrWhiteSpace(openPath)) Open(openPath);
 						}
 					}
 					GUILayout.EndHorizontal();
@@ -784,7 +773,7 @@ namespace LunraGames.NoiseMaker
 		void Reset()
 		{
 			State = States.Splash;
-			SavePath = null;
+			SaveGuid = null;
 			Graph = null;
 			Properties = null;
 			GraphPosition = Vector3.zero;
@@ -848,5 +837,46 @@ namespace LunraGames.NoiseMaker
 
 		public static Type ConnectingFromOutputType { get { return Instance == null || Instance.ConnectingFrom == null ? null : Instance.ConnectingFrom.OutputType; } }
 		public static string ActiveSavePath { get { return Instance == null || StringExtensions.IsNullOrWhiteSpace(Instance.SavePath) ? null : Instance.SavePath; } }
+
+		public static void OpenNoiseGraph(string path)
+		{
+			if (StringExtensions.IsNullOrWhiteSpace(path)) return;
+
+			if (Instance == null) Init();
+
+			Instance.Open(path);
+		}
+
+		public void Open(string path)
+		{
+			if (StringExtensions.IsNullOrWhiteSpace(path)) return;
+
+			var fromRoot = path.StartsWith(Application.dataPath);
+			var fromAssets = !fromRoot && path.StartsWith("Assets");
+
+			if (fromRoot || fromAssets)
+			{
+				if (State != States.Splash) 
+				{
+					var result = UnityEditor.EditorUtility.DisplayDialogComplex("Editing in Progress", "You're in the middle of editing another Noise Graph, what would you like to do?", "Save", "Cancel", "Discard Changes");
+
+					if (result == 0) Save();
+					else if (result == 1) return;
+
+					Reset();
+				}
+
+				// Open up existing file for editing.
+				SaveGuid = AssetDatabase.AssetPathToGUID(fromAssets ? path : "Assets"+path.Substring(Application.dataPath.Length));
+				var config = AssetDatabase.LoadAssetAtPath<NoiseGraph>(SavePath);
+				Graph = config.GraphInstantiation;
+				Properties = config.PropertiesInstantiation;
+				Graph.Apply(Properties.ToArray());
+				State = States.Idle;
+
+				Repaint();
+			}
+			else UnityEditor.EditorUtility.DisplayDialog("Invalid", "Selected noise graph must be inside project directory.", "Okay");	
+		}
 	}
 }

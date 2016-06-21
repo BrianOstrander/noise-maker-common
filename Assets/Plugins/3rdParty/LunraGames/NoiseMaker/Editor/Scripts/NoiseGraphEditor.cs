@@ -45,12 +45,11 @@ namespace LunraGames.NoiseMaker
 			if (activelyEditing) EditorGUILayout.HelpBox("Cannot modify serialized data while editing in Noise Maker.", MessageType.Warning);
 			else if (!editingAllowed) EditorGUILayout.HelpBox("Cannot modify serialized data while compiling or in playmode.", MessageType.Warning);
 
+			GUI.enabled = !activelyEditing;
+
+			if (GUILayout.Button("Open in Noise Maker")) NoiseMakerWindow.OpenNoiseGraph(assetPath);
+
 			GUI.enabled = editingAllowed;
-
-			if (GUILayout.Button("Open in Noise Maker"))
-			{
-
-			}
 
 			var graphChanged = LastGraphJson != GraphJsonProperty.stringValue;
 			var propertiesChanged = LastPropertiesJson != PropertiesJsonProperty.stringValue;
