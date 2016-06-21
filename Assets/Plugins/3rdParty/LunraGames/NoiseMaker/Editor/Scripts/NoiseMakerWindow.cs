@@ -11,9 +11,7 @@ namespace LunraGames.NoiseMaker
 {
 	public class NoiseMakerWindow : EditorWindow
 	{
-		const string GraphKey = "LG_NoiseMaker_Graph";
-
-		public class Layouts
+		public static class Layouts
 		{
 			public const float VisualizationOptionsWidth = 300f;
 			public const float VisualizationOptionsHeight = 24f;
@@ -849,5 +847,6 @@ namespace LunraGames.NoiseMaker
     	}
 
 		public static Type ConnectingFromOutputType { get { return Instance == null || Instance.ConnectingFrom == null ? null : Instance.ConnectingFrom.OutputType; } }
+		public static string ActiveSavePath { get { return Instance == null || StringExtensions.IsNullOrWhiteSpace(Instance.SavePath) ? null : Instance.SavePath; } }
 	}
 }
