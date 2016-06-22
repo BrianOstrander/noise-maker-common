@@ -35,6 +35,8 @@ namespace LunraGames.NoiseMaker
 			Instance = this;
 		}
 
+		static bool RepaintQueued;
+
 		[SerializeField]
 		States State = States.Splash;
 		[SerializeField]
@@ -134,6 +136,15 @@ namespace LunraGames.NoiseMaker
 		void OnFocus() { Save(); }
 		void OnLostFocus() { Save(); }
 		void OnProjectChange() { Save(); }
+
+		void Update() 
+		{
+			if (RepaintQueued)
+			{
+				Repaint();
+				RepaintQueued = false;
+			}
+		}
 		#endregion
 
 		/// <summary>
@@ -415,27 +426,40 @@ namespace LunraGames.NoiseMaker
 								{
 									foreach (var option in category.Value)
 									{
-										if (option.IsEditable) GUILayout.BeginHorizontal();
+										var unmodifiedOption = option;
 
-										if (GUILayout.Button(option.Details.Name, option.IsEditable ? Styles.OptionButtonMiddle : Styles.OptionButtonRight)) 
+										if (unmodifiedOption.IsEditable) GUILayout.BeginHorizontal();
+
+										if (GUILayout.Button(unmodifiedOption.Details.Name, unmodifiedOption.IsEditable ? Styles.OptionButtonMiddle : Styles.OptionButtonRight)) 
 										{
-											var node = Activator.CreateInstance(option.Details.Target) as INode;
+											var node = Activator.CreateInstance(unmodifiedOption.Details.Target) as INode;
 											node.Id = Guid.NewGuid().ToString();
 											node.EditorPosition = GraphCenter();
 											Graph.Nodes.Add(node);
 										}
 
-										if (option.IsEditable) 
+										if (unmodifiedOption.IsEditable) 
 										{
 											if (GUILayout.Button(NoiseMakerConfig.Instance.EditableOption, Styles.OptionButtonRight, GUILayout.Width(Layouts.EditableOptionWidth), GUILayout.ExpandHeight(true))) 
 											{
-												var node = Activator.CreateInstance(option.Details.Target) as IPropertyNode;
-												node.Id = Guid.NewGuid().ToString();
-												node.EditorPosition = GraphCenter();
-												node.IsEditable = true;
-												Graph.Nodes.Add(node);
+												TextDialogPopup.Show(
+													"Create New Property", 
+													propertyName => {
+														if (StringExtensions.IsNullOrWhiteSpace(propertyName)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "An empty name is not valid for a property node.", "Okay");
+														else
+														{
 
-												Properties.Add(new Property { Name = "", Id = node.Id, Value = node.RawPropertyValue });
+															var node = Activator.CreateInstance(unmodifiedOption.Details.Target) as IPropertyNode;
+															node.Id = Guid.NewGuid().ToString();
+															node.EditorPosition = GraphCenter();
+															node.IsEditable = true;
+															Graph.Nodes.Add(node);
+
+															Properties.Add(new Property { Name = propertyName, Id = node.Id, Value = node.RawPropertyValue });
+														}
+													},
+													description: "Enter a unique name for this property node."
+												);
 											}
 											GUILayout.EndHorizontal();
 										}
@@ -733,7 +757,10 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		/// <returns>The sphere texture.</returns>
 		/// <param name="module">Module to get the texture from.</param>
-		/// <param name="height">Height.</param>
+		/// <param name="width">The width of the texture, the height will be half of it.</param>
+		/// <param name="map">Mercator map to use for texturing, uses current previewer if one is specified.</param>
+		/// <param name="existing">An existing texture to write to, for performance reasons. Creates a new one if the size isn't right.</param>
+		/// <param name="completed">Completed callback</param>
 		public static Texture2D GetSphereTexture(IModule module, int width = 98, Mercator map = null, Texture2D existing = null, Action completed = null)
 		{
 			var result = existing == null || existing.width != width || existing.height != width * 2 ? new Texture2D(width, width * 2) : existing;
@@ -846,6 +873,11 @@ namespace LunraGames.NoiseMaker
 
 		public static Type ConnectingFromOutputType { get { return Instance == null || Instance.ConnectingFrom == null ? null : Instance.ConnectingFrom.OutputType; } }
 		public static string ActiveSavePath { get { return Instance == null || StringExtensions.IsNullOrWhiteSpace(Instance.SavePath) ? null : Instance.SavePath; } }
+
+		public static void QueueRepaint()
+		{
+			RepaintQueued = true;
+		}
 
 		public static void OpenNoiseGraph(string path)
 		{

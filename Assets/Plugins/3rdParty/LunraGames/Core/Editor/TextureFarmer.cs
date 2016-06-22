@@ -17,6 +17,7 @@ namespace LunraGames
 			public Color[] Replacements;
 			public int YProgress;
 			public Action Completed;
+			public Action Updated;
 		}
 
 		static List<Entry> Entries = new List<Entry>();
@@ -51,6 +52,8 @@ namespace LunraGames
 
 				if (entry.YProgress == entry.Target.height) deletions.Add(entry);
 
+				if (entry.Updated != null) entry.Updated();
+
 				if (remainingBudget <= 0) break;
 			}
 
@@ -61,7 +64,7 @@ namespace LunraGames
 			}
 		}
 
-		public static void Queue(Texture2D target, Color[] replacements, Action completed = null)
+		public static void Queue(Texture2D target, Color[] replacements, Action completed = null, Action updated = null)
 		{
 			var entry = Entries.FirstOrDefault(e => target == e.Target);
 
@@ -70,7 +73,8 @@ namespace LunraGames
 				entry = new Entry {
 					Target = target,
 					Replacements = replacements,
-					Completed = completed
+					Completed = completed,
+					Updated = updated
 				};
 				Entries.Add(entry);
 			}
@@ -79,6 +83,7 @@ namespace LunraGames
 				entry.Replacements = replacements;
 				entry.YProgress = 0;
 				entry.Completed = completed;
+				entry.Updated = updated;
 			}
 		}
 	}

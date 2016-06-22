@@ -121,7 +121,7 @@ namespace LunraGames.NoiseMaker
 									}
 								}
 							},
-							() => TextureFarmer.Queue(preview.Preview, pixels)
+							() => TextureFarmer.Queue (preview.Preview, pixels, NoiseMakerWindow.QueueRepaint, NoiseMakerWindow.QueueRepaint)
 						);
 					}
 				}
