@@ -2,8 +2,8 @@
 /Temp/
 /LocalCache
 
-*.csproj
-*.sln
+/*.csproj
+/*.sln
 /*.sdf
 /*.opendb
 /*.unityproj
