@@ -16,6 +16,7 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		[NodeLinker(0, hide: true), JsonIgnore]
 		public IModule Source;
+		public int Seed;
 
 		public override IModule GetValue (List<INode> nodes)
 		{
