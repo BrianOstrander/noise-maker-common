@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
-using Atesh;
 using System.Linq;
 using Newtonsoft.Json;
 
@@ -92,7 +91,7 @@ namespace LunraGames.NoiseMaker
 			var ids = sources.Length == 0 ? SourceIds.ToArray() : sources;
 			foreach (var source in ids)
 			{
-				if (StringExtensions.IsNullOrWhiteSpace(source)) throw new ArgumentNullOrEmptyException("sources", "Array \"sources\" can't contain a null or empty string");
+				if (StringExtensions.IsNullOrWhiteSpace(source)) throw new ArgumentNullException("sources", "Array \"sources\" can't contain a null or empty string");
 				var node = nodes.FirstOrDefault(n => n.Id == source);
 				if (node == null) throw new ArgumentOutOfRangeException("sources", "No node found for \""+sources+"\"");
 				result.Add(node.GetRawValue(nodes));
