@@ -2,7 +2,6 @@
 using UnityEditor;
 using System.Collections.Generic;
 using System;
-using Atesh;
 
 namespace LunraGames.NoiseMaker
 {

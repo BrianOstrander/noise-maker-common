@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using LibNoise.Models;
-using Atesh;
 
 namespace LunraGames.NoiseMaker
 {

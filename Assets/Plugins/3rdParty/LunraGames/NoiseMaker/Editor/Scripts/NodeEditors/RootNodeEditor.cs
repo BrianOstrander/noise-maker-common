@@ -1,10 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
-using System.Linq;
-using UnityEditor;
-using LibNoise;
-using Atesh;
+﻿using UnityEditor;
 
 namespace LunraGames.NoiseMaker
 {

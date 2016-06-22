@@ -1,9 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-using LibNoise;
+﻿using LibNoise;
 using LibNoise.Modifiers;
 using System.Collections.Generic;
-using Atesh;
 using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker

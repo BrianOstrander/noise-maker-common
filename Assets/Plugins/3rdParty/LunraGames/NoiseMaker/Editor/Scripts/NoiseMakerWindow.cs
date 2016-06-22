@@ -4,7 +4,6 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using LibNoise;
-using Atesh;
 using LibNoise.Models;
 
 namespace LunraGames.NoiseMaker

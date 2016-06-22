@@ -1,11 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System;
-using Atesh;
-
-namespace LunraGames.NoiseMaker
+﻿namespace LunraGames.NoiseMaker
 {
 	public abstract class AltitudeEditor
 	{
