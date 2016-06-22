@@ -23,6 +23,10 @@ namespace LunraGames.NoiseMaker
 		const float CloseHeight = 18f;
 		const float CloseStartOffset = CloseWidth * 2f;
 
+		const float RenameWidth = 54f;
+		const float RenameHeight = 18f;
+		const float RenameStartOffset = CloseStartOffset + (CloseWidth * 0.5f) + RenameWidth; 
+
 		public delegate Color CalculateColor(float value, VisualizationPreview previewer);
 
 		public static VisualizationPreview Previewer = Visualizations[0];
@@ -297,6 +301,12 @@ namespace LunraGames.NoiseMaker
 		{
 			var rect = new Rect(position.x + position.width - CloseStartOffset, position.y - CloseHeight, CloseWidth, CloseHeight);
 			return GUI.Button(rect, "x", Styles.CloseButton);
+		}
+
+		public bool DrawRenameControl(Rect position)
+		{
+			var rect = new Rect(position.x + position.width - RenameStartOffset, position.y - RenameHeight, RenameWidth, RenameHeight);
+			return GUI.Button(rect, "Rename", Styles.RenameButton);
 		}
 
 		public static long LastUpdated(string id)

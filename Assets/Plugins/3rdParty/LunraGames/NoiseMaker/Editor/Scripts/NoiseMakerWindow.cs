@@ -277,6 +277,36 @@ namespace LunraGames.NoiseMaker
 					if (ConnectingFrom == unmodifiedNode) fromRect = outRect;
 					// Can't delete the root node, so don't show the delete button.
 					if (!(unmodifiedNode is RootNode) && drawer.Editor.DrawCloseControl(windowRect)) deletedNode = unmodifiedNode;
+					// Property nodes can be renamed.
+					if (unmodifiedNode is IPropertyNode && drawer.Editor.DrawRenameControl(windowRect))
+					{
+						var property = Properties.FirstOrDefault(p => p.Id == unmodifiedNode.Id);
+						var propertyName = property == null || StringExtensions.IsNullOrWhiteSpace(property.Name) ? string.Empty : property.Name;
+						TextDialogPopup.Show(
+							"Rename Property", 
+							freshName =>
+							{
+								if (freshName == propertyName) return;
+								else if (StringExtensions.IsNullOrWhiteSpace(freshName))
+								{
+									UnityEditor.EditorUtility.DisplayDialog("Invalid Name", "A property's name can't be empty.", "Okay");
+									return;
+								}
+								foreach (var prop in Properties)
+								{
+									if (prop.Name == freshName && prop != property)
+									{
+										UnityEditor.EditorUtility.DisplayDialog("Duplicate Name", "A property with that name already exists.", "Okay");
+										return;
+									}
+								}
+
+								if (property == null) Properties.Add(new Property { Name = freshName, Id = unmodifiedNode.Id, Value = (unmodifiedNode as IPropertyNode).RawPropertyValue });
+								else property.Name = freshName;
+							},
+							text: propertyName
+						);
+					} 
 
 					var nodeName = (drawer == null || StringExtensions.IsNullOrWhiteSpace(drawer.Details.Name)) ? "Node" : drawer.Details.Name;
 
@@ -444,8 +474,10 @@ namespace LunraGames.NoiseMaker
 											{
 												TextDialogPopup.Show(
 													"Create New Property", 
-													propertyName => {
-														if (StringExtensions.IsNullOrWhiteSpace(propertyName)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "An empty name is not valid for a property node.", "Okay");
+													propertyName => 
+													{
+ 														if (StringExtensions.IsNullOrWhiteSpace(propertyName)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "An empty name is not valid for a property node.", "Okay");
+														else if (Properties.FirstOrDefault(p => p.Name == propertyName) != null) UnityEditor.EditorUtility.DisplayDialog("Property Exists", "A property named \""+propertyName+"\" already exists.", "Okay");
 														else
 														{
 

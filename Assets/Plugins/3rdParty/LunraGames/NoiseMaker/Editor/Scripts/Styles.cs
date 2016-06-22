@@ -108,6 +108,41 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
+		static GUIStyle _RenameButton;
+
+		public static GUIStyle RenameButton
+		{
+			get
+			{
+				if (_RenameButton == null)
+				{
+					_RenameButton = new GUIStyle(GUI.skin.box);
+					_RenameButton.padding.top -= 2;
+					var normal = new Texture2D(_RenameButton.normal.background.width, _RenameButton.normal.background.height);
+					var active = new Texture2D(_RenameButton.normal.background.width, _RenameButton.normal.background.height);
+
+					for (var x = 0; x < active.width; x++)
+					{
+						for (var y = 0; y < active.height; y++)
+						{
+							var normalColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0.55f, 0.4f, 0.5f) : Color.HSVToRGB(0.51f, 0.3f, 0.5f);
+							var activeColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0.55f, 0.3f, 0.6f) : Color.HSVToRGB(0.51f, 0.4f, 0.6f);
+							active.SetPixel(x, y, activeColor.NewA(1f));
+							normal.SetPixel(x, y, normalColor.NewA(1f));
+						}
+					}
+					normal.Apply();
+					active.Apply();
+					_RenameButton.normal.background = normal;
+					_RenameButton.focused.background = normal;
+					_RenameButton.hover.background = normal;
+					_RenameButton.active.background = active;
+				}
+
+				return _RenameButton;
+			}
+		}
+
 		static GUIStyle _Foldout;
 
 		public static GUIStyle Foldout
