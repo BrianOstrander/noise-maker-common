@@ -316,7 +316,7 @@ namespace LunraGames.NoiseMaker
 						nodeName = propertyNode.IsEditable && foundProperty != null && !StringExtensions.IsNullOrWhiteSpace(foundProperty.Name) ? foundProperty.Name : nodeName;
 						GUI.color = propertyNode.IsEditable ? Color.green : Color.white;
 					}
-					else GUI.color = unmodifiedNode is RootNode ? Color.cyan : Color.white;
+					else GUI.color = unmodifiedNode is RootNode ? Styles.RootColor : Color.white;
 					// Draw the node and cache its position incase it got dragged around.
 					windowRect = GUILayout.Window(unmodifiedNode.Id.GetHashCode(), windowRect, id =>
 					{

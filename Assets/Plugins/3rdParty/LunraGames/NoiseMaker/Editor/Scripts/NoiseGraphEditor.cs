@@ -89,6 +89,13 @@ namespace LunraGames.NoiseMaker
 			else if (Properties == null) EditorGUILayout.HelpBox("There were errors deserializing the Properties", MessageType.Error);
 			else
 			{
+				var rootChanged = false;
+
+				var root = Graph.RootNode;
+				GUI.color = LunraGames.NoiseMaker.Styles.RootColor;
+				root.Seed = Deltas.DetectDelta<int>(root.Seed, EditorGUILayout.IntField("Root Seed", root.Seed), ref rootChanged);
+				GUI.color = Color.white;
+
 				Property changedProperty = null;
 				foreach (var property in Properties)
 				{
@@ -134,11 +141,12 @@ namespace LunraGames.NoiseMaker
 					if (changed) changedProperty = property;
 				}
 
-				if (changedProperty != null)
+				if (rootChanged || changedProperty != null)
 				{
 					try 
 					{
-						Graph.Apply(changedProperty);
+						// Only apply properties to graph if one of them changed.
+						if (changedProperty != null) Graph.Apply(changedProperty);
 
 						var freshGraph = Serialization.SerializeJson(Graph);
 						var freshProperties = Serialization.SerializeJson(Properties);

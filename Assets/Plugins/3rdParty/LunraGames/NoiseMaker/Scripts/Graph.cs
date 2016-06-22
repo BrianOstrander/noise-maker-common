@@ -35,10 +35,10 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		INode _RootNode;
+		RootNode _RootNode;
 
 		[JsonIgnore]
-		public INode RootNode
+		public RootNode RootNode
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace LunraGames.NoiseMaker
 				{
 					var node = Nodes.FirstOrDefault(n => n.Id == RootId);
 					if (node == null) throw new NullReferenceException("No node found for the RootId \""+RootId+"\"");
-					_RootNode = node;
+					_RootNode = node as RootNode;
 				}
 				return _RootNode;
 			}

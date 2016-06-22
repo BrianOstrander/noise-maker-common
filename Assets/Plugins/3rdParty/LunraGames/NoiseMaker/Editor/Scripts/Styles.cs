@@ -6,6 +6,8 @@ namespace LunraGames.NoiseMaker
 	// todo: make a proper GUISkin file for these, instead of these hacks.
 	public class Styles
 	{
+		public static Color RootColor { get { return Color.cyan; } }
+
 		static GUIStyle _BoxButton;
 
 		public static GUIStyle BoxButton
