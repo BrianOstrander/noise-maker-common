@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using UnityEngine;
 using LibNoise.Models;
+using Random = System.Random;
 
 namespace LunraGames.NoiseMaker
 {
@@ -18,6 +19,10 @@ namespace LunraGames.NoiseMaker
 		public string RootId;
 
 		public int Seed;
+
+		Random _Random;
+
+		public Random Random { get { return _Random ?? (_Random = new Random(Seed)); } }
 
 		IModule _Root;
 
