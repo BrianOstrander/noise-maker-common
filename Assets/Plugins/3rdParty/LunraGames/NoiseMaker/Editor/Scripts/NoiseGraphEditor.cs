@@ -91,9 +91,8 @@ namespace LunraGames.NoiseMaker
 			{
 				var rootChanged = false;
 
-				var root = Graph.RootNode;
 				GUI.color = LunraGames.NoiseMaker.Styles.RootColor;
-				root.Seed = Deltas.DetectDelta<int>(root.Seed, EditorGUILayout.IntField("Root Seed", root.Seed), ref rootChanged);
+				Graph.Seed = Deltas.DetectDelta<int>(Graph.Seed, EditorGUILayout.IntField("Root Seed", Graph.Seed), ref rootChanged);
 				GUI.color = Color.white;
 
 				Property changedProperty = null;

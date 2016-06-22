@@ -17,6 +17,8 @@ namespace LunraGames.NoiseMaker
 
 		public string RootId;
 
+		public int Seed;
+
 		IModule _Root;
 
 		[JsonIgnore]
