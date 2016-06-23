@@ -1,4 +1,6 @@
 ﻿using UnityEditor;
+using UnityEngine;
+using LunraGames.NumberDemon;
 
 namespace LunraGames.NoiseMaker
 {
@@ -12,6 +14,12 @@ namespace LunraGames.NoiseMaker
 			var preview = GetPreview<float>(graph, node);
 
 			graph.Seed = Deltas.DetectDelta<int>(graph.Seed, EditorGUILayout.IntField("Seed", graph.Seed), ref preview.Stale);
+
+			if (GUILayout.Button("Randomize"))
+			{
+				graph.Seed = DemonUtility.IntSeed;
+				preview.Stale = true;
+			}
 
 			return rootNode;
 		}

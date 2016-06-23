@@ -6,7 +6,7 @@ namespace LunraGames.NoiseMaker
 	public class VisualizationPreview 
 	{
 		public string Name;
-		public LunraGames.NoiseMaker.NodeEditor.CalculateColor Calculate;
+		public NodeEditor.CalculateColor Calculate;
 		public float LowestCutoff;
 		public float HighestCutoff;
 		public float HueMin;

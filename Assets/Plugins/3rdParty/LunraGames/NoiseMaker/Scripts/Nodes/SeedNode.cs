@@ -1,16 +1,18 @@
-﻿namespace LunraGames.NoiseMaker
+﻿using LunraGames.NumberDemon;
+
+namespace LunraGames.NoiseMaker
 {
 	public class SeedNode : Node<int> 
 	{
 		int? Seed;
+		int LastRootSeed;
 
 		public override int GetValue (Graph graph)
 		{
-			if (!Seed.HasValue) 
+			if (!Seed.HasValue || LastRootSeed != graph.Seed) 
 			{
-				Seed = 0;
-				//Seed = graph.Random.Next();\
-				//var rand = new System.Random()
+				LastRootSeed = graph.Seed;
+ 				Seed = DemonUtility.CantorPair(Id.GetHashCode(), LastRootSeed);
 			}
 
 			return Seed.Value;

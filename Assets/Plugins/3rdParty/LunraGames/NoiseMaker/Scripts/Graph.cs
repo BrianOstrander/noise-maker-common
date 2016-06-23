@@ -20,10 +20,6 @@ namespace LunraGames.NoiseMaker
 
 		public int Seed;
 
-		Random _Random;
-
-		public Random Random { get { return _Random ?? (_Random = new Random(Seed)); } }
-
 		IModule _Root;
 
 		[JsonIgnore]
