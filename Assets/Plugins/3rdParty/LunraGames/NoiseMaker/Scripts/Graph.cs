@@ -36,7 +36,7 @@ namespace LunraGames.NoiseMaker
 				{
 					var node = Nodes.FirstOrDefault(n => n.Id == RootId);
 					if (node == null) throw new NullReferenceException("No node found for the RootId \""+RootId+"\"");
-					_Root = node.GetRawValue(Nodes) as IModule;
+					_Root = node.GetRawValue(this) as IModule;
 				}
 				return _Root;
 			}

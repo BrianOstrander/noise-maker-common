@@ -13,7 +13,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var selector = node as SelectNode;
 
-			if (selector.GetValue(graph.Nodes) != null)
+			if (selector.GetValue(graph) != null)
 			{
 				var preview = GetPreview<IModule>(graph, node);
 				GUILayout.Box(preview.Preview);

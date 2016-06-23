@@ -13,7 +13,7 @@ namespace LunraGames.NoiseMaker
 		int SourceCount { get; }
 		string Id { get; set; }
 		List<string> SourceIds { get; set; }
-		object GetRawValue(List<INode> nodes);
+		object GetRawValue(Graph graph);
 		Type OutputType { get; }
 	}
 }

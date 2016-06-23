@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using LibNoise;
+using LunraGames.NumberDemon;
 
 namespace LunraGames.NoiseMaker
 {
@@ -12,11 +13,11 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(2)]
 		public float Frequency = 0.02f;
 		[NodeLinker(3)]
-		public int Seed = NoiseUtility.Seed;
+		public int Seed = DemonUtility.IntSeed;
 
-		public override IModule GetValue (List<INode> nodes)
+		public override IModule GetValue (Graph graph)
 		{
-			var values = NullableValues(nodes);
+			var values = NullableValues(graph);
 
 			var voronoi = Value == null ? new Voronoi() : Value as Voronoi;
 

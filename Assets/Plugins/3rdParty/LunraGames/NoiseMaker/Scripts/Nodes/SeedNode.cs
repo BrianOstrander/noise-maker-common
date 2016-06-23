@@ -1,15 +1,19 @@
-﻿using System.Collections.Generic;
-
-namespace LunraGames.NoiseMaker
+﻿namespace LunraGames.NoiseMaker
 {
 	public class SeedNode : Node<int> 
 	{
 		int? Seed;
 
-		public override int GetValue (List<INode> nodes)
+		public override int GetValue (Graph graph)
 		{
-			return 0;
-			//if (!Seed.HasValue) Seed
+			if (!Seed.HasValue) 
+			{
+				Seed = 0;
+				//Seed = graph.Random.Next();\
+				//var rand = new System.Random()
+			}
+
+			return Seed.Value;
 		}
 	}
 }

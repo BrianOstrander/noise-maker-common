@@ -106,7 +106,7 @@ namespace LunraGames.NoiseMaker
 
 				if (PreviewMesh == null) PreviewMesh = (Mesh)Instantiate(NoiseMakerConfig.Instance.Ico5VertexMesh);
 
-				var module = node.GetValue(Graph.Nodes);
+				var module = node.GetValue(Graph);
 				var sphere = new Sphere(module);
 
 				var verts = PreviewMesh.vertices;

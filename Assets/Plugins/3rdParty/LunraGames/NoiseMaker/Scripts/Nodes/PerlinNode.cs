@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using LibNoise;
-using System;
+using LunraGames.NumberDemon;
 
 namespace LunraGames.NoiseMaker
 {
@@ -18,11 +17,11 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(4)]
 		public float Persistence;
 		[NodeLinker(5)]
-		public int Seed = NoiseUtility.Seed;
+		public int Seed = DemonUtility.IntSeed;
 
-		public override IModule GetValue (List<INode> nodes)
+		public override IModule GetValue (Graph graph)
 		{
-			var values = NullableValues(nodes);
+			var values = NullableValues(graph);
 
 			var perlin = Value == null ? new Perlin() : Value as Perlin;
 

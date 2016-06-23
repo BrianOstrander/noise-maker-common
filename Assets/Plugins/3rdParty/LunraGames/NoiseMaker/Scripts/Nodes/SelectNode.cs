@@ -10,7 +10,7 @@ namespace LunraGames.NoiseMaker
 		public float LowerBound = -1f;
 		public float UpperBound = 1f;
 
-		public override IModule GetValue (List<INode> nodes)
+		public override IModule GetValue (Graph graph)
 		{
 			if (SourceIds == null || SourceIds.Count != 3)
 			{
@@ -24,7 +24,7 @@ namespace LunraGames.NoiseMaker
 				if (StringExtensions.IsNullOrWhiteSpace(curr)) return null;
 			}
 
-			var sources = Values(nodes);
+			var sources = Values(graph);
 			if (sources.Count != 3) return null;
 
 			var selector = Value == null ? new Select(sources[0] as IModule, sources[1] as IModule, sources[2] as IModule) : Value as Select;

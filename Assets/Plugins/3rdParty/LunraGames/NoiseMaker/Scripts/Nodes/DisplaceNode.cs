@@ -28,9 +28,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(3, hide: true), JsonIgnore]
 		public IModule ZDisplacement;
 
-		public override IModule GetValue (List<INode> nodes)
+		public override IModule GetValue (Graph graph)
 		{
-			var values = NullableValues(nodes);
+			var values = NullableValues(graph);
 
 			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
 			var xDisplacement = GetLocalIfValueNull<IModule>(XDisplacement, 1, values);

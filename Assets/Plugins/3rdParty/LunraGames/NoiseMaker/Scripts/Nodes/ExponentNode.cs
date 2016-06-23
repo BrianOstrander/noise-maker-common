@@ -12,9 +12,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(1)]
 		public float Exponent;
 
-		public override IModule GetValue (List<INode> nodes)
+		public override IModule GetValue (Graph graph)
 		{
-			var values = NullableValues(nodes);
+			var values = NullableValues(graph);
 			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
 
 			if (source == null) return null;

@@ -8,7 +8,7 @@ namespace LunraGames.NoiseMaker
 {
 	public class CheckerboardNode : Node<IModule>
 	{
-		public override IModule GetValue (List<INode> nodes)
+		public override IModule GetValue (Graph graph)
 		{
 			var checkerboard = Value == null ? new Checkerboard() : Value as Checkerboard;
 

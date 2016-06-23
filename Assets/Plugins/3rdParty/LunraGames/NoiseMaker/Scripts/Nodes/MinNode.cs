@@ -18,9 +18,9 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(1, hide: true), JsonIgnore]
 		public IModule Source1;
 
-		public override IModule GetValue (List<INode> nodes)
+		public override IModule GetValue (Graph graph)
 		{
-			var values = NullableValues(nodes);
+			var values = NullableValues(graph);
 
 			var source0 = GetLocalIfValueNull<IModule>(Source0, 0, values);
 			var source1 = GetLocalIfValueNull<IModule>(Source1, 1, values);

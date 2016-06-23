@@ -11,11 +11,11 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(0)]
 		public float Frequency = 0.02f;
 
-		public override IModule GetValue (List<INode> nodes)
+		public override IModule GetValue (Graph graph)
 		{
 			var cylinders = Value == null ? new Cylinders() : Value as Cylinders;
 
-			cylinders.Frequency = GetLocalIfValueNull<float>(Frequency, 0, nodes);
+			cylinders.Frequency = GetLocalIfValueNull<float>(Frequency, 0, graph);
 
 			Value = cylinders;
 			return Value;

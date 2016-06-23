@@ -11,11 +11,11 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(0)]
 		public float Constant;
 
-		public override IModule GetValue (List<INode> nodes)
+		public override IModule GetValue (Graph graph)
 		{
 			var constant = Value == null ? new Constant(Constant) : Value as Constant;
 
-			constant.Value = GetLocalIfValueNull<float>(Constant, 0, nodes);
+			constant.Value = GetLocalIfValueNull<float>(Constant, 0, graph);
 
 			Value = constant;
 			return Value;

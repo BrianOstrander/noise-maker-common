@@ -9,7 +9,9 @@ namespace LunraGames.NoiseMaker
 	[Serializable]
 	public abstract class Node<T> : INode
 	{
+		// Analysis disable StaticFieldInGenericType
 		static Dictionary<Type, int> CachedSourceCounts = new Dictionary<Type, int>();
+		// Analysis restore StaticFieldInGenericType
 
 		#region Inspector
 		public Vector2 EditorPosition { get; set; }
@@ -29,8 +31,9 @@ namespace LunraGames.NoiseMaker
 		public T Value;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="LunraGames.NoiseMaker.Node`1"/> class and creates an empty SourceIds array.
+		/// Initializes a new instance of the <see cref="LunraGames.NoiseMaker.Node`1"/> class and creates an empty SourceIds array, caching the source count if it hasn't already been done.
 		/// </summary>
+		/// <remarks> Magic! </remarks>
 		public Node()
 		{
 			if (!CachedSourceCounts.ContainsKey(GetType()))
@@ -54,7 +57,7 @@ namespace LunraGames.NoiseMaker
 		/// <param name="count">Count.</param>
 		void InitializeSources(int count = 0)
 		{
-			if (count < 0) throw new ArgumentOutOfRangeException("count can't be negative");
+			if (count < 0) throw new ArgumentOutOfRangeException("count", "A negative \"count\" is not allowed");
 			SourceCount = count;
 			SourceIds = SourceIds ?? new List<string>();
 
@@ -71,30 +74,32 @@ namespace LunraGames.NoiseMaker
 
 		public Type OutputType { get { return typeof(T); } }
 
-		public abstract T GetValue(List<INode> nodes);
+		public abstract T GetValue(Graph graph);
 
-		public object GetRawValue(List<INode> nodes)
+		public object GetRawValue(Graph graph)
 		{
-			return GetValue(nodes);
+			return GetValue(graph);
 		}
 
 		/// <summary>
 		/// Returns a list of sources only if each one is actually defined.
 		/// </summary>
-		/// <param name="nodes">Nodes.</param>
+		/// <param name="graph">The parent graph.</param>
 		/// <param name="sources">Sources.</param>
 		// todo: this seems very redundent...
-		protected List<object> Values(List<INode> nodes, params string[] sources)
+		protected List<object> Values(Graph graph, params string[] sources)
 		{
-			if (nodes == null) throw new ArgumentNullException("nodes");
+			if (graph == null) throw new ArgumentNullException("graph");
+			if (graph.Nodes == null) throw new ArgumentException("graph.Nodes");
+
 			var result = new List<object>();
 			var ids = sources.Length == 0 ? SourceIds.ToArray() : sources;
 			foreach (var source in ids)
 			{
 				if (StringExtensions.IsNullOrWhiteSpace(source)) throw new ArgumentNullException("sources", "Array \"sources\" can't contain a null or empty string");
-				var node = nodes.FirstOrDefault(n => n.Id == source);
+				var node = graph.Nodes.FirstOrDefault(n => n.Id == source);
 				if (node == null) throw new ArgumentOutOfRangeException("sources", "No node found for \""+sources+"\"");
-				result.Add(node.GetRawValue(nodes));
+				result.Add(node.GetRawValue(graph));
 			}
 			return result;
 		}
@@ -103,11 +108,13 @@ namespace LunraGames.NoiseMaker
 		/// Returns a list of sources, or nulls if no sources are specified.
 		/// </summary>
 		/// <returns>The sources.</returns>
-		/// <param name="nodes">Nodes.</param>
+		/// <param name="graph">The parent graph.</param>
 		/// <param name="sources">Sources.</param>
-		protected List<object> NullableValues(List<INode> nodes, params string[] sources)
+		protected List<object> NullableValues(Graph graph, params string[] sources)
 		{
-			if (nodes == null) throw new ArgumentNullException("nodes");
+			if (graph == null) throw new ArgumentNullException("graph");
+			if (graph.Nodes == null) throw new ArgumentException("graph.Nodes");
+
 			var result = new List<object>();
 			var ids = sources.Length == 0 ? SourceIds.ToArray() : sources;
 			foreach (var source in ids)
@@ -115,9 +122,9 @@ namespace LunraGames.NoiseMaker
 				if (StringExtensions.IsNullOrWhiteSpace(source)) result.Add(null);
 				else
 				{
-					var node = nodes.FirstOrDefault(n => n.Id == source);
+					var node = graph.Nodes.FirstOrDefault(n => n.Id == source);
 					if (node == null) throw new ArgumentOutOfRangeException("sources", "No node found for \""+sources+"\"");
-					result.Add(node.GetRawValue(nodes));
+					result.Add(node.GetRawValue(graph));
 				}
 			}
 			return result;
@@ -127,7 +134,7 @@ namespace LunraGames.NoiseMaker
 		/// Checks if the specified indices are null, and returns true if they are. If no indices are passed, all indices are checked.
 		/// </summary>
 		/// <returns><c>true</c>, if any of the specified indices are null, <c>false</c> otherwise.</returns>
-		/// <param name="indexes">Indices to check, don't specify any to check all indices.</param>
+		/// <param name="indices">Indices to check, don't specify any to check all indices.</param>
 		protected bool AnyNullSources(params int[] indices)
 		{
 			if (SourceIds == null) throw new NullReferenceException("SourceIds");
@@ -165,7 +172,7 @@ namespace LunraGames.NoiseMaker
 		protected bool AnyNullSourcesInRange(int start, int end)
 		{
 			if (SourceIds == null) throw new NullReferenceException("SourceIds");
-			if (end < start) throw new ArgumentOutOfRangeException("end or start", "Can't have a start value greater than the end value");
+			if (end < start) throw new ArgumentOutOfRangeException("start", "Can't have a start value greater than the end value");
 			if (start < 0) throw new ArgumentOutOfRangeException("start", "Can't start from a negative number");
 			if (SourceIds.Count <= end) throw new ArgumentOutOfRangeException("end");
 
@@ -189,20 +196,20 @@ namespace LunraGames.NoiseMaker
 
 		protected bool InvalidSourceCount { get { return SourceIds == null || SourceIds.Count != SourceCount; } }
 
-		protected S GetLocalIfValueNull<S>(S localValue, int valueIndex,  List<INode> nodes)
+		protected S GetLocalIfValueNull<S>(S localValue, int valueIndex,  Graph graph)
 		{
-			return GetLocalIfValueNull<S>(localValue, valueIndex, NullableValues(nodes));
+			return GetLocalIfValueNull<S>(localValue, valueIndex, NullableValues(graph));
 		}
 
 		protected S GetLocalIfValueNull<S>(S localValue, int valueIndex,  List<object> values)
 		{
-			if (valueIndex < 0) throw new ArgumentOutOfRangeException("sourceIndex", "Can't specify a negative sourceIndex");
-			if (values == null) throw new ArgumentNullException("sources");
-			if (values.Count <= valueIndex) throw new ArgumentOutOfRangeException("sourceIndex", "Can't specify a sourceIndex larger than sources.Count");
+			if (valueIndex < 0) throw new ArgumentOutOfRangeException("valueIndex", "Can't specify a negative valueIndex");
+			if (values == null) throw new ArgumentNullException("values");
+			if (values.Count <= valueIndex) throw new ArgumentOutOfRangeException("valueIndex", "Can't specify a valueIndex larger than sources.Count");
 
 			var value = values[valueIndex];
 			if (value == null) return localValue;
-			if (!typeof(S).IsAssignableFrom(value.GetType())) throw new ArgumentException("Specified source is not the correct type", "sources["+valueIndex+"]");
+			if (!typeof(S).IsAssignableFrom(value.GetType())) throw new ArgumentException("Specified source is not the correct type", "values["+valueIndex+"]");
 			return (S)value;
 		}
 	}

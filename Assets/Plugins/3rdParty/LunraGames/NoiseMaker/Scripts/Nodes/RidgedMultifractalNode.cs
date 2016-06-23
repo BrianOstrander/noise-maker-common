@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using LibNoise;
-using System;
+using LunraGames.NumberDemon;
 
 namespace LunraGames.NoiseMaker
 {
@@ -16,11 +15,11 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(3, 1, 29)]
 		public int OctaveCount = 1;
 		[NodeLinker(4)]
-		public int Seed = NoiseUtility.Seed;
+		public int Seed = DemonUtility.IntSeed;
 
-		public override IModule GetValue (List<INode> nodes)
+		public override IModule GetValue (Graph graph)
 		{
-			var values = NullableValues(nodes);
+			var values = NullableValues(graph);
 
 			var ridged = Value == null ? new RidgedMultifractal() : Value as RidgedMultifractal;
 

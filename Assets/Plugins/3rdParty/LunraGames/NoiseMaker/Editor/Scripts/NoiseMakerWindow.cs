@@ -75,7 +75,7 @@ namespace LunraGames.NoiseMaker
 		#region Messages
 		void OnGUI()
 		{
-			try 
+ 			try 
 			{
 				// If we're opening the editor from a cold start, and it looks like the user was editing something, load it.
 				if (State == States.Idle && Graph == null && !StringExtensions.IsNullOrWhiteSpace(SaveGuid))
@@ -614,7 +614,7 @@ namespace LunraGames.NoiseMaker
 
 							try
 							{
-								if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()) || (rootNode as Node<IModule>).GetValue(Graph.Nodes) == null)
+								if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()) || (rootNode as Node<IModule>).GetValue(Graph) == null)
 								{
 									rootNode = null;
 								}
@@ -673,7 +673,7 @@ namespace LunraGames.NoiseMaker
 			{
 				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)area.width, (int)area.height);
 
-				var module = node.GetValue(Graph.Nodes);
+				var module = node.GetValue(Graph);
 				var pixels = new Color[PreviewTexture.width * PreviewTexture.height];
 				for (var x = 0; x < PreviewTexture.width; x++)
 				{
@@ -710,7 +710,7 @@ namespace LunraGames.NoiseMaker
 			if (lastUpdate != PreviewLastUpdated) 
 			{
 				PreviewUpdating = true;
-				PreviewTexture = GetSphereTexture(node.GetValue(Graph.Nodes), completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
+				PreviewTexture = GetSphereTexture(node.GetValue(Graph), completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -747,7 +747,7 @@ namespace LunraGames.NoiseMaker
 
 				if (PreviewMesh == null) PreviewMesh = Instantiate(NoiseMakerConfig.Instance.Ico5VertexMesh);
 
-				var module = node.GetValue(Graph.Nodes);
+				var module = node.GetValue(Graph);
 				var sphere = new Sphere(module);
 
 				var verts = PreviewMesh.vertices;

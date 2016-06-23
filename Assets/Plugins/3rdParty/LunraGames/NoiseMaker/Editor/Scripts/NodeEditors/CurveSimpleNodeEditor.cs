@@ -14,7 +14,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var curveSimple = node as CurveSimpleNode;
 
-			if (curveSimple.GetValue(graph.Nodes) != null)
+			if (curveSimple.GetValue(graph) != null)
 			{
 				var preview = GetPreview<IModule>(graph, node);
 				GUILayout.Box(preview.Preview);

@@ -102,7 +102,7 @@ namespace LunraGames.NoiseMaker
 			{
 				if (type == typeof(IModule))
 				{
-					var module = node.GetRawValue(graph.Nodes) as IModule;
+					var module = node.GetRawValue(graph) as IModule;
 					if (module == null) preview.Warning = NodeEditorCacher.Editors[node.GetType()].Details.Warning;
 					else
 					{
@@ -205,7 +205,7 @@ namespace LunraGames.NoiseMaker
 				if (usingLinkedNode)
 				{
 					var originNode = graph.Nodes.FirstOrDefault(n => n.Id == node.SourceIds[link.Index]);
-					if (originNode != null) usedNodeValue = originNode.GetRawValue(graph.Nodes);
+					if (originNode != null) usedNodeValue = originNode.GetRawValue(graph);
 				}
 
 				GUI.enabled = !usingLinkedNode;

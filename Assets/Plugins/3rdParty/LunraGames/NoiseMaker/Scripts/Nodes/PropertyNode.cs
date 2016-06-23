@@ -20,7 +20,7 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		public override T GetValue (List<INode> nodes)
+		public override T GetValue (Graph graph)
 		{
 			Value = PropertyValue;
 			return Value;
