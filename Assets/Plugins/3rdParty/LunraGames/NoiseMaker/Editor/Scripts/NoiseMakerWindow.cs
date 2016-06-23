@@ -75,7 +75,7 @@ namespace LunraGames.NoiseMaker
 		#region Messages
 		void OnGUI()
 		{
- 			try 
+			try
 			{
 				// If we're opening the editor from a cold start, and it looks like the user was editing something, load it.
 				if (State == States.Idle && Graph == null && !StringExtensions.IsNullOrWhiteSpace(SaveGuid))
