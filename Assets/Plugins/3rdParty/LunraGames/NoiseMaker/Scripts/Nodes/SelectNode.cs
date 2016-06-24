@@ -1,39 +1,63 @@
 ﻿using LibNoise;
 using LibNoise.Modifiers;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace LunraGames.NoiseMaker
 {
 	public class SelectNode : Node<IModule>
 	{
-		public float EdgeFalloff = 0f;
+		/// <summary>
+		/// The source used if SourceIds[0] is null.
+		/// </summary>
+		[NodeLinker(0, hide: true), JsonIgnore]
+		public IModule Control;
+		/// <summary>
+		/// The source used if SourceIds[1] is null.
+		/// </summary>
+		[NodeLinker(1, hide: true), JsonIgnore]
+		public IModule Source0;
+		/// <summary>
+		/// The source used if SourceIds[2] is null.
+		/// </summary>
+		[NodeLinker(2, hide: true), JsonIgnore]
+		public IModule Source1;
+		[NodeLinker(3)]
+		public float EdgeFalloff;
+		[NodeLinker(4)]
 		public float LowerBound = -1f;
+		[NodeLinker(5)]
 		public float UpperBound = 1f;
 
 		public override IModule GetValue (Graph graph)
 		{
-			if (SourceIds == null || SourceIds.Count != 3)
+			var values = NullableValues(graph);
+
+			var control = GetLocalIfValueNull<IModule>(Control, 0, values);
+			var source0 = GetLocalIfValueNull<IModule>(Source0, 1, values);
+			var source1 = GetLocalIfValueNull<IModule>(Source1, 2, values);
+
+			if (control == null || source0 == null || source1 == null) return null;
+
+			var edgeFalloff = GetLocalIfValueNull<float>(EdgeFalloff, 3, values);
+			var lowerBound = GetLocalIfValueNull<float>(LowerBound, 4, values);
+			var upperBound = GetLocalIfValueNull<float>(UpperBound, 5, values);
+
+			var selector = Value == null ? new Select(control, source0, source1) : Value as Select;
+
+			selector.ControlModule = control;
+			selector.SourceModule1 = source0;
+			selector.SourceModule2 = source1;
+			selector.EdgeFalloff = edgeFalloff;
+
+			try 
 			{
-				if (SourceIds == null) SourceIds = new List<string>();
-				SourceIds.Add(null);
-				SourceIds.Add(null);
-				SourceIds.Add(null);
+				selector.SetBounds(lowerBound, upperBound);
 			}
-			foreach (var curr in SourceIds)
+			catch
 			{
-				if (StringExtensions.IsNullOrWhiteSpace(curr)) return null;
+				return null;
 			}
-
-			var sources = Values(graph);
-			if (sources.Count != 3) return null;
-
-			var selector = Value == null ? new Select(sources[0] as IModule, sources[1] as IModule, sources[2] as IModule) : Value as Select;
-
-			selector.SourceModule1 = sources[0] as IModule;
-			selector.SourceModule2 = sources[1] as IModule;
-			selector.ControlModule = sources[2] as IModule;
-			selector.EdgeFalloff = EdgeFalloff;
-			selector.SetBounds(LowerBound, UpperBound);
 
 			Value = selector;
 

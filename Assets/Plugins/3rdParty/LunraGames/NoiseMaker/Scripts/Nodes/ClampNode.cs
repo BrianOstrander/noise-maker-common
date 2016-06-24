@@ -28,12 +28,12 @@ namespace LunraGames.NoiseMaker
 
 			clamp.SourceModule = source;
 
-			LowerBound = GetLocalIfValueNull<float>(LowerBound, 1, values);
-			UpperBound = GetLocalIfValueNull<float>(UpperBound, 2, values);
+			var lowerBound = GetLocalIfValueNull<float>(LowerBound, 1, values);
+			var upperBound = GetLocalIfValueNull<float>(UpperBound, 2, values);
 			
 			try 
 			{
-				clamp.SetBounds(LowerBound, UpperBound);
+				clamp.SetBounds(lowerBound, upperBound);
 			}
 			catch
 			{
