@@ -8,6 +8,40 @@ namespace LunraGames.NoiseMaker
 	{
 		public static Color RootColor { get { return Color.cyan; } }
 
+		static GUIStyle _Blank;
+
+		public static GUIStyle Blank
+		{
+			get
+			{
+				if (_Blank == null)
+				{
+					_Blank = new GUIStyle(GUI.skin.box);
+					_Blank.alignment = TextAnchor.MiddleLeft;
+					_Blank.padding.top -= 2;
+					var normal = new Texture2D(_Blank.normal.background.width, _Blank.normal.background.height);
+					var active = new Texture2D(_Blank.normal.background.width, _Blank.normal.background.height);
+
+					for (var x = 0; x < active.width; x++)
+					{
+						for (var y = 0; y < active.height; y++)
+						{
+							active.SetPixel(x, y, new Color(0.219f, 0.219f, 0.219f));
+							normal.SetPixel(x, y, new Color(0.219f, 0.219f, 0.219f));
+						}
+					}
+					normal.Apply();
+					active.Apply();
+					_Blank.normal.background = normal;
+					_Blank.focused.background = normal;
+					_Blank.hover.background = normal;
+					_Blank.active.background = active;
+				}
+
+				return _Blank;
+			}
+		}
+
 		static GUIStyle _BoxButton;
 
 		public static GUIStyle BoxButton
@@ -345,21 +379,39 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		static GUIStyle _PreviewToolbar;
+		static GUIStyle _PreviewToolbarLeft;
 
-		public static GUIStyle PreviewToolbar
+		public static GUIStyle PreviewToolbarLeft
 		{
 			get
 			{
-				if (_PreviewToolbar == null)
+				if (_PreviewToolbarLeft == null)
 				{
-					_PreviewToolbar = new GUIStyle(EditorStyles.miniButtonMid);
-					_PreviewToolbar.alignment = TextAnchor.MiddleCenter;
-					_PreviewToolbar.fontSize = 18;
-					_PreviewToolbar.fixedHeight = 23f;
+					_PreviewToolbarLeft = new GUIStyle(EditorStyles.miniButtonLeft);
+					_PreviewToolbarLeft.alignment = TextAnchor.LowerLeft;
+					_PreviewToolbarLeft.fontSize = 18;
+					_PreviewToolbarLeft.fixedHeight = 23f;
 				}
 
-				return _PreviewToolbar;
+				return _PreviewToolbarLeft;
+			}
+		}
+
+		static GUIStyle _PreviewToolbarMiddle;
+
+		public static GUIStyle PreviewToolbarMiddle
+		{
+			get
+			{
+				if (_PreviewToolbarMiddle == null)
+				{
+					_PreviewToolbarMiddle = new GUIStyle(EditorStyles.miniButtonMid);
+					_PreviewToolbarMiddle.alignment = TextAnchor.MiddleCenter;
+					_PreviewToolbarMiddle.fontSize = 18;
+					_PreviewToolbarMiddle.fixedHeight = 23f;
+				}
+
+				return _PreviewToolbarMiddle;
 			}
 		}
 

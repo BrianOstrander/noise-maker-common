@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using LibNoise;
+using LibNoise.Models;
 
 namespace LunraGames.NoiseMaker
 {
@@ -10,7 +12,14 @@ namespace LunraGames.NoiseMaker
 	{
 		public class Layouts
 		{
-			
+			public const float HeaderHeight = 24f;
+			public const float PreviewOptionsHeight = 58;
+			public const float PreviewOptionsWidth = 650f;
+			public const float PreviewXOffsetScalar = 0.6f;
+			public const float PreviewWidthScalar = 1.25f;
+			public const float DomainsWidthScalar = (1f - PreviewXOffsetScalar) * 0.9f;
+			public const float DomainEditorHeightScalar = 0.4f;
+			public const float DomainEditorWidthScalar = 0.5f;
 		}
 
 		enum States
@@ -30,6 +39,21 @@ namespace LunraGames.NoiseMaker
 		States State = States.Splash;
 		[SerializeField]
 		string SaveGuid;
+		[SerializeField]
+		NoiseGraph NoiseGraph;
+		[SerializeField]
+		Vector2 DomainsScrollPosition = Vector2.zero;
+		[SerializeField]
+		int DomainSelection = -1;
+
+		Graph Graph;
+		int PreviewSelected;
+		Dictionary<string, Action<Node<IModule>, Rect, int>> Previews;
+		long PreviewLastUpdated;
+		Texture2D PreviewTexture;
+		Mesh PreviewMesh;
+		Editor PreviewObjectEditor;
+		bool PreviewUpdating;
 
 		string SavePath { get { return StringExtensions.IsNullOrWhiteSpace(SaveGuid) ? null : AssetDatabase.GUIDToAssetPath(SaveGuid); } }
 
@@ -40,6 +64,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var window = EditorWindow.GetWindow(typeof (MercatorMakerWindow), false, "Mercator") as MercatorMakerWindow;
 			window.titleContent = new GUIContent("Mercator", NoiseMakerConfig.Instance.MercatorTab);
+			window.minSize = new Vector2(650f, 650f);
 			window.Show();
 		}
 
@@ -58,8 +83,10 @@ namespace LunraGames.NoiseMaker
 				if (State == States.Splash) DrawSplash();
 				else if (State == States.Idle)
 				{
+					DrawDomains();
+					DrawPreview();
 					DrawHeader();
-					DrawGraph();
+					if (0 <= DomainSelection) DrawDomainEditor(null);
 				}
 			}
 			catch (Exception e)
@@ -122,31 +149,299 @@ namespace LunraGames.NoiseMaker
 
 		void DrawHeader()
 		{
-			GUILayout.BeginHorizontal();
-			{
-				if (GUILayout.Button("Reset", Styles.ToolbarButtonMiddle)) Reset();
-				if (GUILayout.Button("Save", Styles.ToolbarButtonMiddle)) Save();
-			}
-			GUILayout.EndHorizontal();
+			// Reset back to splash.
+			if (GUI.Button(new Rect(0f, 0f, 128f, 24f), "Reset", Styles.ToolbarButtonMiddle)) Reset();
+			// Save active file.
+			if (GUI.Button(new Rect(0f + 128f, 0f, 128f, 24f), "Save", Styles.ToolbarButtonRight)) Save();
 		}
 
-		void DrawGraph()
+		void DrawPreview()
 		{
-			BeginWindows();
+			if (Previews == null) 
 			{
-				// Cache the out and in connection points because we want to draw lines between the connected ones after the node windows.
-				var outDict = new Dictionary<string, Rect>();
-				var inDict = new Dictionary<string, List<Rect>>();
+				Previews = new Dictionary<string, Action<Node<IModule>, Rect, int>> {
+					{ "Flat", DrawFlatPreview },
+					{ "Sphere", DrawSpherePreview },
+					{ "Elevation", DrawElevationPreview }
+				};
+			}
+			var keys = Previews.Keys.ToArray();
 
-				var latitudeCount = Mercator.Biomes.Count;
-				for (var i = 0; i < latitudeCount; i++)
+			GUILayout.BeginArea(new Rect(position.width - Layouts.PreviewOptionsWidth, 0f, Layouts.PreviewOptionsWidth, Layouts.PreviewOptionsHeight));
+			{
+				GUILayout.BeginHorizontal();
 				{
-					var unmodifiedLatitude = Mercator.Biomes[i];
+					GUILayout.Box(GUIContent.none, Styles.PreviewToolbarLeft, GUILayout.Width(24f));
+					for (var i = 0; i < keys.Length; i++)
+					{
+						if (GUILayout.Button(keys[i], i == PreviewSelected ? Styles.PreviewToolbarSelected : Styles.PreviewToolbarMiddle) && PreviewSelected != i) 
+						{
+							// When previews change, we reset any cached info.
+							PreviewUpdating = false;
+							PreviewSelected = i;
+							PreviewLastUpdated = 0L;
+							PreviewObjectEditor = null;
+							PreviewMesh = null;
+						}
+					}
+				}
+				GUILayout.EndHorizontal();
 
+				UnityEngine.Object freshNoiseGraph = null;
+				// Apparently unity likes to randomly throw this error... whatever...
+				try { freshNoiseGraph = EditorGUILayout.ObjectField("Noise", NoiseGraph, typeof(NoiseGraph), false); }
+				catch (Exception e) { if (!(e is ExitGUIException)) throw; }
+
+				if (freshNoiseGraph != NoiseGraph || (Graph == null && NoiseGraph != null))
+				{
+					// When previews change, we reset any cached info.
+					PreviewUpdating = false;
+					PreviewLastUpdated = 0L;
+					PreviewObjectEditor = null;
+					PreviewMesh = null;
+					NoiseGraph = freshNoiseGraph as NoiseGraph;
+
+					if (NoiseGraph == null) Graph = null;
+					else Graph = NoiseGraph.GraphInstantiation;
 				}
 			}
-			EndWindows();
+			GUILayout.EndArea();
+
+			var leftOffset = position.width * (1f - Layouts.PreviewXOffsetScalar);
+			var previewArea = new Rect(leftOffset, Layouts.PreviewOptionsHeight, (position.width - leftOffset) * Layouts.PreviewWidthScalar, position.height - Layouts.PreviewOptionsHeight);
+
+			GUILayout.BeginArea(previewArea);
+			{
+				var rootNode = Graph == null ? null : Graph.RootNode;
+
+				try
+				{
+					if (rootNode == null || rootNode.SourceIds == null || StringExtensions.IsNullOrWhiteSpace(rootNode.SourceIds.FirstOrDefault()) || (rootNode as Node<IModule>).GetValue(Graph) == null)
+					{
+						rootNode = null;
+					}
+				}
+				catch
+				{
+					rootNode = null;
+				}
+
+				if (rootNode == null)
+				{
+					// A proper root with a source hasn't been defined.
+					GUILayout.FlexibleSpace();
+					GUILayout.BeginHorizontal();
+					{
+						GUILayout.FlexibleSpace();
+						GUILayout.Label("Invalid Root", Styles.NoPreviewSmallLabel);
+						GUILayout.FlexibleSpace();
+					}
+					GUILayout.EndHorizontal();
+					GUILayout.FlexibleSpace();
+				}
+				else 
+				{
+					Previews[keys[PreviewSelected]](rootNode, new Rect(previewArea.x, previewArea.y, previewArea.width, previewArea.height), PreviewSelected);
+
+					if (PreviewUpdating)
+					{
+						Pinwheel.Draw(new Vector2(previewArea.width * 0.5f, previewArea.height * 0.5f));
+						Repaint();
+					}
+				}
+			}
+			GUILayout.EndArea();
 		}
+
+		void DrawDomains()
+		{
+			var height = DomainSelection < 0 ? position.height - Layouts.HeaderHeight : (position.height * (1f - Layouts.DomainEditorHeightScalar)) - Layouts.HeaderHeight;
+
+			GUILayout.BeginArea(new Rect(0f, Layouts.HeaderHeight, position.width * Layouts.DomainsWidthScalar, height));
+			{
+				DomainsScrollPosition = GUILayout.BeginScrollView(new Vector2(0f, DomainsScrollPosition.y), false, false, GUIStyle.none, GUIStyle.none);
+				{
+					int? deletedIndex = null;
+
+					for (var i = 0; i < 100; i++)
+					{
+						var unmodifiedI = i;
+
+						bool wasDeleted;
+						bool wasSelected;
+						bool alreadySelected = DomainSelection == unmodifiedI;
+
+						DrawDomain(null, alreadySelected, out wasSelected, out wasDeleted);
+
+						if (wasSelected) 
+						{
+							if (alreadySelected) DomainSelection = -1;
+							else DomainSelection = unmodifiedI;
+						}
+						if (wasDeleted) deletedIndex = unmodifiedI;
+					}
+				}
+				GUILayout.EndScrollView();
+			}
+			GUILayout.EndArea();
+		}
+
+		Rect DrawDomain(Domain domain, bool alreadySelected, out bool selected, out bool deleted)
+		{
+			GUI.color = alreadySelected ? Color.magenta : Color.white;
+
+			GUILayout.BeginHorizontal();
+			{
+				deleted = GUILayout.Button("x", Styles.PreviewToolbarLeft, GUILayout.Width(24f));
+				selected = GUILayout.Button("Lol", Styles.PreviewToolbarMiddle, GUILayout.Width(128f));
+			}
+			GUILayout.EndHorizontal();
+
+			GUI.color = Color.white;
+
+			return GUILayoutUtility.GetLastRect();
+		}
+
+		void DrawDomainEditor(Domain domain)
+		{
+			GUILayout.BeginArea(new Rect(0f, position.height - (position.height * Layouts.DomainEditorHeightScalar), position.width * Layouts.DomainEditorWidthScalar, position.height * Layouts.DomainEditorHeightScalar));
+			{
+				GUILayout.BeginHorizontal();
+				{
+					GUILayout.Box("Lol", EditorStyles.miniButtonMid);
+				}
+				GUILayout.EndHorizontal();
+			}
+			GUILayout.EndArea();
+		}
+
+		#region Previews
+		/// <summary>
+		/// Draws the flat preview.
+		/// </summary>
+		/// <param name="node">Node to draw, typically the root.</param>
+		/// <param name="area">Area the editor should take up.</param>
+		// todo: consolidate this logic somewhere so it's not duplicated here and NoiseMakerWindow
+		void DrawFlatPreview(Node<IModule> node, Rect area, int index)
+		{
+			var lastUpdate = NodeEditor.LastUpdated(node.Id);
+			// todo: remove these duplicate update checks.
+			// Check if node has been updated since the last time we had drawn it.
+			if (lastUpdate != PreviewLastUpdated) 
+			{
+				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)area.width, (int)area.height);
+
+				var module = node.GetValue(Graph);
+				var pixels = new Color[PreviewTexture.width * PreviewTexture.height];
+				for (var x = 0; x < PreviewTexture.width; x++)
+				{
+					for (var y = 0; y < PreviewTexture.height; y++)
+					{
+						// Get the value from the specified location, and run it through the selected previewer. 
+						var value = (float)module.GetValue((double)x, (double)y, 0.0);
+						pixels[(PreviewTexture.width * y) + x] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+					}
+				}
+				PreviewTexture.SetPixels(pixels);
+				PreviewTexture.Apply();
+
+				PreviewLastUpdated = lastUpdate;
+
+				Repaint();
+			}
+			GUI.DrawTexture(new Rect(2f, 2f, PreviewTexture.width - 4f, PreviewTexture.height -4f), PreviewTexture);
+		}
+
+		/// <summary>
+		/// Draws the sphere preview.
+		/// </summary>
+		/// <param name="node">Node to draw, typically the root.</param>
+		/// <param name="area">Area the editor should take up.</param>
+		// todo: consolidate this logic somewhere so it's not duplicated here and NoiseMakerWindow
+		void DrawSpherePreview(Node<IModule> node, Rect area, int index)
+		{
+			// Reset mesh, incase another preview has modified it.
+			NoiseMakerConfig.Instance.Ico4Vertex.GetComponent<MeshFilter>().sharedMesh = NoiseMakerConfig.Instance.Ico4VertexMesh;
+
+			var lastUpdate = NodeEditor.LastUpdated(node.Id);
+			// todo: remove these duplicate update checks.
+			// Check if node has been updated since the last time we had drawn it.
+			if (lastUpdate != PreviewLastUpdated) 
+			{
+				PreviewUpdating = true;
+				PreviewTexture = NoiseMakerWindow.GetSphereTexture(node.GetValue(Graph), completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
+
+				PreviewLastUpdated = lastUpdate;
+
+				Repaint();
+			}
+			// Reset material
+			var mat = NoiseMakerConfig.Instance.Ico4Vertex.GetComponent<MeshRenderer>().sharedMaterial;
+			// If material hasn't been set, set it.
+			if (mat.mainTexture != PreviewTexture)
+			{
+				mat.mainTexture = PreviewTexture;
+				Repaint();
+			}
+
+			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico4Vertex);
+			// Draw interactable preview.
+			PreviewObjectEditor.OnPreviewGUI(new Rect(1f, 0f, area.width - 1f, area.height), Styles.Blank);
+		}
+
+		/// <summary>
+		/// Draws the elevation preview.
+		/// </summary>
+		/// <param name="node">Node to draw, typically the root.</param>
+		/// <param name="area">Area the editor should take up.</param>
+		// todo: consolidate this logic somewhere so it's not duplicated here and NoiseMakerWindow
+		void DrawElevationPreview(Node<IModule> node, Rect area, int index)
+		{
+			var lastUpdate = NodeEditor.LastUpdated(node.Id);
+			// todo: remove these duplicate update checks.
+			// Check if node has been updated since the last time we had drawn it.
+			if (lastUpdate != PreviewLastUpdated) 
+			{
+				// Reset mesh
+				NoiseMakerConfig.Instance.Ico5Vertex.GetComponent<MeshFilter>().sharedMesh = NoiseMakerConfig.Instance.Ico5VertexMesh;
+
+				if (PreviewMesh == null) PreviewMesh = Instantiate(NoiseMakerConfig.Instance.Ico5VertexMesh);
+
+				var module = node.GetValue(Graph);
+				var sphere = new Sphere(module);
+
+				var verts = PreviewMesh.vertices;
+				Graph.GetSphereAltitudes(sphere, ref verts, 0.75f);
+				PreviewMesh.vertices = verts;
+
+				PreviewUpdating = true;
+				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
+
+				PreviewLastUpdated = lastUpdate;
+
+				Repaint();
+			}
+			var filter = NoiseMakerConfig.Instance.Ico5Vertex.GetComponent<MeshFilter>();
+
+			if (filter.sharedMesh != PreviewMesh)
+			{
+				filter.sharedMesh = PreviewMesh;
+				Repaint();
+			}
+
+			var mat = NoiseMakerConfig.Instance.Ico5Vertex.GetComponent<MeshRenderer>().sharedMaterial;
+
+			if (mat.mainTexture != PreviewTexture)
+			{
+				mat.mainTexture = PreviewTexture;
+				Repaint();
+			}
+
+			if (PreviewObjectEditor == null) PreviewObjectEditor = Editor.CreateEditor(NoiseMakerConfig.Instance.Ico5Vertex);
+			// Draw interactable preview.
+			PreviewObjectEditor.OnPreviewGUI(new Rect(1f, 0f, area.width - 1f, area.height), Styles.Blank);
+		}
+		#endregion
 
 		/*
 		public Texture2D GetPreview(Latitude latitude, int width, int height)
@@ -172,6 +467,7 @@ namespace LunraGames.NoiseMaker
 			State = States.Splash;
 			SaveGuid = null;
 			Mercator = null;
+			DomainSelection = -1;
 		}
 
 		void Save()

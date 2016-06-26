@@ -608,7 +608,7 @@ namespace LunraGames.NoiseMaker
 						{
 							for (var i = 0; i < keys.Length; i++)
 							{
-								if (GUILayout.Button(keys[i], i == PreviewSelected ? Styles.PreviewToolbarSelected : Styles.PreviewToolbar) && PreviewSelected != i) 
+								if (GUILayout.Button(keys[i], i == PreviewSelected ? Styles.PreviewToolbarSelected : Styles.PreviewToolbarMiddle) && PreviewSelected != i) 
 								{
 									// When previews change, we reset any cached info.
 									PreviewUpdating = false;

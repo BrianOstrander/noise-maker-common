@@ -264,8 +264,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GenerateOnAwake: 1
-  NoiseGraph: {fileID: 0}
-  MercatorMap: {fileID: 0}
+  NoiseGraph: {fileID: 11400000, guid: cb4bf30e8b5a043dcacd103e54389d15, type: 2}
+  MercatorMap: {fileID: 11400000, guid: 3e4851fc6bfbd4523a9b31689ff68f15, type: 2}
   MapWidth: 200
   MapHeight: 100
   Translation: {x: 0, y: 0, z: 0}
