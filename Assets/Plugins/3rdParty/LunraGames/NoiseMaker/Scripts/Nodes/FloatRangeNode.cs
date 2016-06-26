@@ -1,5 +1,6 @@
 ﻿using LunraGames.NumberDemon;
 using UnityEngine;
+
 namespace LunraGames.NoiseMaker
 {
 	public class FloatRangeNode : Node<float> 
@@ -10,41 +11,39 @@ namespace LunraGames.NoiseMaker
 		public float UpperBound = 1f;
 		[NodeLinker(2)]
 		public int Seed = DemonUtility.IntSeed;
+		[NodeLinker(3)]
+		public RangeOverrides RangeOverride;
 
 		float? FloatValue;
-		int LastSeed;
-		float LastLowerBound;
-		float LastUpperBound;
 
 		public override float GetValue (Graph graph)
 		{
 			var values = NullableValues(graph);
 
-			var seed = GetLocalIfValueNull<int>(Seed, 2, values);
-
 			var lowerBound = GetLocalIfValueNull<float>(LowerBound, 0, values);
 			var upperBound = GetLocalIfValueNull<float>(UpperBound, 1, values);
+			var seed = GetLocalIfValueNull<int>(Seed, 2, values);
+			var rangeOverride = GetLocalIfValueNull<RangeOverrides>(RangeOverride, 3, values);
 
-			if (seed == LastSeed && LastLowerBound == lowerBound && LastUpperBound == upperBound && FloatValue.HasValue) return FloatValue.Value;
+			if (rangeOverride == RangeOverrides.Minimum) return lowerBound;
 
-			if (upperBound < lowerBound)
+			if (rangeOverride == RangeOverrides.Maximum) return upperBound;
+
+			// Invalid ranges always return 0.
+			if (upperBound < lowerBound) 
 			{
-				if (FloatValue.HasValue) return FloatValue.Value;
-				else return 0f;
+				if (!Application.isEditor || (Application.isEditor && Application.isPlaying)) Debug.LogError("UpperBound must be greater than LowerBound");
+				return 0f;
 			}
 
-			LastSeed = seed;
-			LastLowerBound = lowerBound;
-			LastUpperBound = upperBound;
-
-			if (Mathf.Approximately(upperBound, lowerBound)) FloatValue = upperBound;
-			else 
+			if (rangeOverride == RangeOverrides.Average)
 			{
-				Random.seed = seed;
-				FloatValue = Random.Range(lowerBound, upperBound);
+				if (Mathf.Approximately(lowerBound, upperBound)) return lowerBound;
+				else return lowerBound + ((upperBound - lowerBound) * 0.5f);
 			}
 
-			return FloatValue.Value;
+			Random.seed = seed;
+			return Random.Range(lowerBound, upperBound);
 		}
 	}
 }

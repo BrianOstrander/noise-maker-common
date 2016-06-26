@@ -77,6 +77,20 @@ namespace LunraGames.NoiseMaker
 		{
 			try
 			{
+				if (Application.isPlaying)
+				{
+					GUILayout.FlexibleSpace();
+					GUILayout.BeginHorizontal();
+					{
+						GUILayout.FlexibleSpace();
+						GUILayout.Label("Editing Not Permitted While Playing", Styles.NoPreviewLabel);
+						GUILayout.FlexibleSpace();
+					}
+					GUILayout.EndHorizontal();
+					GUILayout.FlexibleSpace();
+					return;
+				}
+				
 				// If we're opening the editor from a cold start, and it looks like the user was editing something, load it.
 				if (State == States.Idle && Graph == null && !StringExtensions.IsNullOrWhiteSpace(SaveGuid))
 				{
@@ -277,7 +291,8 @@ namespace LunraGames.NoiseMaker
 					// Can't delete the root node, so don't show the delete button.
 					if (!(unmodifiedNode is RootNode) && drawer.Editor.DrawCloseControl(windowRect)) deletedNode = unmodifiedNode;
 					// Property nodes can be renamed.
-					if (unmodifiedNode is IPropertyNode && drawer.Editor.DrawRenameControl(windowRect))
+					var unmodifiedProperty = unmodifiedNode is IPropertyNode ? unmodifiedNode as IPropertyNode : null;
+					if (unmodifiedProperty != null && unmodifiedProperty.IsEditable && drawer.Editor.DrawRenameControl(windowRect))
 					{
 						var property = Properties.FirstOrDefault(p => p.Id == unmodifiedNode.Id);
 						var propertyName = property == null || StringExtensions.IsNullOrWhiteSpace(property.Name) ? string.Empty : property.Name;

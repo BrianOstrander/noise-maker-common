@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 using UnityEditor;
-using LibNoise;
 
 namespace LunraGames.NoiseMaker
 {
@@ -11,10 +9,13 @@ namespace LunraGames.NoiseMaker
 	{
 		public override INode Draw(Graph graph, INode node)
 		{
-			var rangeNode = DrawFields(graph, node, false) as FloatRangeNode;
+			var rangeNode = node as FloatRangeNode;
+
+			if (rangeNode.UpperBound < rangeNode.LowerBound) EditorGUILayout.HelpBox("Upper bound cannot be less than lower bound.", MessageType.Warning);
+
+			rangeNode = DrawFields(graph, rangeNode, false) as FloatRangeNode;
 			var currValue = rangeNode.GetValue(graph);
 
-			if (rangeNode.UpperBound < rangeNode.LowerBound) EditorGUILayout.HelpBox("Upper bound cannot be lower than lower bound.", MessageType.Warning);
 
 			GUILayout.BeginHorizontal();
 			{

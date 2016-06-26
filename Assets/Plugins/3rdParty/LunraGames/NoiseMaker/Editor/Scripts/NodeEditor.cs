@@ -226,14 +226,14 @@ namespace LunraGames.NoiseMaker
 						typedValue = (float)usedNodeValue;
 						var outOfRange = typedValue < min || max < typedValue;
 						GUI.contentColor = outOfRange ? Color.red : Color.white;
-						EditorGUILayout.FloatField(link.Name, Mathf.Clamp(typedValue, min, max));
+						EditorGUILayout.DelayedFloatField(link.Name, Mathf.Clamp(typedValue, min, max));
 						GUI.contentColor = Color.white;
 					}
 					else
 					{
 						typedValue = (float)linkValue;
-						if (link.Min != null || link.Max != null) link.Field.SetValue(node, Deltas.DetectDelta<float>(typedValue, Mathf.Clamp(EditorGUILayout.FloatField(link.Name, typedValue), min, max), ref preview.Stale));
-						else link.Field.SetValue(node, Deltas.DetectDelta<float>(typedValue, EditorGUILayout.FloatField(link.Name, typedValue), ref preview.Stale));
+						if (link.Min != null || link.Max != null) link.Field.SetValue(node, Deltas.DetectDelta<float>(typedValue, Mathf.Clamp(EditorGUILayout.DelayedFloatField(link.Name, typedValue), min, max), ref preview.Stale));
+						else link.Field.SetValue(node, Deltas.DetectDelta<float>(typedValue, EditorGUILayout.DelayedFloatField(link.Name, typedValue), ref preview.Stale));
 					}
 				}
 				else if (link.Type == typeof(int))
@@ -247,14 +247,14 @@ namespace LunraGames.NoiseMaker
 						typedValue = (int)usedNodeValue;
 						var outOfRange = typedValue < min || max < typedValue;
 						GUI.contentColor = outOfRange ? Color.red : Color.white;
-						EditorGUILayout.IntField(link.Name, Mathf.Clamp(typedValue, min, max));
+						EditorGUILayout.DelayedIntField(link.Name, Mathf.Clamp(typedValue, min, max));
 						GUI.contentColor = Color.white;
 					}
 					else
 					{
 						typedValue = (int)linkValue;
 						if (link.Min != null || link.Max != null) link.Field.SetValue(node, Deltas.DetectDelta<int>(typedValue, EditorGUILayout.IntSlider(link.Name, typedValue, min, max), ref preview.Stale));
-						else link.Field.SetValue(node, Deltas.DetectDelta<int>(typedValue, EditorGUILayout.IntField(link.Name, typedValue), ref preview.Stale));
+						else link.Field.SetValue(node, Deltas.DetectDelta<int>(typedValue, EditorGUILayout.DelayedIntField(link.Name, typedValue), ref preview.Stale));
 					}
 				}
 				else if (link.Type == typeof(bool))

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using LibNoise;
+﻿using LibNoise;
 
 namespace LunraGames.NoiseMaker
 {
