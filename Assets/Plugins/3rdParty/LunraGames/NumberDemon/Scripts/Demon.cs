@@ -2,7 +2,7 @@
 
 namespace LunraGames.NumberDemon
 {
-	public class NumberDemon 
+	public class Demon 
 	{
 		
 	}
