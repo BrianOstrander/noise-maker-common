@@ -19,9 +19,7 @@ namespace LunraGames.NoiseMaker
 		[JsonIgnore]
 		public int SourceCount { get; private set; }
 		public string Id { get; set; }
-		public List<string> SourceIds { get { return _SourceIds; } set { _SourceIds = value; } }
-
-		List<string> _SourceIds;
+		public List<string> SourceIds { get; set; }
 
 		/// <summary>
 		/// The value that represents this Node. It could be stored locally, or derived from several input nodes. 
@@ -34,7 +32,7 @@ namespace LunraGames.NoiseMaker
 		/// Initializes a new instance of the <see cref="LunraGames.NoiseMaker.Node`1"/> class and creates an empty SourceIds array, caching the source count if it hasn't already been done.
 		/// </summary>
 		/// <remarks> Magic! </remarks>
-		public Node()
+		protected Node()
 		{
 			if (!CachedSourceCounts.ContainsKey(GetType()))
 			{
