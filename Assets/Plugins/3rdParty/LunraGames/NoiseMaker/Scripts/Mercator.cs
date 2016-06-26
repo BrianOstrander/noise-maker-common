@@ -8,26 +8,26 @@ namespace LunraGames.NoiseMaker
 {
 	public class Mercator
 	{
-		public List<Latitude> Latitudes = new List<Latitude>();
+		public List<Biome> Biomes = new List<Biome>();
 
-		public void Remove(Latitude entry)
+		public void Remove(Biome entry)
 		{
 			if (entry == null) throw new ArgumentNullException("entry");
 			int? index = null;
-			for (var i = 0; i < Latitudes.Count; i++)
+			for (var i = 0; i < Biomes.Count; i++)
 			{
-				if (Latitudes[i].Id == entry.Id) index = i;
+				if (Biomes[i].Id == entry.Id) index = i;
 				if (index.HasValue) break;
 			}
-			if (index.HasValue) Latitudes.RemoveAt(index.Value);
+			if (index.HasValue) Biomes.RemoveAt(index.Value);
 		}
 
 		// todo: support more than one latitude.
 		public Color GetSphereColor(float latitude, float longitude, float altitude)
 		{
-			if (Latitudes == null || Latitudes.FirstOrDefault() == null) return Color.white;
+			if (Biomes == null || Biomes.FirstOrDefault() == null) return Color.white;
 
-			var lat = Latitudes.FirstOrDefault();
+			var lat = Biomes.FirstOrDefault();
 			return lat.GetColor(latitude, longitude, altitude);
 		}
 

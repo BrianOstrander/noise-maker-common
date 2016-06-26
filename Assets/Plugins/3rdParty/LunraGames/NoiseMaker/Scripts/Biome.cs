@@ -6,11 +6,9 @@ using System.Linq;
 namespace LunraGames.NoiseMaker
 {
 	[Serializable]
-	public class Latitude
+	public class Biome
 	{
 		public string Id;
-		public float MinLatitude;
-		public float MaxLatitude;
 
 		public List<Altitude> Altitudes = new List<Altitude>();
 
