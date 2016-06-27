@@ -11,6 +11,18 @@ namespace LunraGames.NoiseMaker
 		public List<Domain> Domains = new List<Domain>();
 		public List<Biome> Biomes = new List<Biome>();
 
+		public void Remove(Domain entry)
+		{
+			if (entry == null) throw new ArgumentNullException("entry");
+			int? index = null;
+			for (var i = 0; i < Domains.Count; i++)
+			{
+				if (Domains[i].Id == entry.Id) index = i;
+				if (index.HasValue) break;
+			}
+			if (index.HasValue) Domains.RemoveAt(index.Value);
+		}
+
 		public void Remove(Biome entry)
 		{
 			if (entry == null) throw new ArgumentNullException("entry");

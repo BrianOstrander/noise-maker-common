@@ -35,6 +35,9 @@ namespace LunraGames.NoiseMaker
 			Instance = this;
 		}
 
+		public static bool PreviewUpdating;
+		static bool RepaintQueued;
+
 		[SerializeField]
 		States State = States.Splash;
 		[SerializeField]
@@ -44,7 +47,7 @@ namespace LunraGames.NoiseMaker
 		[SerializeField]
 		Vector2 DomainsScrollPosition = Vector2.zero;
 		[SerializeField]
-		int DomainSelection = -1;
+		string DomainSelection;
 		[SerializeField]
 		List<bool> EditorFoldouts = new List<bool>();
 
@@ -55,7 +58,7 @@ namespace LunraGames.NoiseMaker
 		Texture2D PreviewTexture;
 		Mesh PreviewMesh;
 		Editor PreviewObjectEditor;
-		bool PreviewUpdating;
+		object PreviewModule;
 
 		string SavePath { get { return StringExtensions.IsNullOrWhiteSpace(SaveGuid) ? null : AssetDatabase.GUIDToAssetPath(SaveGuid); } }
 
@@ -88,7 +91,7 @@ namespace LunraGames.NoiseMaker
 					DrawDomains();
 					DrawPreview();
 					DrawHeader();
-					if (0 <= DomainSelection) DrawDomainEditor(null);
+					if (!string.IsNullOrEmpty(DomainSelection)) DrawDomainEditor(Mercator.Domains.FirstOrDefault(d => d.Id == DomainSelection));
 				}
 			}
 			catch (Exception e)
@@ -108,6 +111,15 @@ namespace LunraGames.NoiseMaker
 		void OnFocus() { Save(); }
 		void OnLostFocus() { Save(); }
 		void OnProjectChange() { Save(); }
+
+		void Update() 
+		{
+			if (RepaintQueued)
+			{
+				Repaint();
+				RepaintQueued = false;
+			}
+		}
 		#endregion
 
 		void DrawSplash ()
@@ -257,7 +269,7 @@ namespace LunraGames.NoiseMaker
 
 		void DrawDomains()
 		{
-			var height = DomainSelection < 0 ? position.height - Layouts.HeaderHeight : (position.height * (1f - Layouts.DomainEditorHeightScalar)) - Layouts.HeaderHeight;
+			var height = string.IsNullOrEmpty(DomainSelection) ? position.height - Layouts.HeaderHeight : (position.height * (1f - Layouts.DomainEditorHeightScalar)) - Layouts.HeaderHeight;
 
 			GUILayout.BeginArea(new Rect(0f, Layouts.HeaderHeight, position.width * Layouts.DomainsWidthScalar, height));
 			{
@@ -277,7 +289,9 @@ namespace LunraGames.NoiseMaker
 						{
 							if (GUILayout.Button("Add New "+editorEntry.Details.Name))
 							{
-									
+								var domain = Activator.CreateInstance(editorEntry.Details.Target) as Domain;
+								domain.Id = Guid.NewGuid().ToString();
+								Mercator.Domains.Add(domain);
 							}
 
 							int? deletedIndex = null;
@@ -286,20 +300,28 @@ namespace LunraGames.NoiseMaker
 							{
 								var unmodifiedI = domainIndex;
 								var unmodifiedDomain = Mercator.Domains[domainIndex];
-								
+
+								if (unmodifiedDomain.GetType() != editorEntry.Details.Target) continue;
+
 								bool wasDeleted;
 								bool wasSelected;
-								bool alreadySelected = DomainSelection == unmodifiedI;
+								bool alreadySelected = DomainSelection == unmodifiedDomain.Id;
 								
-								DrawDomain(unmodifiedDomain, alreadySelected, out wasSelected, out wasDeleted);
+								DrawDomain(editorEntry.Details.Name, alreadySelected, out wasSelected, out wasDeleted);
 								
 								if (wasSelected) 
 								{
-									if (alreadySelected) DomainSelection = -1;
-									else DomainSelection = unmodifiedI;
+									if (alreadySelected) DomainSelection = null;
+									else DomainSelection = unmodifiedDomain.Id;
 								}
-								if (wasDeleted) deletedIndex = unmodifiedI;
+								if (wasDeleted) 
+								{
+									deletedIndex = unmodifiedI;
+									if (unmodifiedDomain.Id == DomainSelection) DomainSelection = null;
+								}
 							}
+
+							if (deletedIndex.HasValue) Mercator.Remove(Mercator.Domains[deletedIndex.Value]);
 						}
 					}
 				}
@@ -308,14 +330,14 @@ namespace LunraGames.NoiseMaker
 			GUILayout.EndArea();
 		}
 
-		Rect DrawDomain(Domain domain, bool alreadySelected, out bool selected, out bool deleted)
+		Rect DrawDomain(string domainName, bool alreadySelected, out bool selected, out bool deleted)
 		{
 			GUI.color = alreadySelected ? Color.magenta : Color.white;
 
 			GUILayout.BeginHorizontal();
 			{
 				deleted = GUILayout.Button("x", Styles.PreviewToolbarLeft, GUILayout.Width(24f));
-				selected = GUILayout.Button("Lol", Styles.PreviewToolbarMiddle, GUILayout.Width(128f));
+				selected = GUILayout.Button(domainName, Styles.PreviewToolbarMiddle, GUILayout.Width(128f));
 			}
 			GUILayout.EndHorizontal();
 
@@ -326,15 +348,30 @@ namespace LunraGames.NoiseMaker
 
 		void DrawDomainEditor(Domain domain)
 		{
-			GUILayout.BeginArea(new Rect(0f, position.height - (position.height * Layouts.DomainEditorHeightScalar), position.width * Layouts.DomainEditorWidthScalar, position.height * Layouts.DomainEditorHeightScalar));
+			var area = new Rect(0f, position.height - (position.height * Layouts.DomainEditorHeightScalar), position.width * Layouts.DomainEditorWidthScalar, position.height * Layouts.DomainEditorHeightScalar);
+			var headerArea = new Rect(area.x, area.y, area.width, 38f);
+			var contentArea = new Rect(area.x, area.y + headerArea.height - 2, headerArea.width, area.height + 4f - headerArea.height);
+
+			var editorEntry = DomainEditorCacher.Editors.FirstOrDefault(e => e.Value.Details.Target == domain.GetType()).Value;
+
+			GUILayout.BeginArea(contentArea, EditorStyles.helpBox);
 			{
+				GUILayout.Space(2f);
+
 				GUILayout.BeginHorizontal();
 				{
-					GUILayout.Box("Lol", EditorStyles.miniButtonMid);
+					Texture2D preview;
+					editorEntry.Editor.Draw(Mercator, domain, PreviewModule, out preview);
+					PreviewTexture = preview;
+
 				}
 				GUILayout.EndHorizontal();
+
+				GUILayout.Space(4f);
 			}
 			GUILayout.EndArea();
+
+			GUI.Box(headerArea, editorEntry.Details.Name, Styles.OptionButtonMiddle);
 		}
 
 		#region Previews
@@ -354,6 +391,8 @@ namespace LunraGames.NoiseMaker
 				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)area.width, (int)area.height);
 
 				var module = node.GetValue(Graph);
+				PreviewModule = module;
+
 				var pixels = new Color[PreviewTexture.width * PreviewTexture.height];
 				for (var x = 0; x < PreviewTexture.width; x++)
 				{
@@ -391,7 +430,10 @@ namespace LunraGames.NoiseMaker
 			if (lastUpdate != PreviewLastUpdated) 
 			{
 				PreviewUpdating = true;
-				PreviewTexture = NoiseMakerWindow.GetSphereTexture(node.GetValue(Graph), completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
+				var module = node.GetValue(Graph);
+				PreviewModule = module;
+
+				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -431,6 +473,7 @@ namespace LunraGames.NoiseMaker
 
 				var module = node.GetValue(Graph);
 				var sphere = new Sphere(module);
+				PreviewModule = sphere;
 
 				var verts = PreviewMesh.vertices;
 				Graph.GetSphereAltitudes(sphere, ref verts, 0.75f);
@@ -489,7 +532,7 @@ namespace LunraGames.NoiseMaker
 			State = States.Splash;
 			SaveGuid = null;
 			Mercator = null;
-			DomainSelection = -1;
+			DomainSelection = null;
 		}
 
 		void Save()
@@ -551,5 +594,10 @@ namespace LunraGames.NoiseMaker
 		}
 
 		public static string ActiveSavePath { get { return Instance == null || StringExtensions.IsNullOrWhiteSpace(Instance.SavePath) ? null : Instance.SavePath; } }
+
+		public static void QueueRepaint()
+		{
+			RepaintQueued = true;
+		}
 	}
 }
