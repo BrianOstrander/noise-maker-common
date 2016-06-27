@@ -45,6 +45,8 @@ namespace LunraGames.NoiseMaker
 		Vector2 DomainsScrollPosition = Vector2.zero;
 		[SerializeField]
 		int DomainSelection = -1;
+		[SerializeField]
+		List<bool> EditorFoldouts = new List<bool>();
 
 		Graph Graph;
 		int PreviewSelected;
@@ -261,24 +263,44 @@ namespace LunraGames.NoiseMaker
 			{
 				DomainsScrollPosition = GUILayout.BeginScrollView(new Vector2(0f, DomainsScrollPosition.y), false, false, GUIStyle.none, GUIStyle.none);
 				{
-					int? deletedIndex = null;
+					var editors = DomainEditorCacher.Editors;
+					var editorTypes = editors.Keys.ToArray();
 
-					for (var i = 0; i < 100; i++)
+					for (var editorTypeIndex = 0; editorTypeIndex < editorTypes.Length; editorTypeIndex++)
 					{
-						var unmodifiedI = i;
+						var editorType = editorTypes[editorTypeIndex];
+						var editorEntry = editors[editorType];
 
-						bool wasDeleted;
-						bool wasSelected;
-						bool alreadySelected = DomainSelection == unmodifiedI;
+						if (EditorFoldouts.Count <= editorTypeIndex) EditorFoldouts.Add(false);	
 
-						DrawDomain(null, alreadySelected, out wasSelected, out wasDeleted);
-
-						if (wasSelected) 
+						if (EditorFoldouts[editorTypeIndex] = EditorGUILayout.Foldout(EditorFoldouts[editorTypeIndex], editorEntry.Details.Name, Styles.Foldout))
 						{
-							if (alreadySelected) DomainSelection = -1;
-							else DomainSelection = unmodifiedI;
+							if (GUILayout.Button("Add New "+editorEntry.Details.Name))
+							{
+									
+							}
+
+							int? deletedIndex = null;
+							var domainCount = Mercator.Domains.Count;
+							for (var domainIndex = 0; domainIndex < domainCount; domainIndex++)
+							{
+								var unmodifiedI = domainIndex;
+								var unmodifiedDomain = Mercator.Domains[domainIndex];
+								
+								bool wasDeleted;
+								bool wasSelected;
+								bool alreadySelected = DomainSelection == unmodifiedI;
+								
+								DrawDomain(unmodifiedDomain, alreadySelected, out wasSelected, out wasDeleted);
+								
+								if (wasSelected) 
+								{
+									if (alreadySelected) DomainSelection = -1;
+									else DomainSelection = unmodifiedI;
+								}
+								if (wasDeleted) deletedIndex = unmodifiedI;
+							}
 						}
-						if (wasDeleted) deletedIndex = unmodifiedI;
 					}
 				}
 				GUILayout.EndScrollView();

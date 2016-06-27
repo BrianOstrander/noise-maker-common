@@ -8,6 +8,7 @@ namespace LunraGames.NoiseMaker
 {
 	public class Mercator
 	{
+		public List<Domain> Domains = new List<Domain>();
 		public List<Biome> Biomes = new List<Biome>();
 
 		public void Remove(Biome entry)
