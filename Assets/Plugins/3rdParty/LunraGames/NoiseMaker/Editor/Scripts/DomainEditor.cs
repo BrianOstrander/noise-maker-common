@@ -22,7 +22,7 @@ namespace LunraGames.NoiseMaker
 
 			if (preview != null)
 			{
-				preview.Stale = preview.Stale || domain.SourceIds.Count != preview.LastSourceIds.Count || preview.LastVisualizer != Previewer;
+				preview.Stale = preview.Stale || domain.SourceIds.Count != preview.LastSourceIds.Count || preview.LastVisualizer != Previewer || preview.LastModule != module;
 				for (var i = 0; i < domain.SourceIds.Count; i++)
 				{
 					var id = domain.SourceIds[i];
@@ -76,6 +76,7 @@ namespace LunraGames.NoiseMaker
 				preview.LastUpdated = DateTime.Now.Ticks;
 				preview.LastSourceIds = new List<string>(domain.SourceIds);
 				preview.LastVisualizer = Previewer;
+				preview.LastModule = module;
 			}
 
 			return preview;

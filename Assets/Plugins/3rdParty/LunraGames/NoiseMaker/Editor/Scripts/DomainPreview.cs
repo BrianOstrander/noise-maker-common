@@ -11,6 +11,7 @@ namespace LunraGames.NoiseMaker
 		public Texture2D Preview;
 		public long LastUpdated;
 		public VisualizationPreview LastVisualizer;
+		public object LastModule;
 		public List<string> LastSourceIds = new List<string>();
 		public string Warning;
 	}

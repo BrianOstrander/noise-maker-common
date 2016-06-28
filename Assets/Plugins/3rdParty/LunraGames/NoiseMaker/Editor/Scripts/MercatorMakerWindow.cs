@@ -311,7 +311,11 @@ namespace LunraGames.NoiseMaker
 								
 								if (wasSelected) 
 								{
-									if (alreadySelected) DomainSelection = null;
+									if (alreadySelected) 
+									{
+										DomainSelection = null;
+										PreviewLastUpdated = DateTime.Now.Ticks;
+									}
 									else DomainSelection = unmodifiedDomain.Id;
 								}
 								if (wasDeleted) 
@@ -390,6 +394,7 @@ namespace LunraGames.NoiseMaker
 			{
 				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)area.width, (int)area.height);
 
+				PreviewUpdating = true;
 				var module = node.GetValue(Graph);
 				PreviewModule = module;
 
@@ -431,9 +436,10 @@ namespace LunraGames.NoiseMaker
 			{
 				PreviewUpdating = true;
 				var module = node.GetValue(Graph);
-				PreviewModule = module;
+				var sphere = new Sphere(module);
+				PreviewModule = sphere;
 
-				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
+				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == sphere) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -480,7 +486,7 @@ namespace LunraGames.NoiseMaker
 				PreviewMesh.vertices = verts;
 
 				PreviewUpdating = true;
-				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index) ? false : PreviewUpdating);
+				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == sphere) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
