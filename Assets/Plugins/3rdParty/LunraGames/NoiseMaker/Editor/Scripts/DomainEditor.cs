@@ -20,26 +20,14 @@ namespace LunraGames.NoiseMaker
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == domain.Id);
 
-			if (preview != null)
-			{
-				preview.Stale = preview.Stale || domain.SourceIds.Count != preview.LastSourceIds.Count || preview.LastVisualizer != Previewer || preview.LastModule != module;
-				for (var i = 0; i < domain.SourceIds.Count; i++)
-				{
-					var id = domain.SourceIds[i];
-					preview.Stale = preview.Stale || id != preview.LastSourceIds[i];
-					if (StringExtensions.IsNullOrWhiteSpace(id)) continue;
-					var sourcePreview = Previews.FirstOrDefault(p => p.Id == id);
-					if (sourcePreview == null) continue;
-					preview.Stale = preview.Stale || preview.LastUpdated < sourcePreview.LastUpdated;
-				}
-			}
-
 			if (preview == null)
 			{
 				preview = new DomainPreview { Id = domain.Id, Stale = true };
 				preview.Preview = new Texture2D(PreviewWidth, PreviewHeight);
 				Previews.Add(preview);
 			}
+			else preview.Stale = preview.Stale || domain.BiomeId != preview.LastSourceId || preview.LastVisualizer != Previewer || preview.LastModule != module;
+
 
 			if (preview.Stale)
 			{
@@ -74,7 +62,7 @@ namespace LunraGames.NoiseMaker
 
 				preview.Stale = false;
 				preview.LastUpdated = DateTime.Now.Ticks;
-				preview.LastSourceIds = new List<string>(domain.SourceIds);
+				preview.LastSourceId = domain.BiomeId;
 				preview.LastVisualizer = Previewer;
 				preview.LastModule = module;
 			}

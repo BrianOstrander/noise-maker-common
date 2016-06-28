@@ -9,20 +9,11 @@ namespace LunraGames.NoiseMaker
 	public class Biome
 	{
 		public string Id;
-
-		public List<Altitude> Altitudes = new List<Altitude>();
-
-		public void Remove(Altitude entry)
-		{
-			if (entry == null) throw new ArgumentNullException("entry");
-			int? index = null;
-			for (var i = 0; i < Altitudes.Count; i++)
-			{
-				if (Altitudes[i].Id == entry.Id) index = i;
-				if (index.HasValue) break;
-			}
-			if (index.HasValue) Altitudes.RemoveAt(index.Value);
-		}
+		/// <summary>
+		/// The id's of associated Altitudes.
+		/// </summary>
+		public List<string> AltitudeIds = new List<string>();
+		List<Altitude> Altitudes = new List<Altitude>();
 
 		public Color GetColor(float latitude, float longitude, float altitude)
 		{

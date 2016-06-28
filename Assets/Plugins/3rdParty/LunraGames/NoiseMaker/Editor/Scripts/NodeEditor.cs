@@ -77,7 +77,13 @@ namespace LunraGames.NoiseMaker
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == node.Id);
 
-			if (preview != null)
+			if (preview == null)
+			{
+				preview = new NodePreview { Id = node.Id, Stale = true };
+				preview.Preview = new Texture2D(PreviewWidth, PreviewHeight);
+				Previews.Add(preview);
+			}
+			else
 			{
 				preview.Stale = preview.Stale || node.SourceIds.Count != preview.LastSourceIds.Count || preview.LastVisualizer != Previewer;
 				for (var i = 0; i < node.SourceIds.Count; i++)
@@ -89,13 +95,6 @@ namespace LunraGames.NoiseMaker
 					if (sourcePreview == null) continue;
 					preview.Stale = preview.Stale || preview.LastUpdated < sourcePreview.LastUpdated;
 				}
-			}
-
-			if (preview == null)
-			{
-				preview = new NodePreview { Id = node.Id, Stale = true };
-				preview.Preview = new Texture2D(PreviewWidth, PreviewHeight);
-				Previews.Add(preview);
 			}
 
 			if (preview.Stale)

@@ -17,6 +17,7 @@ namespace LunraGames.NoiseMaker
 			public const float PreviewOptionsWidth = 650f;
 			public const float PreviewXOffsetScalar = 0.6f;
 			public const float PreviewWidthScalar = 1.25f;
+			public const float SelectionEditorWidth = 64f;
 			public const float DomainsWidthScalar = (1f - PreviewXOffsetScalar) * 0.9f;
 			public const float DomainEditorHeightScalar = 0.4f;
 			public const float DomainEditorWidthScalar = 0.5f;
@@ -48,6 +49,10 @@ namespace LunraGames.NoiseMaker
 		Vector2 DomainsScrollPosition = Vector2.zero;
 		[SerializeField]
 		string DomainSelection;
+		[SerializeField]
+		string BiomeSelection;
+		[SerializeField]
+		string AltitudeSelection;
 		[SerializeField]
 		List<bool> EditorFoldouts = new List<bool>();
 
@@ -354,6 +359,58 @@ namespace LunraGames.NoiseMaker
 		{
 			var area = new Rect(0f, position.height - (position.height * Layouts.DomainEditorHeightScalar), position.width * Layouts.DomainEditorWidthScalar, position.height * Layouts.DomainEditorHeightScalar);
 			var headerArea = new Rect(area.x, area.y, area.width, 38f);
+			var contentArea = new Rect(0f, headerArea.y + headerArea.height, area.width, area.height - headerArea.height);
+
+			GUILayout.BeginArea(contentArea, Styles.BoxButton);
+			{
+				GUILayout.BeginHorizontal();
+				{
+					var editorEntry = DomainEditorCacher.Editors.FirstOrDefault(e => e.Value.Details.Target == domain.GetType()).Value;
+
+					// Domain editor
+					if (string.IsNullOrEmpty(BiomeSelection)) 
+					{
+						// No Biome is selected for editing, so show the Domain editor.
+						Texture2D preview;
+						editorEntry.Editor.Draw(Mercator, domain, PreviewModule, out preview);
+						PreviewTexture = preview;
+						GUILayout.Box(editorEntry.Details.Name, Styles.OptionButtonMiddle);
+					}
+					else GUILayout.Box("", Styles.OptionButtonMiddle, GUILayout.Width(Layouts.SelectionEditorWidth));
+					// Biome editor
+
+					// Altitude editor
+
+
+				}
+				GUILayout.EndHorizontal();
+			}
+			GUILayout.EndArea();
+
+			GUILayout.BeginArea(headerArea);
+			{
+				GUILayout.BeginHorizontal();
+				{
+					if (string.IsNullOrEmpty(BiomeSelection)) GUILayout.Box("Domain Header", Styles.OptionButtonMiddle);
+					else 
+					{
+						GUILayout.Box("Domain Header", Styles.OptionButtonMiddle, GUILayout.Width(Layouts.SelectionEditorWidth));
+
+						if (string.IsNullOrEmpty(AltitudeSelection)) GUILayout.Box("Biome Header", Styles.OptionButtonMiddle);
+						else
+						{
+							GUILayout.Box("Biome Header", Styles.OptionButtonMiddle, GUILayout.Width(Layouts.SelectionEditorWidth));
+
+							GUILayout.Box("Altitude Header", Styles.OptionButtonMiddle);
+						}
+					}
+				}
+				GUILayout.EndHorizontal();
+			}
+			GUILayout.EndArea();
+
+			/*
+			var headerArea = new Rect(area.x, area.y, area.width, 38f);
 			var contentArea = new Rect(area.x, area.y + headerArea.height - 2, headerArea.width, area.height + 4f - headerArea.height);
 
 			var editorEntry = DomainEditorCacher.Editors.FirstOrDefault(e => e.Value.Details.Target == domain.GetType()).Value;
@@ -376,6 +433,17 @@ namespace LunraGames.NoiseMaker
 			GUILayout.EndArea();
 
 			GUI.Box(headerArea, editorEntry.Details.Name, Styles.OptionButtonMiddle);
+			*/
+		}
+
+		void DrawBiome(Biome biome)
+		{
+			
+		}
+
+		void DrawAltitudeEditor(Altitude altitude)
+		{
+
 		}
 
 		#region Previews
@@ -513,25 +581,6 @@ namespace LunraGames.NoiseMaker
 			PreviewObjectEditor.OnPreviewGUI(new Rect(1f, 0f, area.width - 1f, area.height), Styles.Blank);
 		}
 		#endregion
-
-		/*
-		public Texture2D GetPreview(Latitude latitude, int width, int height)
-		{
-			var texture = new Texture2D(width, height);
-
-			var pixels = new Color[width * height];
-			for (var x = 0; x < width; x++)
-			{
-				for (var y = 0; y < height; y++)
-				{
-					pixels[(width * y) + x] = latitude.GetColor(0f, 0f, (float)x / (float)width);
-				}
-			}
-			texture.SetPixels(pixels);
-			texture.Apply();
-			return texture;
-		}
-		*/
 
 		void Reset()
 		{

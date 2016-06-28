@@ -12,7 +12,7 @@ namespace LunraGames.NoiseMaker
 		public long LastUpdated;
 		public VisualizationPreview LastVisualizer;
 		public object LastModule;
-		public List<string> LastSourceIds = new List<string>();
+		public string LastSourceId;
 		public string Warning;
 	}
 }

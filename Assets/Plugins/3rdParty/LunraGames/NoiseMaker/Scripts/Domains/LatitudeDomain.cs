@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace LunraGames.NoiseMaker
 {
@@ -11,6 +12,11 @@ namespace LunraGames.NoiseMaker
 		{
 			if (latitude < MinLatitude || MaxLatitude < latitude) return 0f;
 			else return 1f;
+		}
+
+		public override Color GetColor (float latitude, float longitude, float altitude)
+		{
+			return Color.white;
 		}
 	}
 }
