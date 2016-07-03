@@ -364,6 +364,7 @@ namespace LunraGames.NoiseMaker
 		void DrawSelectedEditors(Domain domain)
 		{
 			var editorEntry = DomainEditorCacher.Editors.FirstOrDefault(e => e.Value.Details.Target == domain.GetType()).Value;
+			var altitudeEditors = AltitudeEditorCacher.Editors.Values.OrderBy(e => e.Details.Name).ToList();
 
 			var biome = string.IsNullOrEmpty(BiomeSelection) ? null : Mercator.Biomes.FirstOrDefault(b => b.Id == BiomeSelection);
 			var altitude = string.IsNullOrEmpty(AltitudeSelection) ? null : Mercator.Altitudes.FirstOrDefault(a => a.Id == AltitudeSelection);
@@ -382,7 +383,8 @@ namespace LunraGames.NoiseMaker
 			var biomeArea = new Rect(biomeHeaderArea.x, biomeHeaderArea.y + biomeHeaderArea.height + Layouts.SelectedEditorsDivider, biomeHeaderArea.width - 1f, area.height - biomeHeaderArea.height - Layouts.SelectedEditorsDivider);
 			var altitudeArea = new Rect(altitudeHeaderArea.x, altitudeHeaderArea.y + altitudeHeaderArea.height + Layouts.SelectedEditorsDivider, altitudeHeaderArea.width - 1f, area.height - altitudeHeaderArea.height - Layouts.SelectedEditorsDivider);
 
-			if (DrawSelectedEditorHeader(showDomain, domainHeaderArea, NoiseMakerConfig.Instance.DomainIcon, editorEntry.Details.Name))
+			GUI.color = showDomain ? Color.white : (showBiome ? GUI.color.NewV(0.85f) : GUI.color.NewV(0.75f));
+			if (DrawSelectedEditorHeader(showDomain, domainHeaderArea, NoiseMakerConfig.Instance.DomainIcon, string.IsNullOrEmpty(domain.Name) ? editorEntry.Details.Name+" Domain" : domain.Name+" Domain"))
 			{
 				if (!showDomain)
 				{
@@ -390,8 +392,8 @@ namespace LunraGames.NoiseMaker
 					AltitudeSelection = null;
 				}
 			}
-			if (!showBiome) GUI.color = GUI.color.NewV(0.85f);
-			if (DrawSelectedEditorHeader(showBiome, biomeHeaderArea, NoiseMakerConfig.Instance.BiomeIcon, biome == null || string.IsNullOrEmpty(biome.Name) ? "Biome" : biome.Name))
+			GUI.color = showBiome ? Color.white : GUI.color.NewV(0.85f);
+			if (DrawSelectedEditorHeader(showBiome, biomeHeaderArea, NoiseMakerConfig.Instance.BiomeIcon, biome == null || string.IsNullOrEmpty(biome.Name) ? "Biome" : biome.Name+" Biome"))
 			{
 				if (showDomain) 
 				{
@@ -400,8 +402,8 @@ namespace LunraGames.NoiseMaker
 				}
 				else if (showAltitude) AltitudeSelection = null;
 			}
-			if (!showAltitude) GUI.color = GUI.color.NewV(0.75f);
-			if (DrawSelectedEditorHeader(showAltitude, altitudeHeaderArea, NoiseMakerConfig.Instance.AltitudeIcon, "altitude name"))
+			GUI.color = showAltitude ? Color.white : (showDomain ? GUI.color.NewV(0.75f) : GUI.color.NewV(0.85f));
+			if (DrawSelectedEditorHeader(showAltitude, altitudeHeaderArea, NoiseMakerConfig.Instance.AltitudeIcon, altitude == null ? "Altitude" : (string.IsNullOrEmpty(altitude.Name) ? altitudeEditors.FirstOrDefault(e => e.Details.Target == altitude.GetType()).Details.Name+" Altitude" : altitude.Name+" Altitude")))
 			{
 				if (showBiome) UnityEditor.EditorUtility.DisplayDialog("Select Altitude", "Select or create a an altitude from the biome panel first.", "Okay");
 				else
@@ -413,10 +415,42 @@ namespace LunraGames.NoiseMaker
 
 			GUI.color = Color.white;
 
+			GUI.color = showDomain ? Color.white : (showBiome ? GUI.color.NewV(0.7f) : GUI.color.NewV(0.55f));
 			GUILayout.BeginArea(domainArea, GUI.skin.box);
 			{
 				if (showDomain)
 				{
+					GUILayout.Label(editorEntry.Details.Description+".");
+					if (string.IsNullOrEmpty(domain.Name))
+					{
+						if (GUILayout.Button("Convert Domain to Prefab"))
+						{
+							TextDialogPopup.Show(
+								"Convert Domain to Prefab", 
+								name =>
+								{
+									if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Domain can't have a blank name.", "Okay"); 
+									else if (Mercator.Domains.Any(d => d.Name == name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Domain with the name \""+name+"\" already exists.", "Okay");
+									else domain.Name = name;
+								},
+								description: "Choose a unique name for this Domain."
+							);
+						}
+					}
+					else if (GUILayout.Button("Rename Domain"))
+					{
+						TextDialogPopup.Show(
+							"Rename Domain", 
+							name =>
+							{
+								if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Domain can't have a blank name.", "Okay"); 
+								else if (Mercator.Domains.Any(d => d.Name == name && d.Id != domain.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Domain with the name \""+name+"\" already exists.", "Okay");
+								else domain.Name = name;
+							},
+							description: "Choose a unique name for this Domain."
+						);
+					}
+
 					Texture2D preview;
 					editorEntry.Editor.Draw(Mercator, domain, PreviewModule, out preview);
 					PreviewTexture = preview;
@@ -424,14 +458,8 @@ namespace LunraGames.NoiseMaker
 					GUILayout.FlexibleSpace();
 
 					var biomeOptions = new List<string>(new [] {"Select a Biome...", "Create a New Biome"});
-					var biomes = Mercator.Biomes.OrderBy(b => b.Name);
-					var unnamedCount = 0;
-
-					foreach (var orderedBiome in biomes)
-					{
-						biomeOptions.Add(string.IsNullOrEmpty(orderedBiome.Name) ? "Unnamed "+unnamedCount : orderedBiome.Name);
-						if (orderedBiome.Name == null) unnamedCount++;
-					}
+					var biomes = Mercator.Biomes.Where(b => !string.IsNullOrEmpty(b.Name)).OrderBy(b => b.Name);
+					foreach (var orderedBiome in biomes) biomeOptions.Add(orderedBiome.Name);
 
 					var selected = EditorGUILayout.Popup(0, biomeOptions.ToArray());
 
@@ -462,7 +490,68 @@ namespace LunraGames.NoiseMaker
 			{
 				if (showBiome)
 				{
-					
+					GUILayout.Label("Add and link Altitudes to populate this Biome.");
+					if (string.IsNullOrEmpty(biome.Name))
+					{
+						if (GUILayout.Button("Convert Biome to Prefab"))
+						{
+							TextDialogPopup.Show(
+								"Convert Biome to Prefab", 
+								name =>
+								{
+									if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome can't have a blank name.", "Okay"); 
+									else if (Mercator.Biomes.Any(b => b.Name == name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome with the name \""+name+"\" already exists.", "Okay");
+									else biome.Name = name;
+								},
+								description: "Choose a unique name for this biome."
+							);
+						}
+					}
+					else if (GUILayout.Button("Rename Biome"))
+					{
+						TextDialogPopup.Show(
+							"Rename Biome", 
+							name =>
+							{
+								if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome can't have a blank name.", "Okay"); 
+								else if (Mercator.Biomes.Any(b => b.Name == name && b.Id != biome.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome with the name \""+name+"\" already exists.", "Okay");
+								else biome.Name = name;
+							},
+							description: "Choose a unique name for this biome."
+						);
+					}
+
+					var altitudeOptions = new List<string>(new [] {"Select an Altitude...", "--- Create a New Altitude ---"});
+					foreach (var orderedEditor in altitudeEditors) altitudeOptions.Add(orderedEditor.Details.Name);
+
+					var existingIndex = altitudeOptions.Count;
+					altitudeOptions.Add("--- Link Existing Altitude ---");
+					var altitudes = Mercator.Altitudes.Where(a => !string.IsNullOrEmpty(a.Name)).OrderBy(a => a.Name).ToList();
+					foreach (var orderedAltitude in altitudes) altitudeOptions.Add(orderedAltitude.Name);
+
+
+					var selected = EditorGUILayout.Popup(0, altitudeOptions.ToArray());
+
+					if (1 < selected && selected != existingIndex) 
+					{
+						if (selected < existingIndex)
+						{
+							// Creating a new altitude.
+							altitude = Activator.CreateInstance(altitudeEditors.ToList()[selected - 2].Details.Target) as Altitude;
+							altitude.Id = Guid.NewGuid().ToString();
+							Mercator.Altitudes.Add(altitude);
+							biome.AltitudeIds.Add(altitude.Id);
+							AltitudeSelection = altitude.Id;
+						}
+						else
+						{
+							// Linking an existing altitude.
+							var existingAltitude = altitudes[selected - existingIndex];
+							Debug.Log("Linking "+existingAltitude.Name);
+							if (biome.AltitudeIds.Contains(existingAltitude.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "The Altitude \""+existingAltitude.Name+"\" already exists in this Biome.", "Okay");
+							else biome.AltitudeIds.Add(existingAltitude.Id);
+						}
+					}
 				}
 			}
 			GUILayout.EndArea();
@@ -472,7 +561,8 @@ namespace LunraGames.NoiseMaker
 			{
 				if (showAltitude)
 				{
-					
+					var altitudeEditor = altitudeEditors.FirstOrDefault(e => e.Details.Target == altitude.GetType());
+					GUILayout.Label(altitudeEditor.Details.Description+".");
 				}
 			}
 			GUILayout.EndArea();

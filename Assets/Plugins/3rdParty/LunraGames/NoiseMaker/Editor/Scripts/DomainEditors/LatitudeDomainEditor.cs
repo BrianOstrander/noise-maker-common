@@ -4,7 +4,7 @@ using LibNoise;
 
 namespace LunraGames.NoiseMaker
 {
-	[DomainDrawer(typeof(LatitudeDomain), "Latitude")]
+	[DomainDrawer(typeof(LatitudeDomain), "Latitude", "Define a minimum and maximum latitude constraint for a Biome")]
 	public class LatitudeDomainEditor : DomainEditor 
 	{
 		public override Domain Draw (Mercator mercator, Domain domain, object module, out Texture2D preview)

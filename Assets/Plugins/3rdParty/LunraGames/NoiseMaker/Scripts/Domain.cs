@@ -9,6 +9,7 @@ namespace LunraGames.NoiseMaker
 	public abstract class Domain
 	{
 		public string Id;
+		public string Name;
 		/// <summary>
 		/// The id of the associated Biome.
 		/// </summary>

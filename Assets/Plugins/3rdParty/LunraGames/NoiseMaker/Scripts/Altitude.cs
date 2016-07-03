@@ -7,6 +7,7 @@ namespace LunraGames.NoiseMaker
 	public abstract class Altitude
 	{
 		public string Id;
+		public string Name;
 		public float MinAltitude;
 		public float MaxAltitude;
 

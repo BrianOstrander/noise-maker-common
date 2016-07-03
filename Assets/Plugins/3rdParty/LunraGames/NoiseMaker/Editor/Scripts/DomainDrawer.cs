@@ -7,11 +7,13 @@ namespace LunraGames.NoiseMaker
 	{
 		public Type Target;
 		public string Name;
+		public string Description;
 
-		public DomainDrawer(Type target, string name)
+		public DomainDrawer(Type target, string name, string description)
 		{
 			Target = target;
 			Name = name;
+			Description = description;
 		}
 	}
 }

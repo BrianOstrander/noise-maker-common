@@ -6,7 +6,7 @@ using LibNoise;
 
 namespace LunraGames.NoiseMaker
 {
-	[AltitudeDrawer(typeof(TextureAltitude), Strings.Default, "Texture")]
+	[AltitudeDrawer(typeof(TextureAltitude), Strings.Default, "Texture", "Define a equirectangular texture to be applied at this Altitude")]
 	public class TextureAltitudeEditor : AltitudeEditor
 	{
 		public override Altitude Draw(Altitude altitude, ref bool changed)
