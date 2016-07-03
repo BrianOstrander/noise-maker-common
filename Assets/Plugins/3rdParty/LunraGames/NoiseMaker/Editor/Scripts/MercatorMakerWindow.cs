@@ -420,7 +420,6 @@ namespace LunraGames.NoiseMaker
 			{
 				if (showDomain)
 				{
-					if (GUILayout.Button("lol")) Debug.Log(SphereUtils.CartesianToPolar(Vector3.up));
 					GUILayout.BeginHorizontal();
 					{
 						GUILayout.Label(editorEntry.Details.Description+".");
