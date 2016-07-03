@@ -420,6 +420,7 @@ namespace LunraGames.NoiseMaker
 			{
 				if (showDomain)
 				{
+					if (GUILayout.Button("lol")) Debug.Log(SphereUtils.CartesianToPolar(Vector3.up));
 					GUILayout.BeginHorizontal();
 					{
 						GUILayout.Label(editorEntry.Details.Description+".");
@@ -627,7 +628,7 @@ namespace LunraGames.NoiseMaker
 					{
 						// Get the value from the specified location, and run it through the selected previewer. 
 						var value = (float)module.GetValue((double)x, (double)y, 0.0);
-						pixels[(PreviewTexture.width * y) + x] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+						pixels[SphereUtils.PixelCoordinateToIndex(x, y, PreviewTexture.width, PreviewTexture.height)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 					}
 				}
 				PreviewTexture.SetPixels(pixels);

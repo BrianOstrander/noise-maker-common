@@ -40,9 +40,21 @@ namespace LunraGames.NoiseMaker
 			//convert to deg
 			polar *= Mathf.Rad2Deg;
 
-			return polar;
+			return polar * -1f;
 		}
 
+		/// <summary>
+		/// PixelArray[0] of an image is the lower left pixel, but the Pixel2D[0,0] is the upper left. This translates the (x, y) coordinate to the proper index.
+		/// </summary>
+		/// <returns>The index of the specified pixel at (x, y).</returns>
+		/// <param name="x">The x coordinate of the pixel.</param>
+		/// <param name="y">The y coordinate of the pixel.</param>
+		/// <param name = "width">The width of the texture.</param>
+		/// <param name = "height">The height of the texture.</param>
+		public static int PixelCoordinateToIndex(int x, int y, int width, int height)
+		{
+			return ((width * height) - 1) - ((width * y) + x);
+		}
 		/*
 		// This is untested, so I'm leaving it commented until it is...
 		// Taken from http://answers.unity3d.com/questions/189724/polar-spherical-coordinates-to-xyz-and-vice-versa.html

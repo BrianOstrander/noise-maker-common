@@ -118,7 +118,7 @@ namespace LunraGames.NoiseMaker
 									for (var y = 0; y < height; y++)
 									{
 										var value = (float)module.GetValue((double)x, (double)y, 0.0);
-										pixels[(width * y) + x] = Previewer.Calculate(value, Previewer);
+										pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Previewer.Calculate(value, Previewer);
 									}
 								}
 							},
