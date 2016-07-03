@@ -10,6 +10,7 @@ namespace LunraGames.NoiseMaker
 	{
 		public List<Domain> Domains = new List<Domain>();
 		public List<Biome> Biomes = new List<Biome>();
+		public List<Altitude> Altitudes = new List<Altitude>();
 
 		public void Remove(Domain entry)
 		{
@@ -32,7 +33,29 @@ namespace LunraGames.NoiseMaker
 				if (Biomes[i].Id == entry.Id) index = i;
 				if (index.HasValue) break;
 			}
-			if (index.HasValue) Biomes.RemoveAt(index.Value);
+
+			if (index.HasValue) 
+			{
+				foreach (var domain in Domains) domain.BiomeId = domain.BiomeId == entry.Id ? null : domain.BiomeId;
+				Biomes.RemoveAt(index.Value);
+			}
+		}
+
+		public void Remove(Altitude entry)
+		{
+			if (entry == null) throw new ArgumentNullException("entry");
+			int? index = null;
+			for (var i = 0; i < Altitudes.Count; i++)
+			{
+				if (Altitudes[i].Id == entry.Id) index = i;
+				if (index.HasValue) break;
+			}
+
+			if (index.HasValue) 
+			{
+				foreach (var biome in Biomes) biome.AltitudeIds.RemoveAll(a => a == entry.Id);
+				Altitudes.RemoveAt(index.Value);
+			}
 		}
 
 		// todo: support more than one latitude.
@@ -41,7 +64,7 @@ namespace LunraGames.NoiseMaker
 			if (Biomes == null || Biomes.FirstOrDefault() == null) return Color.white;
 
 			var lat = Biomes.FirstOrDefault();
-			return lat.GetColor(latitude, longitude, altitude);
+			return lat.GetColor(latitude, longitude, altitude, this);
 		}
 
 		public void GetSphereColors(int width, int height, Sphere sphere, ref Color[] colors)

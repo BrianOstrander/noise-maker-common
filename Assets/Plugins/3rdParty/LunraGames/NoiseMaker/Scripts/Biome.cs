@@ -9,24 +9,31 @@ namespace LunraGames.NoiseMaker
 	public class Biome
 	{
 		public string Id;
+		public string Name;
 		/// <summary>
 		/// The id's of associated Altitudes.
 		/// </summary>
 		public List<string> AltitudeIds = new List<string>();
-		List<Altitude> Altitudes = new List<Altitude>();
 
-		public Color GetColor(float latitude, float longitude, float altitude)
+		List<Altitude> _Altitudes;
+		List<Altitude> GetAltitudes(Mercator mercator)
 		{
-			if (Altitudes == null || Altitudes.FirstOrDefault() == null) return Color.white;
+			if (_Altitudes == null) _Altitudes = mercator.Altitudes.FindAll(a => AltitudeIds.Contains(a.Id));
+			return _Altitudes;
+		}
 
-			var altitudes = Altitudes.Where(a => a.MinAltitude <= altitude && altitude <= a.MaxAltitude).ToList();
+
+		public Color GetColor(float latitude, float longitude, float altitude, Mercator mercator)
+		{
+			var allAltitudes = GetAltitudes(mercator);
+			var altitudes = allAltitudes.Where(a => a.MinAltitude <= altitude && altitude <= a.MaxAltitude).ToList();
 
 			if (altitudes.Count == 0)
 			{
-				var lowest = GetLowest();
+				var lowest = GetLowest(mercator);
 
 				if (altitude < lowest.MinAltitude) return lowest.GetColor(latitude, longitude);
-				else return GetHighest().GetColor(latitude, longitude);
+				else return GetHighest(mercator).GetColor(latitude, longitude);
 			}
 			else if (altitudes.Count == 1) return altitudes[0].GetColor(latitude, longitude);
 
@@ -43,12 +50,12 @@ namespace LunraGames.NoiseMaker
 			return Color.Lerp(firstAlt.GetColor(latitude, longitude), lastAlt.GetColor(latitude, longitude), scalar);
 		}
 
-		Altitude GetHighest()
+		Altitude GetHighest(Mercator mercator)
 		{
-			if (Altitudes == null) return null;
+			var allAltitudes = GetAltitudes(mercator);
 
 			Altitude highest = null;
-			foreach (var altitude in Altitudes)
+			foreach (var altitude in allAltitudes)
 			{	
 				var unmodifiedAltitude = altitude;
 				if (highest == null || highest.MaxAltitude <= unmodifiedAltitude.MaxAltitude) highest = unmodifiedAltitude;
@@ -56,12 +63,12 @@ namespace LunraGames.NoiseMaker
 			return highest;
 		}
 
-		Altitude GetLowest()
+		Altitude GetLowest(Mercator mercator)
 		{
-			if (Altitudes == null) return null;
+			var allAltitudes = GetAltitudes(mercator);
 
 			Altitude lowest = null;
-			foreach (var altitude in Altitudes)
+			foreach (var altitude in allAltitudes)
 			{
 				var unmodifiedAltitude = altitude;
 				if (lowest == null || unmodifiedAltitude.MinAltitude <= lowest.MinAltitude) lowest = unmodifiedAltitude;

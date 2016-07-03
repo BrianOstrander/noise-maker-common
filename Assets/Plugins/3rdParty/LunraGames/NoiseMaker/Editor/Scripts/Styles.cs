@@ -497,5 +497,22 @@ namespace LunraGames.NoiseMaker
 
 			return button;
 		}
+
+		static GUIStyle _MercatorSelectionEditorHeader;
+
+		public static GUIStyle MercatorSelectionEditorHeader
+		{
+			get
+			{
+				if (_MercatorSelectionEditorHeader == null)
+				{
+					_MercatorSelectionEditorHeader = new GUIStyle(EditorStyles.miniButtonMid);
+					_MercatorSelectionEditorHeader.alignment = TextAnchor.MiddleLeft;
+					_MercatorSelectionEditorHeader.fontSize = 18;
+				}
+
+				return _MercatorSelectionEditorHeader;
+			}
+		}
 	}
 }

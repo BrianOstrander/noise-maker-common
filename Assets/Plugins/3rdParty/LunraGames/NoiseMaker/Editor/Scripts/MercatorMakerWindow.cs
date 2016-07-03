@@ -17,10 +17,16 @@ namespace LunraGames.NoiseMaker
 			public const float PreviewOptionsWidth = 650f;
 			public const float PreviewXOffsetScalar = 0.6f;
 			public const float PreviewWidthScalar = 1.25f;
-			public const float SelectionEditorWidth = 64f;
+
 			public const float DomainsWidthScalar = (1f - PreviewXOffsetScalar) * 0.9f;
-			public const float DomainEditorHeightScalar = 0.4f;
-			public const float DomainEditorWidthScalar = 0.5f;
+
+			public const float SelectedEditorsHeightScalar = 0.4f;
+			public const float SelectedEditorsWidthScalar = 1f - PreviewXOffsetScalar;
+
+			public const float SelectedEditorsDivider = 2f;
+			public const float SelectedEditorsMinimizedWidth = 28f;
+			public const float SelectedEditorsHeaderHeight = SelectedEditorsMinimizedWidth;
+			public const float SelectedEditorsMaximizedWidthOffset = 2f * (SelectedEditorsDivider + SelectedEditorsMinimizedWidth);
 		}
 
 		enum States
@@ -96,7 +102,7 @@ namespace LunraGames.NoiseMaker
 					DrawDomains();
 					DrawPreview();
 					DrawHeader();
-					if (!string.IsNullOrEmpty(DomainSelection)) DrawDomainEditor(Mercator.Domains.FirstOrDefault(d => d.Id == DomainSelection));
+					if (!string.IsNullOrEmpty(DomainSelection)) DrawSelectedEditors(Mercator.Domains.FirstOrDefault(d => d.Id == DomainSelection));
 				}
 			}
 			catch (Exception e)
@@ -274,7 +280,7 @@ namespace LunraGames.NoiseMaker
 
 		void DrawDomains()
 		{
-			var height = string.IsNullOrEmpty(DomainSelection) ? position.height - Layouts.HeaderHeight : (position.height * (1f - Layouts.DomainEditorHeightScalar)) - Layouts.HeaderHeight;
+			var height = string.IsNullOrEmpty(DomainSelection) ? position.height - Layouts.HeaderHeight : (position.height * (1f - Layouts.SelectedEditorsHeightScalar)) - Layouts.HeaderHeight;
 
 			GUILayout.BeginArea(new Rect(0f, Layouts.HeaderHeight, position.width * Layouts.DomainsWidthScalar, height));
 			{
@@ -355,95 +361,145 @@ namespace LunraGames.NoiseMaker
 			return GUILayoutUtility.GetLastRect();
 		}
 
-		void DrawDomainEditor(Domain domain)
+		void DrawSelectedEditors(Domain domain)
 		{
-			var area = new Rect(0f, position.height - (position.height * Layouts.DomainEditorHeightScalar), position.width * Layouts.DomainEditorWidthScalar, position.height * Layouts.DomainEditorHeightScalar);
-			var headerArea = new Rect(area.x, area.y, area.width, 38f);
-			var contentArea = new Rect(0f, headerArea.y + headerArea.height, area.width, area.height - headerArea.height);
-
-			GUILayout.BeginArea(contentArea, Styles.BoxButton);
-			{
-				GUILayout.BeginHorizontal();
-				{
-					var editorEntry = DomainEditorCacher.Editors.FirstOrDefault(e => e.Value.Details.Target == domain.GetType()).Value;
-
-					// Domain editor
-					if (string.IsNullOrEmpty(BiomeSelection)) 
-					{
-						// No Biome is selected for editing, so show the Domain editor.
-						Texture2D preview;
-						editorEntry.Editor.Draw(Mercator, domain, PreviewModule, out preview);
-						PreviewTexture = preview;
-						GUILayout.Box(editorEntry.Details.Name, Styles.OptionButtonMiddle);
-					}
-					else GUILayout.Box("", Styles.OptionButtonMiddle, GUILayout.Width(Layouts.SelectionEditorWidth));
-					// Biome editor
-
-					// Altitude editor
-
-
-				}
-				GUILayout.EndHorizontal();
-			}
-			GUILayout.EndArea();
-
-			GUILayout.BeginArea(headerArea);
-			{
-				GUILayout.BeginHorizontal();
-				{
-					if (string.IsNullOrEmpty(BiomeSelection)) GUILayout.Box("Domain Header", Styles.OptionButtonMiddle);
-					else 
-					{
-						GUILayout.Box("Domain Header", Styles.OptionButtonMiddle, GUILayout.Width(Layouts.SelectionEditorWidth));
-
-						if (string.IsNullOrEmpty(AltitudeSelection)) GUILayout.Box("Biome Header", Styles.OptionButtonMiddle);
-						else
-						{
-							GUILayout.Box("Biome Header", Styles.OptionButtonMiddle, GUILayout.Width(Layouts.SelectionEditorWidth));
-
-							GUILayout.Box("Altitude Header", Styles.OptionButtonMiddle);
-						}
-					}
-				}
-				GUILayout.EndHorizontal();
-			}
-			GUILayout.EndArea();
-
-			/*
-			var headerArea = new Rect(area.x, area.y, area.width, 38f);
-			var contentArea = new Rect(area.x, area.y + headerArea.height - 2, headerArea.width, area.height + 4f - headerArea.height);
-
 			var editorEntry = DomainEditorCacher.Editors.FirstOrDefault(e => e.Value.Details.Target == domain.GetType()).Value;
 
-			GUILayout.BeginArea(contentArea, EditorStyles.helpBox);
-			{
-				GUILayout.Space(2f);
+			var biome = string.IsNullOrEmpty(BiomeSelection) ? null : Mercator.Biomes.FirstOrDefault(b => b.Id == BiomeSelection);
+			var altitude = string.IsNullOrEmpty(AltitudeSelection) ? null : Mercator.Altitudes.FirstOrDefault(a => a.Id == AltitudeSelection);
 
-				GUILayout.BeginHorizontal();
+			var showDomain = biome == null;
+			var showBiome = !showDomain && altitude == null;
+			var showAltitude = altitude != null;
+
+			var area = new Rect(0f, Mathf.Round(position.height - (position.height * Layouts.SelectedEditorsHeightScalar)), Mathf.Round(position.width * Layouts.SelectedEditorsWidthScalar), Mathf.Round(position.height * Layouts.SelectedEditorsHeightScalar));
+
+			var domainHeaderArea = new Rect(area.x, area.y, showDomain ? area.width - Layouts.SelectedEditorsMaximizedWidthOffset : Layouts.SelectedEditorsMinimizedWidth, Layouts.SelectedEditorsHeaderHeight);
+			var biomeHeaderArea = new Rect(domainHeaderArea.x + domainHeaderArea.width + Layouts.SelectedEditorsDivider, area.y, showBiome ? area.width - Layouts.SelectedEditorsMaximizedWidthOffset : Layouts.SelectedEditorsMinimizedWidth, Layouts.SelectedEditorsHeaderHeight);
+			var altitudeHeaderArea = new Rect(biomeHeaderArea.x + biomeHeaderArea.width + Layouts.SelectedEditorsDivider, area.y, showAltitude ? area.width - Layouts.SelectedEditorsMaximizedWidthOffset : Layouts.SelectedEditorsMinimizedWidth, Layouts.SelectedEditorsHeaderHeight);
+
+			var domainArea = new Rect(domainHeaderArea.x, domainHeaderArea.y + domainHeaderArea.height + Layouts.SelectedEditorsDivider, domainHeaderArea.width - 1f, area.height - domainHeaderArea.height - Layouts.SelectedEditorsDivider);
+			var biomeArea = new Rect(biomeHeaderArea.x, biomeHeaderArea.y + biomeHeaderArea.height + Layouts.SelectedEditorsDivider, biomeHeaderArea.width - 1f, area.height - biomeHeaderArea.height - Layouts.SelectedEditorsDivider);
+			var altitudeArea = new Rect(altitudeHeaderArea.x, altitudeHeaderArea.y + altitudeHeaderArea.height + Layouts.SelectedEditorsDivider, altitudeHeaderArea.width - 1f, area.height - altitudeHeaderArea.height - Layouts.SelectedEditorsDivider);
+
+			if (DrawSelectedEditorHeader(showDomain, domainHeaderArea, NoiseMakerConfig.Instance.DomainIcon, editorEntry.Details.Name))
+			{
+				if (!showDomain)
+				{
+					BiomeSelection = null;
+					AltitudeSelection = null;
+				}
+			}
+			if (!showBiome) GUI.color = GUI.color.NewV(0.85f);
+			if (DrawSelectedEditorHeader(showBiome, biomeHeaderArea, NoiseMakerConfig.Instance.BiomeIcon, biome == null || string.IsNullOrEmpty(biome.Name) ? "Biome" : biome.Name))
+			{
+				if (showDomain) 
+				{
+					if (string.IsNullOrEmpty(domain.BiomeId)) UnityEditor.EditorUtility.DisplayDialog("No Biome", "Select or create a biome from the domain panel first.", "Okay");
+					else BiomeSelection = domain.BiomeId;
+				}
+				else if (showAltitude) AltitudeSelection = null;
+			}
+			if (!showAltitude) GUI.color = GUI.color.NewV(0.75f);
+			if (DrawSelectedEditorHeader(showAltitude, altitudeHeaderArea, NoiseMakerConfig.Instance.AltitudeIcon, "altitude name"))
+			{
+				if (showBiome) UnityEditor.EditorUtility.DisplayDialog("Select Altitude", "Select or create a an altitude from the biome panel first.", "Okay");
+				else
+				{
+					BiomeSelection = domain.BiomeId;
+					if (string.IsNullOrEmpty(domain.BiomeId)) UnityEditor.EditorUtility.DisplayDialog("No Biome", "Select or create a biome from the domain panel first, then create an altitude to start editing.", "Okay");
+				}
+			}
+
+			GUI.color = Color.white;
+
+			GUILayout.BeginArea(domainArea, GUI.skin.box);
+			{
+				if (showDomain)
 				{
 					Texture2D preview;
 					editorEntry.Editor.Draw(Mercator, domain, PreviewModule, out preview);
 					PreviewTexture = preview;
 
-				}
-				GUILayout.EndHorizontal();
+					GUILayout.FlexibleSpace();
 
-				GUILayout.Space(4f);
+					var biomeOptions = new List<string>(new [] {"Select a Biome...", "Create a New Biome"});
+					var biomes = Mercator.Biomes.OrderBy(b => b.Name);
+					var unnamedCount = 0;
+
+					foreach (var orderedBiome in biomes)
+					{
+						biomeOptions.Add(string.IsNullOrEmpty(orderedBiome.Name) ? "Unnamed "+unnamedCount : orderedBiome.Name);
+						if (orderedBiome.Name == null) unnamedCount++;
+					}
+
+					var selected = EditorGUILayout.Popup(0, biomeOptions.ToArray());
+
+					if (1 < selected) 
+					{
+						biome = biomes.ToList()[selected - 2];
+						domain.BiomeId = biome.Id;
+						BiomeSelection = biome.Id;
+					}
+					else if (selected == 1) 
+					{
+						biome = new Biome();
+						biome.Id = Guid.NewGuid().ToString();
+						Mercator.Biomes.Add(biome);
+						domain.BiomeId = biome.Id;
+						BiomeSelection = biome.Id;
+					}
+
+					GUI.enabled = !string.IsNullOrEmpty(domain.BiomeId);
+					if (GUILayout.Button("Edit "+(biome == null || string.IsNullOrEmpty(biome.Name) ? "Biome" : biome.Name))) BiomeSelection = domain.BiomeId;
+					GUI.enabled = true;
+				}
 			}
 			GUILayout.EndArea();
 
-			GUI.Box(headerArea, editorEntry.Details.Name, Styles.OptionButtonMiddle);
-			*/
+			GUI.color = showBiome ? Color.white : GUI.color.NewV(0.7f);
+			GUILayout.BeginArea(biomeArea, GUI.skin.box);
+			{
+				if (showBiome)
+				{
+					
+				}
+			}
+			GUILayout.EndArea();
+
+			GUI.color = showAltitude ? Color.white : GUI.color.NewV(0.55f);
+			GUILayout.BeginArea(altitudeArea, GUI.skin.box);
+			{
+				if (showAltitude)
+				{
+					
+				}
+			}
+			GUILayout.EndArea();
 		}
 
-		void DrawBiome(Biome biome)
+		bool DrawSelectedEditorHeader(bool active, Rect area, Texture2D icon, string headerTitle)
 		{
-			
-		}
+			var value = false;
 
-		void DrawAltitudeEditor(Altitude altitude)
-		{
+			GUILayout.BeginArea(area);
+			{
+				GUILayout.BeginHorizontal();
+				{
+					if (active)
+					{
+						GUILayout.Box(icon, Styles.MercatorSelectionEditorHeader, GUILayout.Width(Layouts.SelectedEditorsMinimizedWidth), GUILayout.ExpandHeight(true));
+						GUILayout.Box(headerTitle, Styles.MercatorSelectionEditorHeader, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
+					}
+					else if (GUILayout.Button(icon, Styles.MercatorSelectionEditorHeader, GUILayout.Width(Layouts.SelectedEditorsMinimizedWidth), GUILayout.ExpandHeight(true))) value = true;
+				}
+				GUILayout.EndHorizontal();
+				// Add one pixel for shadow.
+				GUILayout.Space(1f);
+			}
+			GUILayout.EndArea();
 
+			return value;
 		}
 
 		#region Previews

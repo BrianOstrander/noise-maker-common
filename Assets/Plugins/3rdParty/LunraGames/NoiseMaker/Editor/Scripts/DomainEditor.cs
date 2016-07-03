@@ -16,7 +16,7 @@ namespace LunraGames.NoiseMaker
 
 		protected static List<DomainPreview> Previews = new List<DomainPreview>();
 
-		protected DomainPreview GetPreview(Domain domain, object module)
+		protected DomainPreview GetPreview(Mercator mercator, Domain domain, object module)
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == domain.Id);
 
@@ -53,7 +53,7 @@ namespace LunraGames.NoiseMaker
 								var normalValue = Previewer.Calculate(value, Previewer);
 								var highlightedValue = Color.green.NewV(normalValue);
 
-								pixels[(width * y) + x] = Mathf.Approximately(0f, domain.GetWeight(latitude, longitude, value)) ? normalValue : highlightedValue;
+								pixels[(width * y) + x] = Mathf.Approximately(0f, domain.GetWeight(latitude, longitude, value, mercator)) ? normalValue : highlightedValue;
 							}
 						}
 					},

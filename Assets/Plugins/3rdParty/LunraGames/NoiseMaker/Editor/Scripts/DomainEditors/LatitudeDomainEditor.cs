@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var latitude = domain as LatitudeDomain;
 
-			var previewCache = GetPreview(latitude, module);
+			var previewCache = GetPreview(mercator, latitude, module);
 			preview = previewCache.Preview;
 
 			latitude.MinLatitude = Deltas.DetectDelta<float>(latitude.MinLatitude, EditorGUILayout.FloatField("Minimum Latitude", latitude.MinLatitude), ref previewCache.Stale);

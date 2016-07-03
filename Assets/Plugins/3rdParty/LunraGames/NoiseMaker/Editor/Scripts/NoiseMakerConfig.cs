@@ -61,5 +61,25 @@ namespace LunraGames.NoiseMaker
 		[SerializeField]
 		Texture2D EditableOptionPeasant;
 		#endregion
+
+		#region Mercator icons
+		public Texture2D DomainIcon { get { return EditorGUIUtility.isProSkin ? DomainIconPro : DomainIconPeasant; } }
+		[SerializeField]
+		Texture2D DomainIconPro;
+		[SerializeField]
+		Texture2D DomainIconPeasant;
+
+		public Texture2D BiomeIcon { get { return EditorGUIUtility.isProSkin ? BiomeIconPro : BiomeIconPeasant; } }
+		[SerializeField]
+		Texture2D BiomeIconPro;
+		[SerializeField]
+		Texture2D BiomeIconPeasant;
+
+		public Texture2D AltitudeIcon { get { return EditorGUIUtility.isProSkin ? AltitudeIconPro : AltitudeIconPeasant; } }
+		[SerializeField]
+		Texture2D AltitudeIconPro;
+		[SerializeField]
+		Texture2D AltitudeIconPeasant;
+		#endregion
 	}
 }
