@@ -420,36 +420,40 @@ namespace LunraGames.NoiseMaker
 			{
 				if (showDomain)
 				{
-					GUILayout.Label(editorEntry.Details.Description+".");
-					if (string.IsNullOrEmpty(domain.Name))
+					GUILayout.BeginHorizontal();
 					{
-						if (GUILayout.Button("Convert Domain to Prefab"))
+						GUILayout.Label(editorEntry.Details.Description+".");
+						if (string.IsNullOrEmpty(domain.Name))
+						{
+							if (GUILayout.Button("Convert Domain to Prefab"))
+							{
+								TextDialogPopup.Show(
+									"Convert Domain to Prefab", 
+									name =>
+									{
+										if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Domain can't have a blank name.", "Okay"); 
+										else if (Mercator.Domains.Any(d => d.Name == name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Domain with the name \""+name+"\" already exists.", "Okay");
+										else domain.Name = name;
+									},
+									description: "Choose a unique name for this Domain."
+								);
+							}
+						}
+						else if (GUILayout.Button("Rename Domain"))
 						{
 							TextDialogPopup.Show(
-								"Convert Domain to Prefab", 
+								"Rename Domain", 
 								name =>
 								{
 									if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Domain can't have a blank name.", "Okay"); 
-									else if (Mercator.Domains.Any(d => d.Name == name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Domain with the name \""+name+"\" already exists.", "Okay");
+									else if (Mercator.Domains.Any(d => d.Name == name && d.Id != domain.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Domain with the name \""+name+"\" already exists.", "Okay");
 									else domain.Name = name;
 								},
 								description: "Choose a unique name for this Domain."
 							);
 						}
 					}
-					else if (GUILayout.Button("Rename Domain"))
-					{
-						TextDialogPopup.Show(
-							"Rename Domain", 
-							name =>
-							{
-								if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Domain can't have a blank name.", "Okay"); 
-								else if (Mercator.Domains.Any(d => d.Name == name && d.Id != domain.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Domain with the name \""+name+"\" already exists.", "Okay");
-								else domain.Name = name;
-							},
-							description: "Choose a unique name for this Domain."
-						);
-					}
+					GUILayout.EndHorizontal();
 
 					Texture2D preview;
 					editorEntry.Editor.Draw(Mercator, domain, PreviewModule, out preview);
@@ -490,36 +494,40 @@ namespace LunraGames.NoiseMaker
 			{
 				if (showBiome)
 				{
-					GUILayout.Label("Add and link Altitudes to populate this Biome.");
-					if (string.IsNullOrEmpty(biome.Name))
+					GUILayout.BeginHorizontal();
 					{
-						if (GUILayout.Button("Convert Biome to Prefab"))
+						GUILayout.Label("Add and link Altitudes to populate this Biome.");
+						if (string.IsNullOrEmpty(biome.Name))
+						{
+							if (GUILayout.Button("Convert Biome to Prefab"))
+							{
+								TextDialogPopup.Show(
+									"Convert Biome to Prefab", 
+									name =>
+									{
+										if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome can't have a blank name.", "Okay"); 
+										else if (Mercator.Biomes.Any(b => b.Name == name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome with the name \""+name+"\" already exists.", "Okay");
+										else biome.Name = name;
+									},
+									description: "Choose a unique name for this biome."
+								);
+							}
+						}
+						else if (GUILayout.Button("Rename Biome"))
 						{
 							TextDialogPopup.Show(
-								"Convert Biome to Prefab", 
+								"Rename Biome", 
 								name =>
 								{
 									if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome can't have a blank name.", "Okay"); 
-									else if (Mercator.Biomes.Any(b => b.Name == name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome with the name \""+name+"\" already exists.", "Okay");
+									else if (Mercator.Biomes.Any(b => b.Name == name && b.Id != biome.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome with the name \""+name+"\" already exists.", "Okay");
 									else biome.Name = name;
 								},
 								description: "Choose a unique name for this biome."
 							);
 						}
 					}
-					else if (GUILayout.Button("Rename Biome"))
-					{
-						TextDialogPopup.Show(
-							"Rename Biome", 
-							name =>
-							{
-								if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome can't have a blank name.", "Okay"); 
-								else if (Mercator.Biomes.Any(b => b.Name == name && b.Id != biome.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome with the name \""+name+"\" already exists.", "Okay");
-								else biome.Name = name;
-							},
-							description: "Choose a unique name for this biome."
-						);
-					}
+					GUILayout.EndHorizontal();
 
 					var altitudeOptions = new List<string>(new [] {"Select an Altitude...", "--- Create a New Altitude ---"});
 					foreach (var orderedEditor in altitudeEditors) altitudeOptions.Add(orderedEditor.Details.Name);

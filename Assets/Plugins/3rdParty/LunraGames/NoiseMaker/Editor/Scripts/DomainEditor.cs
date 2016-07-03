@@ -53,7 +53,8 @@ namespace LunraGames.NoiseMaker
 								var normalValue = Previewer.Calculate(value, Previewer);
 								var highlightedValue = Color.green.NewV(normalValue);
 
-								pixels[(width * y) + x] = Mathf.Approximately(0f, domain.GetWeight(latitude, longitude, value, mercator)) ? normalValue : highlightedValue;
+								var pixelPos = (pixels.Length - 1) - ((width * y) + x);
+								pixels[pixelPos] = Mathf.Approximately(0f, domain.GetWeight(latitude, longitude, value, mercator)) ? normalValue : highlightedValue;
 							}
 						}
 					},

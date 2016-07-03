@@ -81,5 +81,37 @@ namespace LunraGames.NoiseMaker
 		[SerializeField]
 		Texture2D AltitudeIconPeasant;
 		#endregion
+
+		#region Domain editors
+		public Texture2D DomainLatitudeEmpty { get { return EditorGUIUtility.isProSkin ? DomainLatitudeEmptyPro : DomainLatitudeEmptyPeasant; } }
+		[SerializeField]
+		Texture2D DomainLatitudeEmptyPro;
+		[SerializeField]
+		Texture2D DomainLatitudeEmptyPeasant;
+
+		public Texture2D DomainLatitudeFilled { get { return EditorGUIUtility.isProSkin ? DomainLatitudeFilledPro : DomainLatitudeFilledPeasant; } }
+		[SerializeField]
+		Texture2D DomainLatitudeFilledPro;
+		[SerializeField]
+		Texture2D DomainLatitudeFilledPeasant;
+
+		public Texture2D DomainLatitudeWidgetTop { get { return EditorGUIUtility.isProSkin ? DomainLatitudeWidgetTopPro : DomainLatitudeWidgetTopPeasant; } }
+		[SerializeField]
+		Texture2D DomainLatitudeWidgetTopPro;
+		[SerializeField]
+		Texture2D DomainLatitudeWidgetTopPeasant;
+
+		public Texture2D DomainLatitudeWidgetBottom { get { return EditorGUIUtility.isProSkin ? DomainLatitudeWidgetBottomPro : DomainLatitudeWidgetBottomPeasant; } }
+		[SerializeField]
+		Texture2D DomainLatitudeWidgetBottomPro;
+		[SerializeField]
+		Texture2D DomainLatitudeWidgetBottomPeasant;
+		
+		public Texture2D DomainLatitudeWidgetLine { get { return EditorGUIUtility.isProSkin ? DomainLatitudeWidgetLinePro : DomainLatitudeWidgetLinePeasant; } }
+		[SerializeField]
+		Texture2D DomainLatitudeWidgetLinePro;
+		[SerializeField]
+		Texture2D DomainLatitudeWidgetLinePeasant;
+		#endregion
 	}
 }
