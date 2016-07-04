@@ -16,9 +16,6 @@ namespace LunraGames.NoiseMaker
 
 			preview = GetPreview(mercator, latitude, module);
 
-			//latitude.MaxLatitude = Deltas.DetectDelta<float>(latitude.MaxLatitude, EditorGUILayout.FloatField("Maximum Latitude", latitude.MaxLatitude), ref previewCache.Stale);
-			//latitude.MinLatitude = Deltas.DetectDelta<float>(latitude.MinLatitude, EditorGUILayout.FloatField("Minimum Latitude", latitude.MinLatitude), ref previewCache.Stale);
-
 			GUILayout.Label(GUIContent.none);
 
 			var lastRect = GUILayoutUtility.GetLastRect();
@@ -40,7 +37,7 @@ namespace LunraGames.NoiseMaker
 			var middleHeightScaled = (middleArea.height / (float)filledTexture.height);
 			var bottomHeightScaled = (bottomArea.height / (float)emptyTexture.height);
 
-			var lineWidth = topArea.width * 2f;
+			var lineWidth = topArea.width * 1.2f;
 			var topLine = new Rect(lastRect.width - lineWidth, Mathf.Min(topArea.yMax, bottomArea.yMax - lineTexture.height), lineWidth, lineTexture.height);
 			var bottomLine = new Rect(topLine.x, Mathf.Max(middleArea.yMax - topLine.height, topArea.y), lineWidth, lineTexture.height);
 
@@ -61,7 +58,6 @@ namespace LunraGames.NoiseMaker
 
 			if (latitude.MaxLatitude < latitude.MinLatitude)
 			{
-				Debug.Log("I did it!");
 				var wasMax = latitude.MaxLatitude;
 				latitude.MaxLatitude = latitude.MinLatitude;
 				latitude.MinLatitude = wasMax;

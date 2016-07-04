@@ -20,6 +20,7 @@ namespace LunraGames.NoiseMaker
 
 			public const float DomainsWidthScalar = (1f - PreviewXOffsetScalar) * 0.9f;
 
+			public const float SelectedEditorsMinHeight = 400f;
 			public const float SelectedEditorsHeightScalar = 0.4f;
 			public const float SelectedEditorsWidthScalar = 1f - PreviewXOffsetScalar;
 
@@ -280,7 +281,7 @@ namespace LunraGames.NoiseMaker
 
 		void DrawDomains()
 		{
-			var height = string.IsNullOrEmpty(DomainSelection) ? position.height - Layouts.HeaderHeight : (position.height * (1f - Layouts.SelectedEditorsHeightScalar)) - Layouts.HeaderHeight;
+			var height = Mathf.Max(Layouts.SelectedEditorsMinHeight, string.IsNullOrEmpty(DomainSelection) ? position.height - Layouts.HeaderHeight : (position.height * (1f - Layouts.SelectedEditorsHeightScalar)) - Layouts.HeaderHeight);
 
 			GUILayout.BeginArea(new Rect(0f, Layouts.HeaderHeight, position.width * Layouts.DomainsWidthScalar, height));
 			{
@@ -347,7 +348,7 @@ namespace LunraGames.NoiseMaker
 
 		Rect DrawDomain(string domainName, bool alreadySelected, out bool selected, out bool deleted)
 		{
-			GUI.color = alreadySelected ? Color.magenta : Color.white;
+			GUI.color = alreadySelected ? Color.green : Color.white;
 
 			GUILayout.BeginHorizontal();
 			{
@@ -373,7 +374,8 @@ namespace LunraGames.NoiseMaker
 			var showBiome = !showDomain && altitude == null;
 			var showAltitude = altitude != null;
 
-			var area = new Rect(0f, Mathf.Round(position.height - (position.height * Layouts.SelectedEditorsHeightScalar)), Mathf.Round(position.width * Layouts.SelectedEditorsWidthScalar), Mathf.Round(position.height * Layouts.SelectedEditorsHeightScalar));
+			var areaHeight = Mathf.Max(Layouts.SelectedEditorsMinHeight, position.height * Layouts.SelectedEditorsHeightScalar);
+			var area = new Rect(0f, Mathf.Round(position.height - areaHeight), Mathf.Round(position.width * Layouts.SelectedEditorsWidthScalar), Mathf.Round(areaHeight));
 
 			var domainHeaderArea = new Rect(area.x, area.y, showDomain ? area.width - Layouts.SelectedEditorsMaximizedWidthOffset : Layouts.SelectedEditorsMinimizedWidth, Layouts.SelectedEditorsHeaderHeight);
 			var biomeHeaderArea = new Rect(domainHeaderArea.x + domainHeaderArea.width + Layouts.SelectedEditorsDivider, area.y, showBiome ? area.width - Layouts.SelectedEditorsMaximizedWidthOffset : Layouts.SelectedEditorsMinimizedWidth, Layouts.SelectedEditorsHeaderHeight);
@@ -462,30 +464,34 @@ namespace LunraGames.NoiseMaker
 
 					GUILayout.FlexibleSpace();
 
-					var biomeOptions = new List<string>(new [] {"Select a Biome...", "Create a New Biome"});
-					var biomes = Mercator.Biomes.Where(b => !string.IsNullOrEmpty(b.Name)).OrderBy(b => b.Name);
-					foreach (var orderedBiome in biomes) biomeOptions.Add(orderedBiome.Name);
-
-					var selected = EditorGUILayout.Popup(0, biomeOptions.ToArray());
-
-					if (1 < selected) 
+					GUILayout.BeginHorizontal();
 					{
-						biome = biomes.ToList()[selected - 2];
-						domain.BiomeId = biome.Id;
-						BiomeSelection = biome.Id;
-					}
-					else if (selected == 1) 
-					{
-						biome = new Biome();
-						biome.Id = Guid.NewGuid().ToString();
-						Mercator.Biomes.Add(biome);
-						domain.BiomeId = biome.Id;
-						BiomeSelection = biome.Id;
-					}
+						var biomeOptions = new List<string>(new [] {"Select a Biome...", "Create a New Biome"});
+						var biomes = Mercator.Biomes.Where(b => !string.IsNullOrEmpty(b.Name)).OrderBy(b => b.Name);
+						foreach (var orderedBiome in biomes) biomeOptions.Add(orderedBiome.Name);
 
-					GUI.enabled = !string.IsNullOrEmpty(domain.BiomeId);
-					if (GUILayout.Button("Edit "+(biome == null || string.IsNullOrEmpty(biome.Name) ? "Biome" : biome.Name))) BiomeSelection = domain.BiomeId;
-					GUI.enabled = true;
+						var selected = EditorGUILayout.Popup(0, biomeOptions.ToArray());
+
+						if (1 < selected) 
+						{
+							biome = biomes.ToList()[selected - 2];
+							domain.BiomeId = biome.Id;
+							BiomeSelection = biome.Id;
+						}
+						else if (selected == 1) 
+						{
+							biome = new Biome();
+							biome.Id = Guid.NewGuid().ToString();
+							Mercator.Biomes.Add(biome);
+							domain.BiomeId = biome.Id;
+							BiomeSelection = biome.Id;
+						}
+
+						GUI.enabled = !string.IsNullOrEmpty(domain.BiomeId);
+						if (GUILayout.Button("Edit "+(biome == null || string.IsNullOrEmpty(biome.Name) ? "Biome" : biome.Name))) BiomeSelection = domain.BiomeId;
+						GUI.enabled = true;
+					}
+					GUILayout.EndHorizontal();
 				}
 			}
 			GUILayout.EndArea();
