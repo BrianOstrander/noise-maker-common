@@ -57,7 +57,17 @@ namespace LunraGames.NoiseMaker
 							}
 						}
 					},
-					() => TextureFarmer.Queue (preview.Preview, pixels, MercatorMakerWindow.QueueRepaint, MercatorMakerWindow.QueueRepaint)
+					() => TextureFarmer.Queue
+					(
+						preview.Preview, 
+						pixels, 
+						() =>
+						{
+							if (MercatorMakerWindow.PreviewUpdating && MercatorMakerWindow.ActiveDomainId == preview.Id) MercatorMakerWindow.PreviewUpdating = false;
+							MercatorMakerWindow.QueueRepaint();
+						},
+						MercatorMakerWindow.QueueRepaint
+					)
 				);
 
 				preview.Stale = false;
@@ -70,6 +80,6 @@ namespace LunraGames.NoiseMaker
 			return preview;
 		}
 
-		public abstract Domain Draw(Mercator mercator, Domain domain, object module, out Texture2D preview);	
+		public abstract Domain Draw(Mercator mercator, Domain domain, object module, out DomainPreview preview);	
 	}
 }

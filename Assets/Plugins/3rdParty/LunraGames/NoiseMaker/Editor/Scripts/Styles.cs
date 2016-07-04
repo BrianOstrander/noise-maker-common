@@ -514,5 +514,21 @@ namespace LunraGames.NoiseMaker
 				return _MercatorSelectionEditorHeader;
 			}
 		}
+
+		static GUIStyle _MercatorLatitudeText;
+
+		public static GUIStyle MercatorLatitudeText
+		{
+			get
+			{
+				if (_MercatorLatitudeText == null)
+				{
+					_MercatorLatitudeText = new GUIStyle(EditorStyles.textField);
+					_MercatorLatitudeText.alignment = TextAnchor.MiddleLeft;
+				}
+
+				return _MercatorLatitudeText;
+			}
+		}
 	}
 }

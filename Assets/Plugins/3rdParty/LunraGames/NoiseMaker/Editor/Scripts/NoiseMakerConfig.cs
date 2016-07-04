@@ -95,17 +95,17 @@ namespace LunraGames.NoiseMaker
 		[SerializeField]
 		Texture2D DomainLatitudeFilledPeasant;
 
-		public Texture2D DomainLatitudeWidgetTop { get { return EditorGUIUtility.isProSkin ? DomainLatitudeWidgetTopPro : DomainLatitudeWidgetTopPeasant; } }
+		public GUIStyle DomainLatitudeWidgetTop { get { return EditorGUIUtility.isProSkin ? DomainLatitudeWidgetTopPro : DomainLatitudeWidgetTopPeasant; } }
 		[SerializeField]
-		Texture2D DomainLatitudeWidgetTopPro;
+		GUIStyle DomainLatitudeWidgetTopPro;
 		[SerializeField]
-		Texture2D DomainLatitudeWidgetTopPeasant;
+		GUIStyle DomainLatitudeWidgetTopPeasant;
 
-		public Texture2D DomainLatitudeWidgetBottom { get { return EditorGUIUtility.isProSkin ? DomainLatitudeWidgetBottomPro : DomainLatitudeWidgetBottomPeasant; } }
+		public GUIStyle DomainLatitudeWidgetBottom { get { return EditorGUIUtility.isProSkin ? DomainLatitudeWidgetBottomPro : DomainLatitudeWidgetBottomPeasant; } }
 		[SerializeField]
-		Texture2D DomainLatitudeWidgetBottomPro;
+		GUIStyle DomainLatitudeWidgetBottomPro;
 		[SerializeField]
-		Texture2D DomainLatitudeWidgetBottomPeasant;
+		GUIStyle DomainLatitudeWidgetBottomPeasant;
 		
 		public Texture2D DomainLatitudeWidgetLine { get { return EditorGUIUtility.isProSkin ? DomainLatitudeWidgetLinePro : DomainLatitudeWidgetLinePeasant; } }
 		[SerializeField]

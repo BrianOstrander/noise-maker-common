@@ -455,9 +455,10 @@ namespace LunraGames.NoiseMaker
 					}
 					GUILayout.EndHorizontal();
 
-					Texture2D preview;
+					DomainPreview preview;
 					editorEntry.Editor.Draw(Mercator, domain, PreviewModule, out preview);
-					PreviewTexture = preview;
+					if (preview.Stale) PreviewUpdating = true;
+					PreviewTexture = preview.Preview;
 
 					GUILayout.FlexibleSpace();
 
@@ -803,6 +804,13 @@ namespace LunraGames.NoiseMaker
 		}
 
 		public static string ActiveSavePath { get { return Instance == null || StringExtensions.IsNullOrWhiteSpace(Instance.SavePath) ? null : Instance.SavePath; } }
+
+		public static string ActiveDomainId { get { return Instance == null ? null : Instance.DomainSelection; } }
+
+		public static void RepaintNow()
+		{
+			if (Instance != null) Instance.Repaint();
+		}
 
 		public static void QueueRepaint()
 		{
