@@ -115,6 +115,24 @@ namespace LunraGames.NoiseMaker
 		#endregion
 
 		#region Biome editors
+		public GUIStyle BiomeAltitudeDeleteWidget { get { return EditorGUIUtility.isProSkin ? BiomeAltitudeDeleteWidgetPro : BiomeAltitudeDeleteWidgetPeasant; } }
+		[SerializeField]
+		GUIStyle BiomeAltitudeDeleteWidgetPro;
+		[SerializeField]
+		GUIStyle BiomeAltitudeDeleteWidgetPeasant;
+
+		public GUIStyle BiomeAltitudeEditWidget { get { return EditorGUIUtility.isProSkin ? BiomeAltitudeEditWidgetPro : BiomeAltitudeEditWidgetPeasant; } }
+		[SerializeField]
+		GUIStyle BiomeAltitudeEditWidgetPro;
+		[SerializeField]
+		GUIStyle BiomeAltitudeEditWidgetPeasant;
+
+		public Texture2D BiomeAltitudeViewWidget { get { return EditorGUIUtility.isProSkin ? BiomeAltitudeViewWidgetPro : BiomeAltitudeViewWidgetPeasant; } }
+		[SerializeField]
+		Texture2D BiomeAltitudeViewWidgetPro;
+		[SerializeField]
+		Texture2D BiomeAltitudeViewWidgetPeasant;
+
 		public GUIStyle BiomeAltitudeWidgetTop { get { return EditorGUIUtility.isProSkin ? BiomeAltitudeWidgetTopPro : BiomeAltitudeWidgetTopPeasant; } }
 		[SerializeField]
 		GUIStyle BiomeAltitudeWidgetTopPro;
@@ -132,6 +150,18 @@ namespace LunraGames.NoiseMaker
 		GUIStyle BiomeAltitudeWidgetLinePro;
 		[SerializeField]
 		GUIStyle BiomeAltitudeWidgetLinePeasant;
+
+		public GUIStyle BiomeAltitudeWidgetMarginTop { get { return EditorGUIUtility.isProSkin ? BiomeAltitudeWidgetMarginTopPro : BiomeAltitudeWidgetMarginTopPeasant; } }
+		[SerializeField]
+		GUIStyle BiomeAltitudeWidgetMarginTopPro;
+		[SerializeField]
+		GUIStyle BiomeAltitudeWidgetMarginTopPeasant;
+
+		public GUIStyle BiomeAltitudeWidgetMarginBottom { get { return EditorGUIUtility.isProSkin ? BiomeAltitudeWidgetMarginBottomPro : BiomeAltitudeWidgetMarginBottomPeasant; } }
+		[SerializeField]
+		GUIStyle BiomeAltitudeWidgetMarginBottomPro;
+		[SerializeField]
+		GUIStyle BiomeAltitudeWidgetMarginBottomPeasant;
 		#endregion
 	}
 }

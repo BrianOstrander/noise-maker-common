@@ -20,7 +20,7 @@ namespace LunraGames.NoiseMaker
 
 			public const float DomainsWidthScalar = (1f - PreviewXOffsetScalar) * 0.9f;
 
-			public const float SelectedEditorsMinHeight = 400f;
+			public const float SelectedEditorsMinHeight = 450f;
 			public const float SelectedEditorsHeightScalar = 0.4f;
 			public const float SelectedEditorsWidthScalar = 1f - PreviewXOffsetScalar;
 
@@ -29,7 +29,14 @@ namespace LunraGames.NoiseMaker
 			public const float SelectedEditorsHeaderHeight = SelectedEditorsMinimizedWidth;
 			public const float SelectedEditorsMaximizedWidthOffset = 2f * (SelectedEditorsDivider + SelectedEditorsMinimizedWidth);
 
-			public const float AltitudesEditorHeight = 316f;
+			public const float AltitudesEditorOffsetY = 42f;
+			public const float AltitudesEditorEntryDivider = 2f;
+
+			public static float AltitudesEditorMarginHeight { get { return NoiseMakerConfig.Instance.BiomeAltitudeWidgetMarginTop.active.background.height; } }
+			public static float AltitudesEditorTabHeight { get { return NoiseMakerConfig.Instance.BiomeAltitudeWidgetTop.active.background.height; } }
+			public static float AltitudesEditorEntryWidth { get { return NoiseMakerConfig.Instance.BiomeAltitudeWidgetLine.active.background.width; } }
+			public static float AltitudesEditorEditHeight = AltitudesEditorTabHeight;
+			public static float AltitudesEditorDeleteHeight = AltitudesEditorEditHeight;
 		}
 
 		enum States
@@ -560,7 +567,6 @@ namespace LunraGames.NoiseMaker
 							altitude.Id = Guid.NewGuid().ToString();
 							Mercator.Altitudes.Add(altitude);
 							biome.AltitudeIds.Add(altitude.Id);
-							AltitudeSelection = altitude.Id;
 						}
 						else
 						{
@@ -572,20 +578,34 @@ namespace LunraGames.NoiseMaker
 						}
 					}
 
-					BiomeScrollPosition = GUILayout.BeginScrollView(new Vector2(BiomeScrollPosition.x, 0f));
+					var biomeAltitudesArea = new Rect(4f, Layouts.AltitudesEditorOffsetY, biomeArea.width - 8f, biomeArea.height - Layouts.AltitudesEditorOffsetY - 4f);
+					GUI.BeginGroup(biomeAltitudesArea);
 					{
-						GUILayout.BeginHorizontal();
-						{
-							var altitudesInBiome = Mercator.Altitudes.Where(a => biome.AltitudeIds.Contains(a.Id));
-							foreach (var currAltitude in altitudesInBiome)
-							{
-								
-							}	
-						}
-						GUILayout.EndHorizontal();
-					}
-					GUILayout.EndScrollView();
+						var scrollArea = new Rect(0f, 4f, biomeAltitudesArea.width + 15f, biomeAltitudesArea.height - 4f); // 15 is for hiding the vertical scrollbar.
+						var totalWidth = (Layouts.AltitudesEditorEntryWidth + Layouts.AltitudesEditorEntryDivider) * biome.AltitudeIds.Count;
+						var topMargin = new Rect(0f, Layouts.AltitudesEditorEditHeight, Mathf.Max(totalWidth, biomeArea.width), Layouts.AltitudesEditorMarginHeight);
+						var bottomMargin = new Rect(topMargin.x, biomeAltitudesArea.height - Layouts.AltitudesEditorMarginHeight - 20f - Layouts.AltitudesEditorDeleteHeight, topMargin.width, topMargin.height); // 20 is for offsetting from the horizontal scrollbar.
+						GUI.Box(topMargin, GUIContent.none, NoiseMakerConfig.Instance.BiomeAltitudeWidgetMarginTop);
+						GUI.Box(bottomMargin, GUIContent.none, NoiseMakerConfig.Instance.BiomeAltitudeWidgetMarginBottom);
 
+						var sliderArea = new Rect(0f, topMargin.yMax, totalWidth, bottomMargin.y - topMargin.yMax);
+
+						BiomeScrollPosition = GUI.BeginScrollView(scrollArea, new Vector2(BiomeScrollPosition.x, 0f), new Rect(0f, 0f, totalWidth, scrollArea.height), true, true);
+						{
+							string deletedId = null;
+							for (var i = 0; i < biome.AltitudeIds.Count; i++) 
+							{
+								var unmodifiedAltitude = Mercator.Altitudes.FirstOrDefault(a => a.Id == biome.AltitudeIds[i]);
+								bool deletedAltitude;
+								DrawBiomeAltitude(unmodifiedAltitude, i, sliderArea, out deletedAltitude);
+								if (deletedAltitude) deletedId = unmodifiedAltitude.Id;
+							}
+							if (!string.IsNullOrEmpty(deletedId)) biome.AltitudeIds.Remove(deletedId);
+						}
+						GUI.EndScrollView();
+
+					}
+					GUI.EndGroup();
 				}
 			}
 			GUILayout.EndArea();
@@ -602,13 +622,46 @@ namespace LunraGames.NoiseMaker
 			GUILayout.EndArea();
 		}
 
-		void DrawBiomeAltitude(Altitude altitude)
+		void DrawBiomeAltitude(Altitude altitude, int index, Rect sliderArea, out bool deleted)
 		{
-			GUILayout.BeginHorizontal();
+			var hint = string.IsNullOrEmpty(altitude.Name) ? AltitudeEditorCacher.Editors[altitude.GetType()].Details.Name+" Altitude" : altitude.Name;
+			var xPos = (Layouts.AltitudesEditorEntryWidth + Layouts.AltitudesEditorEntryDivider) * (float)index;
+
+			var maxFromTop = sliderArea.y + (sliderArea.height * ((1f - altitude.MaxAltitude) / 2f));
+			var minFromTop = sliderArea.y + (sliderArea.height * ((1f - altitude.MinAltitude) / 2f));
+
+			var editButtonArea = new Rect(xPos, sliderArea.y - Layouts.AltitudesEditorTabHeight - Layouts.AltitudesEditorEditHeight, Layouts.AltitudesEditorEntryWidth, Layouts.AltitudesEditorEditHeight);
+			var deleteButtonArea = new Rect(xPos, sliderArea.yMax + Layouts.AltitudesEditorTabHeight, Layouts.AltitudesEditorEntryWidth, Layouts.AltitudesEditorDeleteHeight);
+			var middleSliderArea = new Rect(xPos, maxFromTop, Layouts.AltitudesEditorEntryWidth, minFromTop - maxFromTop);
+
+			var topTabArea = new Rect(middleSliderArea.x, middleSliderArea.y - Layouts.AltitudesEditorTabHeight, Layouts.AltitudesEditorEntryWidth, Layouts.AltitudesEditorTabHeight);
+			var bottomTabArea = new Rect(middleSliderArea.x, middleSliderArea.yMax, Layouts.AltitudesEditorEntryWidth, Layouts.AltitudesEditorTabHeight);
+
+			if (GUI.Button(editButtonArea, new GUIContent(string.Empty, hint), NoiseMakerConfig.Instance.BiomeAltitudeEditWidget)) AltitudeSelection = altitude.Id;
+
+			deleted = (GUI.Button(deleteButtonArea, new GUIContent(string.Empty, "Delete Altitude"), NoiseMakerConfig.Instance.BiomeAltitudeDeleteWidget));
+
+			if (GUI.RepeatButton(middleSliderArea, new GUIContent(string.Empty, "Drag Altitude"), NoiseMakerConfig.Instance.BiomeAltitudeWidgetLine))
 			{
-				
+				var altitudeDelta = (middleSliderArea.center - Event.current.mousePosition).y / sliderArea.height;
+				altitude.MaxAltitude = Mathf.Clamp(altitude.MaxAltitude + altitudeDelta, -1, 1f);
+				altitude.MinAltitude = Mathf.Clamp(altitude.MinAltitude + altitudeDelta, -1f, 1f);
+				Repaint();
 			}
-			GUILayout.BeginHorizontal();
+			if (GUI.RepeatButton(topTabArea, new GUIContent(string.Empty, "Max Altitude"), NoiseMakerConfig.Instance.BiomeAltitudeWidgetTop))
+			{
+				var delta = topTabArea.center - Event.current.mousePosition;
+				altitude.MaxAltitude = Mathf.Clamp(altitude.MaxAltitude + (delta.y / sliderArea.height), -1, 1f);
+				if (altitude.MaxAltitude <= altitude.MinAltitude) altitude.MinAltitude = altitude.MaxAltitude;
+				Repaint();
+			}
+			if (GUI.RepeatButton(bottomTabArea, new GUIContent(string.Empty, "Min Altitude"), NoiseMakerConfig.Instance.BiomeAltitudeWidgetBottom))
+			{
+				var delta = bottomTabArea.center - Event.current.mousePosition;
+				altitude.MinAltitude = Mathf.Clamp(altitude.MinAltitude + (delta.y / sliderArea.height), -1, 1f);
+				if (altitude.MaxAltitude <= altitude.MinAltitude) altitude.MaxAltitude = altitude.MinAltitude;
+				Repaint();
+			}
 		}
 
 		bool DrawSelectedEditorHeader(bool active, Rect area, Texture2D icon, string headerTitle)
