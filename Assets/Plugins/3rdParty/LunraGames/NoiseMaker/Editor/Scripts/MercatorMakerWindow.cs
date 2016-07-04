@@ -29,6 +29,8 @@ namespace LunraGames.NoiseMaker
 			public const float SelectedEditorsHeaderHeight = SelectedEditorsMinimizedWidth;
 			public const float SelectedEditorsMaximizedWidthOffset = 2f * (SelectedEditorsDivider + SelectedEditorsMinimizedWidth);
 
+			public const float ConvertToPrefabButtonWidth = 150f;
+
 			public const float AltitudesEditorOffsetY = 42f;
 			public const float AltitudesEditorEntryDivider = 2f;
 
@@ -438,7 +440,7 @@ namespace LunraGames.NoiseMaker
 						GUILayout.Label(editorEntry.Details.Description+".");
 						if (string.IsNullOrEmpty(domain.Name))
 						{
-							if (GUILayout.Button("Convert Domain to Prefab"))
+							if (GUILayout.Button("Convert Domain to Prefab", GUILayout.Width(Layouts.ConvertToPrefabButtonWidth)))
 							{
 								TextDialogPopup.Show(
 									"Convert Domain to Prefab", 
@@ -452,7 +454,7 @@ namespace LunraGames.NoiseMaker
 								);
 							}
 						}
-						else if (GUILayout.Button("Rename Domain"))
+						else if (GUILayout.Button("Rename Domain", GUILayout.Width(Layouts.ConvertToPrefabButtonWidth)))
 						{
 							TextDialogPopup.Show(
 								"Rename Domain", 
@@ -507,6 +509,8 @@ namespace LunraGames.NoiseMaker
 			}
 			GUILayout.EndArea();
 
+			var biomePreview = biome == null ? null : BiomeEditor.GetPreview(Mercator, domain, biome, PreviewModule);
+
 			GUI.color = showBiome ? Color.white : GUI.color.NewV(0.7f);
 			GUILayout.BeginArea(biomeArea, GUI.skin.box);
 			{
@@ -517,7 +521,7 @@ namespace LunraGames.NoiseMaker
 						GUILayout.Label("Add and link Altitudes to populate this Biome.");
 						if (string.IsNullOrEmpty(biome.Name))
 						{
-							if (GUILayout.Button("Convert Biome to Prefab"))
+							if (GUILayout.Button("Convert Biome to Prefab", GUILayout.Width(Layouts.ConvertToPrefabButtonWidth)))
 							{
 								TextDialogPopup.Show(
 									"Convert Biome to Prefab", 
@@ -531,7 +535,7 @@ namespace LunraGames.NoiseMaker
 								);
 							}
 						}
-						else if (GUILayout.Button("Rename Biome"))
+						else if (GUILayout.Button("Rename Biome", GUILayout.Width(Layouts.ConvertToPrefabButtonWidth)))
 						{
 							TextDialogPopup.Show(
 								"Rename Biome", 
@@ -555,28 +559,31 @@ namespace LunraGames.NoiseMaker
 					var altitudes = Mercator.Altitudes.Where(a => !string.IsNullOrEmpty(a.Name)).OrderBy(a => a.Name).ToList();
 					foreach (var orderedAltitude in altitudes) altitudeOptions.Add(orderedAltitude.Name);
 
-
-					var selected = EditorGUILayout.Popup(0, altitudeOptions.ToArray());
-
-					if (1 < selected && selected != existingIndex) 
+					GUILayout.BeginHorizontal();
 					{
-						if (selected < existingIndex)
+						var selected = EditorGUILayout.Popup(0, altitudeOptions.ToArray());
+
+						if (1 < selected && selected != existingIndex) 
 						{
-							// Creating a new altitude.
-							altitude = Activator.CreateInstance(altitudeEditors.ToList()[selected - 2].Details.Target) as Altitude;
-							altitude.Id = Guid.NewGuid().ToString();
-							Mercator.Altitudes.Add(altitude);
-							biome.AltitudeIds.Add(altitude.Id);
-						}
-						else
-						{
-							// Linking an existing altitude.
-							var existingAltitude = altitudes[selected - existingIndex];
-							Debug.Log("Linking "+existingAltitude.Name);
-							if (biome.AltitudeIds.Contains(existingAltitude.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "The Altitude \""+existingAltitude.Name+"\" already exists in this Biome.", "Okay");
-							else biome.AltitudeIds.Add(existingAltitude.Id);
+							if (selected < existingIndex)
+							{
+								// Creating a new altitude.
+								altitude = Activator.CreateInstance(altitudeEditors.ToList()[selected - 2].Details.Target) as Altitude;
+								altitude.Id = Guid.NewGuid().ToString();
+								Mercator.Altitudes.Add(altitude);
+								biome.AltitudeIds.Add(altitude.Id);
+							}
+							else
+							{
+								// Linking an existing altitude.
+								var existingAltitude = altitudes[selected - existingIndex];
+								Debug.Log("Linking "+existingAltitude.Name);
+								if (biome.AltitudeIds.Contains(existingAltitude.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "The Altitude \""+existingAltitude.Name+"\" already exists in this Biome.", "Okay");
+								else biome.AltitudeIds.Add(existingAltitude.Id);
+							}
 						}
 					}
+					GUILayout.EndHorizontal();
 
 					var biomeAltitudesArea = new Rect(4f, Layouts.AltitudesEditorOffsetY, biomeArea.width - 8f, biomeArea.height - Layouts.AltitudesEditorOffsetY - 4f);
 					GUI.BeginGroup(biomeAltitudesArea);
@@ -597,7 +604,7 @@ namespace LunraGames.NoiseMaker
 							{
 								var unmodifiedAltitude = Mercator.Altitudes.FirstOrDefault(a => a.Id == biome.AltitudeIds[i]);
 								bool deletedAltitude;
-								DrawBiomeAltitude(unmodifiedAltitude, i, sliderArea, out deletedAltitude);
+								DrawBiomeAltitude(unmodifiedAltitude, i, sliderArea, ref biomePreview.Stale, out deletedAltitude);
 								if (deletedAltitude) deletedId = unmodifiedAltitude.Id;
 							}
 							if (!string.IsNullOrEmpty(deletedId)) biome.AltitudeIds.Remove(deletedId);
@@ -617,12 +624,19 @@ namespace LunraGames.NoiseMaker
 				{
 					var altitudeEditor = altitudeEditors.FirstOrDefault(e => e.Details.Target == altitude.GetType());
 					GUILayout.Label(altitudeEditor.Details.Description+".");
+					altitudeEditor.Editor.Draw(altitude, ref biomePreview.Stale);
 				}
 			}
 			GUILayout.EndArea();
+
+			if ((showBiome || showAltitude) && biomePreview != null)
+			{
+				if (biomePreview.Stale) PreviewUpdating = true;
+				PreviewTexture = biomePreview.Preview;
+			}
 		}
 
-		void DrawBiomeAltitude(Altitude altitude, int index, Rect sliderArea, out bool deleted)
+		void DrawBiomeAltitude(Altitude altitude, int index, Rect sliderArea, ref bool changed, out bool deleted)
 		{
 			var hint = string.IsNullOrEmpty(altitude.Name) ? AltitudeEditorCacher.Editors[altitude.GetType()].Details.Name+" Altitude" : altitude.Name;
 			var xPos = (Layouts.AltitudesEditorEntryWidth + Layouts.AltitudesEditorEntryDivider) * (float)index;
@@ -637,7 +651,10 @@ namespace LunraGames.NoiseMaker
 			var topTabArea = new Rect(middleSliderArea.x, middleSliderArea.y - Layouts.AltitudesEditorTabHeight, Layouts.AltitudesEditorEntryWidth, Layouts.AltitudesEditorTabHeight);
 			var bottomTabArea = new Rect(middleSliderArea.x, middleSliderArea.yMax, Layouts.AltitudesEditorEntryWidth, Layouts.AltitudesEditorTabHeight);
 
-			if (GUI.Button(editButtonArea, new GUIContent(string.Empty, hint), NoiseMakerConfig.Instance.BiomeAltitudeEditWidget)) AltitudeSelection = altitude.Id;
+			if (GUI.Button(editButtonArea, new GUIContent(string.Empty, hint), NoiseMakerConfig.Instance.BiomeAltitudeEditWidget))
+			{
+				AltitudeSelection = altitude.Id;
+			}
 
 			deleted = (GUI.Button(deleteButtonArea, new GUIContent(string.Empty, "Delete Altitude"), NoiseMakerConfig.Instance.BiomeAltitudeDeleteWidget));
 
@@ -646,6 +663,7 @@ namespace LunraGames.NoiseMaker
 				var altitudeDelta = (middleSliderArea.center - Event.current.mousePosition).y / sliderArea.height;
 				altitude.MaxAltitude = Mathf.Clamp(altitude.MaxAltitude + altitudeDelta, -1, 1f);
 				altitude.MinAltitude = Mathf.Clamp(altitude.MinAltitude + altitudeDelta, -1f, 1f);
+				changed = true;
 				Repaint();
 			}
 			if (GUI.RepeatButton(topTabArea, new GUIContent(string.Empty, "Max Altitude"), NoiseMakerConfig.Instance.BiomeAltitudeWidgetTop))
@@ -653,6 +671,7 @@ namespace LunraGames.NoiseMaker
 				var delta = topTabArea.center - Event.current.mousePosition;
 				altitude.MaxAltitude = Mathf.Clamp(altitude.MaxAltitude + (delta.y / sliderArea.height), -1, 1f);
 				if (altitude.MaxAltitude <= altitude.MinAltitude) altitude.MinAltitude = altitude.MaxAltitude;
+				changed = true;
 				Repaint();
 			}
 			if (GUI.RepeatButton(bottomTabArea, new GUIContent(string.Empty, "Min Altitude"), NoiseMakerConfig.Instance.BiomeAltitudeWidgetBottom))
@@ -660,6 +679,7 @@ namespace LunraGames.NoiseMaker
 				var delta = bottomTabArea.center - Event.current.mousePosition;
 				altitude.MinAltitude = Mathf.Clamp(altitude.MinAltitude + (delta.y / sliderArea.height), -1, 1f);
 				if (altitude.MaxAltitude <= altitude.MinAltitude) altitude.MaxAltitude = altitude.MinAltitude;
+				changed = true;
 				Repaint();
 			}
 		}
@@ -893,6 +913,8 @@ namespace LunraGames.NoiseMaker
 		public static string ActiveSavePath { get { return Instance == null || StringExtensions.IsNullOrWhiteSpace(Instance.SavePath) ? null : Instance.SavePath; } }
 
 		public static string ActiveDomainId { get { return Instance == null ? null : Instance.DomainSelection; } }
+
+		public static string ActiveBiomeId { get { return Instance == null ? null : Instance.BiomeSelection; } }
 
 		public static void RepaintNow()
 		{
