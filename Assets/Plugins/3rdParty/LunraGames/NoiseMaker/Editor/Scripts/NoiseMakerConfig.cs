@@ -113,5 +113,25 @@ namespace LunraGames.NoiseMaker
 		[SerializeField]
 		Texture2D DomainLatitudeWidgetLinePeasant;
 		#endregion
+
+		#region Biome editors
+		public GUIStyle BiomeAltitudeWidgetTop { get { return EditorGUIUtility.isProSkin ? BiomeAltitudeWidgetTopPro : BiomeAltitudeWidgetTopPeasant; } }
+		[SerializeField]
+		GUIStyle BiomeAltitudeWidgetTopPro;
+		[SerializeField]
+		GUIStyle BiomeAltitudeWidgetTopPeasant;
+
+		public GUIStyle BiomeAltitudeWidgetBottom { get { return EditorGUIUtility.isProSkin ? BiomeAltitudeWidgetBottomPro : BiomeAltitudeWidgetBottomPeasant; } }
+		[SerializeField]
+		GUIStyle BiomeAltitudeWidgetBottomPro;
+		[SerializeField]
+		GUIStyle BiomeAltitudeWidgetBottomPeasant;
+
+		public GUIStyle BiomeAltitudeWidgetLine { get { return EditorGUIUtility.isProSkin ? BiomeAltitudeWidgetLinePro : BiomeAltitudeWidgetLinePeasant; } }
+		[SerializeField]
+		GUIStyle BiomeAltitudeWidgetLinePro;
+		[SerializeField]
+		GUIStyle BiomeAltitudeWidgetLinePeasant;
+		#endregion
 	}
 }

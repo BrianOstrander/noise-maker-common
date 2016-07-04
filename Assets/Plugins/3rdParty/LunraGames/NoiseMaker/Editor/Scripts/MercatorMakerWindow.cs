@@ -28,6 +28,8 @@ namespace LunraGames.NoiseMaker
 			public const float SelectedEditorsMinimizedWidth = 28f;
 			public const float SelectedEditorsHeaderHeight = SelectedEditorsMinimizedWidth;
 			public const float SelectedEditorsMaximizedWidthOffset = 2f * (SelectedEditorsDivider + SelectedEditorsMinimizedWidth);
+
+			public const float AltitudesEditorHeight = 316f;
 		}
 
 		enum States
@@ -62,6 +64,8 @@ namespace LunraGames.NoiseMaker
 		string AltitudeSelection;
 		[SerializeField]
 		List<bool> EditorFoldouts = new List<bool>();
+		[SerializeField]
+		Vector2 BiomeScrollPosition = Vector2.zero;
 
 		Graph Graph;
 		int PreviewSelected;
@@ -567,6 +571,21 @@ namespace LunraGames.NoiseMaker
 							else biome.AltitudeIds.Add(existingAltitude.Id);
 						}
 					}
+
+					BiomeScrollPosition = GUILayout.BeginScrollView(new Vector2(BiomeScrollPosition.x, 0f));
+					{
+						GUILayout.BeginHorizontal();
+						{
+							var altitudesInBiome = Mercator.Altitudes.Where(a => biome.AltitudeIds.Contains(a.Id));
+							foreach (var currAltitude in altitudesInBiome)
+							{
+								
+							}	
+						}
+						GUILayout.EndHorizontal();
+					}
+					GUILayout.EndScrollView();
+
 				}
 			}
 			GUILayout.EndArea();
@@ -581,6 +600,15 @@ namespace LunraGames.NoiseMaker
 				}
 			}
 			GUILayout.EndArea();
+		}
+
+		void DrawBiomeAltitude(Altitude altitude)
+		{
+			GUILayout.BeginHorizontal();
+			{
+				
+			}
+			GUILayout.BeginHorizontal();
 		}
 
 		bool DrawSelectedEditorHeader(bool active, Rect area, Texture2D icon, string headerTitle)
