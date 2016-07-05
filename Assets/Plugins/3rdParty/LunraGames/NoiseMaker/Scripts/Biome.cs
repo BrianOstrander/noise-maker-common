@@ -32,7 +32,8 @@ namespace LunraGames.NoiseMaker
 			{
 				var lowest = GetLowest(mercator);
 
-				if (altitude < lowest.MinAltitude) return lowest.GetColor(latitude, longitude);
+				if (lowest == null) return Color.magenta;
+				else if (altitude < lowest.MinAltitude) return lowest.GetColor(latitude, longitude);
 				else return GetHighest(mercator).GetColor(latitude, longitude);
 			}
 			else if (altitudes.Count == 1) return altitudes[0].GetColor(latitude, longitude);

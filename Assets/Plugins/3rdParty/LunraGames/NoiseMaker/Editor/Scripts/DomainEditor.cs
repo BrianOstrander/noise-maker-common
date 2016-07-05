@@ -63,10 +63,15 @@ namespace LunraGames.NoiseMaker
 						pixels, 
 						() =>
 						{
-							if (MercatorMakerWindow.PreviewUpdating && MercatorMakerWindow.ActiveDomainId == preview.Id) MercatorMakerWindow.PreviewUpdating = false;
+							//if (MercatorMakerWindow.PreviewUpdating && MercatorMakerWindow.ActiveDomainId == preview.Id) MercatorMakerWindow.PreviewUpdating = false;
+							MercatorMakerWindow.PreviewUpdating = false;
 							MercatorMakerWindow.QueueRepaint();
 						},
-						MercatorMakerWindow.QueueRepaint
+						() =>
+						{
+							MercatorMakerWindow.PreviewUpdating = true;
+							MercatorMakerWindow.QueueRepaint();
+						}
 					)
 				);
 
@@ -81,5 +86,11 @@ namespace LunraGames.NoiseMaker
 		}
 
 		public abstract Domain Draw(Mercator mercator, Domain domain, object module, out DomainPreview preview);	
+
+		public static long LastUpdated(string id)
+		{
+			var preview = Previews.FirstOrDefault(p => p.Id == id);
+			return preview == null ? long.MinValue : preview.LastUpdated;
+		}
 	}
 }

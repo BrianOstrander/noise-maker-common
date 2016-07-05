@@ -34,6 +34,7 @@ namespace LunraGames.NoiseMaker
 					var id = biome.AltitudeIds[i];
 					preview.Stale = preview.Stale || id != preview.LastSourceIds[i];
 				}
+				preview.Stale = preview.Stale || preview.LastUpdated < DomainEditor.LastUpdated(domain.Id);
 			}
 
 			if (preview.Stale)
@@ -70,10 +71,15 @@ namespace LunraGames.NoiseMaker
 						pixels, 
 						() =>
 						{
-							if (MercatorMakerWindow.PreviewUpdating && MercatorMakerWindow.ActiveDomainId == preview.DomainId && MercatorMakerWindow.ActiveBiomeId == preview.Id) MercatorMakerWindow.PreviewUpdating = false;
+							//if (MercatorMakerWindow.PreviewUpdating && MercatorMakerWindow.ActiveDomainId == preview.DomainId && MercatorMakerWindow.ActiveBiomeId == preview.Id) MercatorMakerWindow.PreviewUpdating = false;
+							MercatorMakerWindow.PreviewUpdating = false;
 							MercatorMakerWindow.QueueRepaint();
 						},
-						MercatorMakerWindow.QueueRepaint
+						() =>
+						{
+							MercatorMakerWindow.PreviewUpdating = true;
+							MercatorMakerWindow.QueueRepaint();
+						}
 					)
 				);
 

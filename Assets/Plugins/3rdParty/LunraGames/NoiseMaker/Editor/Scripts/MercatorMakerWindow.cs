@@ -420,6 +420,7 @@ namespace LunraGames.NoiseMaker
 			GUI.color = showAltitude ? Color.white : (showDomain ? GUI.color.NewV(0.75f) : GUI.color.NewV(0.85f));
 			if (DrawSelectedEditorHeader(showAltitude, altitudeHeaderArea, NoiseMakerConfig.Instance.AltitudeIcon, altitude == null ? "Altitude" : (string.IsNullOrEmpty(altitude.Name) ? altitudeEditors.FirstOrDefault(e => e.Details.Target == altitude.GetType()).Details.Name+" Altitude" : altitude.Name+" Altitude")))
 			{
+				PreviewUpdating = false;
 				if (showBiome) UnityEditor.EditorUtility.DisplayDialog("Select Altitude", "Select or create a an altitude from the biome panel first.", "Okay");
 				else
 				{
@@ -581,6 +582,7 @@ namespace LunraGames.NoiseMaker
 								if (biome.AltitudeIds.Contains(existingAltitude.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "The Altitude \""+existingAltitude.Name+"\" already exists in this Biome.", "Okay");
 								else biome.AltitudeIds.Add(existingAltitude.Id);
 							}
+							biomePreview.Stale = true;
 						}
 					}
 					GUILayout.EndHorizontal();
@@ -657,6 +659,7 @@ namespace LunraGames.NoiseMaker
 			}
 
 			deleted = (GUI.Button(deleteButtonArea, new GUIContent(string.Empty, "Delete Altitude"), NoiseMakerConfig.Instance.BiomeAltitudeDeleteWidget));
+			changed = changed || deleted;
 
 			if (GUI.RepeatButton(middleSliderArea, new GUIContent(string.Empty, "Drag Altitude"), NoiseMakerConfig.Instance.BiomeAltitudeWidgetLine))
 			{
