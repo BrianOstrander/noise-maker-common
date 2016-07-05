@@ -12,7 +12,6 @@ namespace LunraGames.NoiseMaker
 		public override Altitude Draw(Altitude altitude, ref bool changed)
 		{
 			var color = altitude as ColorAltitude;
-
 			var wasColor = color.Color;
 			color.Color = EditorGUILayout.ColorField("Color", color.Color);
 			changed = changed || wasColor != color.Color;

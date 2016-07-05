@@ -626,7 +626,14 @@ namespace LunraGames.NoiseMaker
 				{
 					var altitudeEditor = altitudeEditors.FirstOrDefault(e => e.Details.Target == altitude.GetType());
 					GUILayout.Label(altitudeEditor.Details.Description+".");
-					altitudeEditor.Editor.Draw(altitude, ref biomePreview.Stale);
+					try
+					{
+						altitudeEditor.Editor.Draw(altitude, ref biomePreview.Stale);
+					}
+					catch (Exception e)
+					{
+						if (e.GetType() != typeof(ExitGUIException)) Debug.LogException(e);
+					}
 				}
 			}
 			GUILayout.EndArea();
