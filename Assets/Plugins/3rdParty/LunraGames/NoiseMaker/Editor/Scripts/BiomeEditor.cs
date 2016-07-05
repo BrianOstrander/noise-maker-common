@@ -71,7 +71,6 @@ namespace LunraGames.NoiseMaker
 						pixels, 
 						() =>
 						{
-							//if (MercatorMakerWindow.PreviewUpdating && MercatorMakerWindow.ActiveDomainId == preview.DomainId && MercatorMakerWindow.ActiveBiomeId == preview.Id) MercatorMakerWindow.PreviewUpdating = false;
 							MercatorMakerWindow.PreviewUpdating = false;
 							MercatorMakerWindow.QueueRepaint();
 						},

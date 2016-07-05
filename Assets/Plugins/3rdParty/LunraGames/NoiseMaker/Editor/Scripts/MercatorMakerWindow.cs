@@ -77,8 +77,8 @@ namespace LunraGames.NoiseMaker
 		Vector2 BiomeScrollPosition = Vector2.zero;
 
 		Graph Graph;
-		int PreviewSelected;
 		Dictionary<string, Action<Node<IModule>, Rect, int>> Previews;
+		int PreviewSelected;
 		long PreviewLastUpdated;
 		Texture2D PreviewTexture;
 		Mesh PreviewMesh;
@@ -220,6 +220,7 @@ namespace LunraGames.NoiseMaker
 							PreviewSelected = i;
 							PreviewLastUpdated = 0L;
 							PreviewObjectEditor = null;
+							PreviewTexture = null;
 							PreviewMesh = null;
 						}
 					}
