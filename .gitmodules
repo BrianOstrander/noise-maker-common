@@ -1,0 +1,8 @@
+[submodule "Assets/Plugins/3rdParty/LunraGames/Core"]
+	path = Assets/Plugins/3rdParty/LunraGames/Core
+	url = https://github.com/LunraGames/Core.git
+	branch = master
+[submodule "Assets/Plugins/3rdParty/LunraGames/Interloper"]
+	path = Assets/Plugins/3rdParty/LunraGames/Interloper
+	url = https://github.com/LunraGames/Interloper.git
+	branch = master
