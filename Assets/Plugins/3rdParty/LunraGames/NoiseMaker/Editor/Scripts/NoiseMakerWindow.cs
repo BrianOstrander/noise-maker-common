@@ -181,7 +181,7 @@ namespace LunraGames.NoiseMaker
 							if (!StringExtensions.IsNullOrWhiteSpace(savePath))
 							{
 								// Create default save, add required root node, save it, and open it up for editing.
-								var config = NoiseGraph.CreateInstance<NoiseGraph>();
+								var config = ScriptableObject.CreateInstance<NoiseGraph>();
 								AssetDatabase.CreateAsset(config, savePath);
 								SaveGuid = AssetDatabase.AssetPathToGUID(savePath);
 								Graph = new Graph();

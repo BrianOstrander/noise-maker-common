@@ -61,7 +61,7 @@ namespace LunraGames.NoiseMaker
 								var normalValue = biome.GetColor(latitude, longitude, value, mercator);
 								var highlightedValue = Previewer.Calculate(value, Previewer);
 
-								pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, domain.GetWeight(latitude, longitude, value, mercator)) ? highlightedValue : normalValue;
+								pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, domain.GetWeight(latitude, longitude, value)) ? highlightedValue : normalValue;
 							}
 						}
 					},

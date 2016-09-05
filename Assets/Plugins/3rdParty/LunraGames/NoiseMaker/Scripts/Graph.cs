@@ -115,7 +115,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var root = Root;
 
-			if (root == null) throw new ArgumentNullException("Couldn't find root IModule");
+			if (root == null) throw new NullReferenceException("Couldn't find root IModule");
 
 			var sphere = root is Sphere ? root as Sphere : new Sphere(root);
 

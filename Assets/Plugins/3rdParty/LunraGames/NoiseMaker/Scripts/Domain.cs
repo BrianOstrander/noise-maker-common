@@ -15,14 +15,13 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		public string BiomeId;
 
-		public abstract float GetWeight(float latitude, float longitude, float altitude, Mercator mercator);
+		public abstract float GetWeight(float latitude, float longitude, float altitude);
 
-		public abstract Color GetColor(float latitude, float longitude, float altitude, Mercator mercator);
+		public abstract Color GetColor(float latitude, float longitude, float altitude, Mercator mercator, out float weight);
 
 		public Biome GetBiome(Mercator mercator)
 		{
-			if (string.IsNullOrEmpty(BiomeId)) return null;
-			else return mercator.Biomes.FirstOrDefault(b => b.Id == BiomeId);
+			return string.IsNullOrEmpty(BiomeId) ? null : mercator.Biomes.FirstOrDefault(b => b.Id == BiomeId);
 		}
 	}
 }
