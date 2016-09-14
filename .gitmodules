@@ -6,3 +6,7 @@
 	path = Assets/Plugins/3rdParty/LunraGames/Interloper
 	url = https://github.com/LunraGames/Interloper.git
 	branch = master
+[submodule "Assets/Plugins/3rdParty/LunraGames/Narcissus"]
+	path = Assets/Plugins/3rdParty/LunraGames/Narcissus
+	url = https://github.com/LunraGames/Narcissus.git
+	branch = master
