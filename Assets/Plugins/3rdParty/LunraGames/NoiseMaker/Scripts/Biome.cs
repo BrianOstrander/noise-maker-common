@@ -38,17 +38,37 @@ namespace LunraGames.NoiseMaker
 			}
 			else if (altitudes.Count == 1) return altitudes[0].GetColor(latitude, longitude);
 
-			var firstAlt = altitudes[0];
-			var lastAlt = altitudes[1];
+			altitudes.OrderBy(a => Mathf.Abs(((altitude - a.MinAltitude) / (a.MaxAltitude - a.MinAltitude)) - 0.5f));
 
-			var delta = firstAlt.MaxAltitude - lastAlt.MinAltitude;
+			var count = 0f;
+			var scalars = new List<float>();
+			var colors = new List<Color>();
 
-			if (Mathf.Approximately(delta, 0f)) return lastAlt.GetColor(latitude, longitude);
+			foreach (var curr in altitudes) 
+			{
+				var scalar = (altitude - curr.MinAltitude) / (curr.MaxAltitude - curr.MinAltitude); 
+				scalars.Add(scalar);
+				colors.Add(curr.GetColor(latitude, longitude));
+				count++;
+			}
 
-			var deltaProgress = altitude - lastAlt.MinAltitude;
-			var scalar = deltaProgress / delta;
+			var currScalar = scalars.First();
+			var currColor = colors.First();
+			var index = 1;
 
-			return Color.Lerp(firstAlt.GetColor(latitude, longitude), lastAlt.GetColor(latitude, longitude), scalar);
+			while (index < count)
+			{
+				var nextScalar = scalars[index];
+				var nextColor = colors[index];
+
+				var blend = (currScalar + nextScalar) / 2f;
+				currColor = Color.Lerp(currColor, nextColor, blend);
+
+				currScalar = nextScalar;
+				index++;
+			}
+
+			return currColor;
 		}
 
 		Altitude GetHighest(Mercator mercator)
