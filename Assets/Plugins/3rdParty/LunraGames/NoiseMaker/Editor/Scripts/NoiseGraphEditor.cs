@@ -29,8 +29,8 @@ namespace LunraGames.NoiseMaker
 			LastGraphJson = GraphJsonProperty.stringValue;
 			LastPropertiesJson = PropertiesJsonProperty.stringValue;
 
-			Properties = Serialization.DeserializeJson<List<Property>>(PropertiesJsonProperty.stringValue);
-			Graph = Serialization.DeserializeJson<Graph>(GraphJsonProperty.stringValue);
+			Properties = Serialization.DeserializeJson<List<Property>>(PropertiesJsonProperty.stringValue, verbose: true);
+			Graph = Serialization.DeserializeJson<Graph>(GraphJsonProperty.stringValue, verbose: true);
 		}
 
 		public override void OnInspectorGUI()
@@ -66,9 +66,9 @@ namespace LunraGames.NoiseMaker
 				GUILayout.EndHorizontal();
 			}
 
-			if (propertiesChanged || Properties == null) Properties = Serialization.DeserializeJson<List<Property>>(PropertiesJsonProperty.stringValue);
+			if (propertiesChanged || Properties == null) Properties = Serialization.DeserializeJson<List<Property>>(PropertiesJsonProperty.stringValue, verbose: true);
 
-			if (graphChanged || Graph == null) Graph = Serialization.DeserializeJson<Graph>(GraphJsonProperty.stringValue);
+			if (graphChanged || Graph == null) Graph = Serialization.DeserializeJson<Graph>(GraphJsonProperty.stringValue, verbose: true);
 
 			try { DrawProperties(); }
 			catch (Exception e)
@@ -147,8 +147,8 @@ namespace LunraGames.NoiseMaker
 						// Only apply properties to graph if one of them changed.
 						if (changedProperty != null) Graph.Apply(changedProperty);
 
-						var freshGraph = Serialization.SerializeJson(Graph);
-						var freshProperties = Serialization.SerializeJson(Properties);
+						var freshGraph = Serialization.SerializeJson(Graph, true);
+						var freshProperties = Serialization.SerializeJson(Properties, true);
 
 						if (string.IsNullOrEmpty(freshGraph)) throw new Exception("Graph could not be serialized");
 						else if (string.IsNullOrEmpty(freshProperties)) throw new Exception("Properties could not be serialized");

@@ -16,11 +16,11 @@ namespace LunraGames.NoiseMaker
 		{
 			get 
 			{
-				return Serialization.DeserializeJson<Mercator>(MercatorJson);
+				return Serialization.DeserializeJson<Mercator>(MercatorJson, verbose: true);
 			}
 			set
 			{
-				MercatorJson = Serialization.SerializeJson(value);
+				MercatorJson = Serialization.SerializeJson(value, true);
 			}
 		}
 	}

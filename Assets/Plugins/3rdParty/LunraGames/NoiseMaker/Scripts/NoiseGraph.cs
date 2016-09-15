@@ -18,11 +18,11 @@ namespace LunraGames.NoiseMaker
 		{
 			get 
 			{
-				return Serialization.DeserializeJson<Graph>(GraphJson);
+				return Serialization.DeserializeJson<Graph>(GraphJson, verbose: true);
 			}
 			set
 			{
-				GraphJson = Serialization.SerializeJson(value);
+				GraphJson = Serialization.SerializeJson(value, true);
 			}
 		}
 
@@ -34,11 +34,11 @@ namespace LunraGames.NoiseMaker
 		{
 			get 
 			{
-				return Serialization.DeserializeJson<List<Property>>(PropertiesJson);
+				return Serialization.DeserializeJson<List<Property>>(PropertiesJson, verbose: true);
 			}
 			set
 			{
-				PropertiesJson = Serialization.SerializeJson(value);
+				PropertiesJson = Serialization.SerializeJson(value, true);
 			}
 		}
 	}
