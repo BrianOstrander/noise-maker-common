@@ -318,6 +318,9 @@ namespace LunraGames.NoiseMaker
 								var domain = Activator.CreateInstance(editorEntry.Details.Target) as Domain;
 								domain.Id = Guid.NewGuid().ToString();
 								Mercator.Domains.Add(domain);
+								DomainSelection = domain.Id;
+								BiomeSelection = null;
+								AltitudeSelection = null;
 							}
 
 							int? deletedIndex = null;
@@ -340,9 +343,15 @@ namespace LunraGames.NoiseMaker
 									if (alreadySelected) 
 									{
 										DomainSelection = null;
-										PreviewLastUpdated = DateTime.Now.Ticks;
+										BiomeSelection = null;
+										AltitudeSelection = null;
 									}
-									else DomainSelection = unmodifiedDomain.Id;
+									else 
+									{
+										DomainSelection = unmodifiedDomain.Id;
+										BiomeSelection = null;
+										AltitudeSelection = null;
+									}
 								}
 								if (wasDeleted) 
 								{

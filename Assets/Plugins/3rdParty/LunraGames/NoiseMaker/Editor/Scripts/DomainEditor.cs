@@ -14,7 +14,7 @@ namespace LunraGames.NoiseMaker
 
 		public static VisualizationPreview Previewer = NodeEditor.Visualizations[0];
 
-		protected static List<DomainPreview> Previews = new List<DomainPreview>();
+		static List<DomainPreview> Previews = new List<DomainPreview>();
 
 		protected DomainPreview GetPreview(Mercator mercator, Domain domain, object module)
 		{

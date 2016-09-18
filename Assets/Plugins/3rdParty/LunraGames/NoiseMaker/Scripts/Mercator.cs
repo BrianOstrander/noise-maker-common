@@ -61,10 +61,10 @@ namespace LunraGames.NoiseMaker
 		// todo: support more than one latitude.
 		public Color GetSphereColor(float latitude, float longitude, float altitude)
 		{
-			if (Biomes == null || Biomes.Count == 0) return Color.magenta;
-
-			var lat = Biomes.FirstOrDefault();
-			return lat.GetColor(latitude, longitude, altitude, this);
+			if (Domains == null || Domains.Count == 0 || Biomes == null || Biomes.Count == 0 || Altitudes == null || Altitudes.Count == 0) return Color.magenta;
+			
+			var biome = Biomes.FirstOrDefault();
+			return biome.GetColor(latitude, longitude, altitude, this);
 		}
 
 		public void GetSphereColors(int width, int height, Sphere sphere, ref Color[] colors)

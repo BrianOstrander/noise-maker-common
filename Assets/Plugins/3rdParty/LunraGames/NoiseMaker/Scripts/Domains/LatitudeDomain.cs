@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 		public override float GetWeight (float latitude, float longitude, float altitude)
 		{
 			if (latitude < MinLatitude || MaxLatitude < latitude) return 0f;
-			else return 1f;
+			return 1f;
 		}
 
 		public override Color GetColor (float latitude, float longitude, float altitude, Mercator mercator, out float weight)

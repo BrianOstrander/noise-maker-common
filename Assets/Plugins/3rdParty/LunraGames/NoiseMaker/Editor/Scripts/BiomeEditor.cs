@@ -79,7 +79,8 @@ namespace LunraGames.NoiseMaker
 							MercatorMakerWindow.PreviewUpdating = true;
 							MercatorMakerWindow.QueueRepaint();
 						}
-					)
+					),
+					Debug.LogException
 				);
 
 				preview.Stale = false;
