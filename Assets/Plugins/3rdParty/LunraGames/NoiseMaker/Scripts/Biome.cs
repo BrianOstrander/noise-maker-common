@@ -15,28 +15,15 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		public List<string> AltitudeIds = new List<string>();
 
-		List<Altitude> _Altitudes;
-		List<Altitude> GetAltitudes(Mercator mercator)
-		{
-			if (_Altitudes == null) _Altitudes = mercator.Altitudes.FindAll(a => AltitudeIds.Contains(a.Id));
-			return _Altitudes;
-		}
-
-
 		public Color GetColor(float latitude, float longitude, float altitude, Mercator mercator)
 		{
-			var allAltitudes = GetAltitudes(mercator);
-			var altitudes = allAltitudes.Where(a => a.MinAltitude <= altitude && altitude <= a.MaxAltitude).ToList();
+			//var allAltitudes = GetAltitudes(mercator);
+			// todo: change this to actually get the bioms altitudes, not every one that falls somewhere
+			//var altitudes = allAltitudes.Where(a => a.MinAltitude <= altitude && altitude <= a.MaxAltitude).ToList();
+			var altitudes = mercator.Altitudes.Where (a => AltitudeIds.Contains (a.Id)).ToList();
 
-			if (altitudes.Count == 0)
-			{
-				var lowest = GetLowest(mercator);
-
-				if (lowest == null) return Color.magenta;
-				else if (altitude < lowest.MinAltitude) return lowest.GetColor(latitude, longitude);
-				else return GetHighest(mercator).GetColor(latitude, longitude);
-			}
-			else if (altitudes.Count == 1) return altitudes[0].GetColor(latitude, longitude);
+			if (altitudes.Count == 0) return Color.magenta;
+			if (altitudes.Count == 1) return altitudes[0].GetColor(latitude, longitude);
 
 			altitudes.OrderBy(a => Mathf.Abs(((altitude - a.MinAltitude) / (a.MaxAltitude - a.MinAltitude)) - 0.5f));
 
@@ -69,32 +56,6 @@ namespace LunraGames.NoiseMaker
 			}
 
 			return currColor;
-		}
-
-		Altitude GetHighest(Mercator mercator)
-		{
-			var allAltitudes = GetAltitudes(mercator);
-
-			Altitude highest = null;
-			foreach (var altitude in allAltitudes)
-			{	
-				var unmodifiedAltitude = altitude;
-				if (highest == null || highest.MaxAltitude <= unmodifiedAltitude.MaxAltitude) highest = unmodifiedAltitude;
-			}
-			return highest;
-		}
-
-		Altitude GetLowest(Mercator mercator)
-		{
-			var allAltitudes = GetAltitudes(mercator);
-
-			Altitude lowest = null;
-			foreach (var altitude in allAltitudes)
-			{
-				var unmodifiedAltitude = altitude;
-				if (lowest == null || unmodifiedAltitude.MinAltitude <= lowest.MinAltitude) lowest = unmodifiedAltitude;
-			}
-			return lowest;
 		}
 	}
 }

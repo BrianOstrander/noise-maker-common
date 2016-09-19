@@ -163,7 +163,7 @@ namespace LunraGames.NoiseMaker
 							var savePath = UnityEditor.EditorUtility.SaveFilePanelInProject("New Mercator Map", "Mercator", "asset", null);
 							if (!StringExtensions.IsNullOrWhiteSpace(savePath))
 							{
-								var config = MercatorMap.CreateInstance<MercatorMap>();
+								var config = CreateInstance<MercatorMap>();
 								AssetDatabase.CreateAsset(config, savePath);
 								SaveGuid = AssetDatabase.AssetPathToGUID(savePath);
 								Mercator = new Mercator();
@@ -870,6 +870,12 @@ namespace LunraGames.NoiseMaker
 			SaveGuid = null;
 			Mercator = null;
 			DomainSelection = null;
+
+			PreviewLastUpdated = 0L;
+			PreviewTexture = null;
+			PreviewMesh = null;
+			PreviewObjectEditor = null;
+			PreviewModule = null;
 		}
 
 		void Save()
