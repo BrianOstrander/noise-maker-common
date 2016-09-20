@@ -10,3 +10,7 @@
 	path = Assets/Plugins/3rdParty/LunraGames/Narcissus
 	url = https://github.com/LunraGames/Narcissus.git
 	branch = master
+[submodule "Assets/Plugins/3rdParty/LunraGames/Singletonnes"]
+	path = Assets/Plugins/3rdParty/LunraGames/Singletonnes
+	url = https://github.com/LunraGames/Singletonnes.git
+	branch = master
