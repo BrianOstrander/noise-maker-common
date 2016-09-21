@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1cf7838657b8494db8d0753cd21b787, type: 3}
-  m_Name: LunraGamesNoiseMakerSettings
+  m_Name: NoiseMakerConfig
   m_EditorClassIdentifier: 
   LoadingPinwheels:
   - {fileID: 2800000, guid: 8b15f23f8680c46a9b19756043f16c25, type: 3}
