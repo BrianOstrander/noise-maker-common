@@ -62,9 +62,24 @@ namespace LunraGames.NoiseMaker
 		public Color GetSphereColor(float latitude, float longitude, float altitude)
 		{
 			if (Domains == null || Domains.Count == 0 || Biomes == null || Biomes.Count == 0 || Altitudes == null || Altitudes.Count == 0) return Color.magenta;
+			if (Domains.Count == 1) return Domains.First().GetColor(latitude, longitude, altitude, this);
+			var orderedDomains = Domains.OrderByDescending(d => d.GetWeight(latitude, longitude, altitude)).ToArray();
+			var first = orderedDomains[0];
+			var firstWeight = first.GetWeight(latitude, longitude, altitude);
+			var firstColor = first.GetColor(latitude, longitude, altitude, this);
 
-			var biome = Biomes.FirstOrDefault();
-			return biome.GetColor(latitude, longitude, altitude, this);
+			if (Mathf.Approximately(firstWeight, 0f)) return firstColor;
+
+			var second = orderedDomains[1];
+			var secondWeight = second.GetWeight(latitude, longitude, altitude);
+
+			if (Mathf.Approximately(secondWeight, 0f)) return firstColor;
+
+			var secondColor = second.GetColor(latitude, longitude, altitude, this);
+
+			var scalar = 0.5f - (((firstWeight - secondWeight) / firstWeight) * 0.5f);
+
+			return Color.Lerp(firstColor, secondColor, scalar);
 		}
 
 		public void GetSphereColors(int width, int height, Sphere sphere, ref Color[] colors)

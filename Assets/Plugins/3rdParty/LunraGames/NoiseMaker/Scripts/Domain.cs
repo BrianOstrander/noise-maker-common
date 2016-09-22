@@ -17,7 +17,7 @@ namespace LunraGames.NoiseMaker
 
 		public abstract float GetWeight(float latitude, float longitude, float altitude);
 
-		public abstract Color GetColor(float latitude, float longitude, float altitude, Mercator mercator, out float weight);
+		public abstract Color GetColor(float latitude, float longitude, float altitude, Mercator mercator);
 
 		public Biome GetBiome(Mercator mercator)
 		{
