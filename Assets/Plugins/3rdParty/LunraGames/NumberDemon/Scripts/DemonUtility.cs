@@ -1,5 +1,6 @@
 ﻿using System;
-using UnityRandom = UnityEngine.Random;
+using UnityEngine;
+using Random = System.Random;
 
 namespace LunraGames.NumberDemon
 {
@@ -123,5 +124,9 @@ namespace LunraGames.NumberDemon
 			if (value < UlongHalfValue) return 0L - (long)(UlongHalfValue - value);
 			else return (long)(value - UlongHalfValue);
 		}
+
+        public static float NextFloat { get { return (float)Generator.NextDouble(); } }
+
+        public static Color NextColor { get { return new Color(NextFloat, NextFloat, NextFloat); } }
 	}
 }

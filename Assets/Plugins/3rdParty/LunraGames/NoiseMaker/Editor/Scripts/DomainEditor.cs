@@ -16,7 +16,7 @@ namespace LunraGames.NoiseMaker
 
 		static List<DomainPreview> Previews = new List<DomainPreview>();
 
-		protected DomainPreview GetPreview(Mercator mercator, Domain domain, object module)
+		protected DomainPreview GetPreview(Domain domain, object module)
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == domain.Id);
 
@@ -84,7 +84,7 @@ namespace LunraGames.NoiseMaker
 			return preview;
 		}
 
-		public abstract Domain Draw(Mercator mercator, Domain domain, object module, out DomainPreview preview);	
+		public abstract Domain Draw(Domain domain, object module, out DomainPreview preview);	
 
 		public static long LastUpdated(string id)
 		{

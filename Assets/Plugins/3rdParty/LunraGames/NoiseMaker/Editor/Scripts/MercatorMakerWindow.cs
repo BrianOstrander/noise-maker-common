@@ -342,6 +342,7 @@ namespace LunraGames.NoiseMaker
 								{
 									if (alreadySelected) 
 									{
+                                        PreviewLastUpdated = 0L;
 										DomainSelection = null;
 										BiomeSelection = null;
 										AltitudeSelection = null;
@@ -482,7 +483,7 @@ namespace LunraGames.NoiseMaker
 					GUILayout.EndHorizontal();
 
 					DomainPreview preview;
-					editorEntry.Editor.Draw(Mercator, domain, PreviewModule, out preview);
+					editorEntry.Editor.Draw(domain, PreviewModule, out preview);
 					if (preview.Stale) PreviewUpdating = true;
 					PreviewTexture = preview.Preview;
 
@@ -836,7 +837,7 @@ namespace LunraGames.NoiseMaker
 				PreviewMesh.vertices = verts;
 
 				PreviewUpdating = true;
-				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, map: Mercator, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == sphere) ? false : PreviewUpdating);
+                PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, map: Mercator, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == sphere) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 

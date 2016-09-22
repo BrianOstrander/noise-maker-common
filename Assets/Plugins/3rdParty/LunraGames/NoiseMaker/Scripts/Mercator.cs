@@ -62,7 +62,7 @@ namespace LunraGames.NoiseMaker
 		public Color GetSphereColor(float latitude, float longitude, float altitude)
 		{
 			if (Domains == null || Domains.Count == 0 || Biomes == null || Biomes.Count == 0 || Altitudes == null || Altitudes.Count == 0) return Color.magenta;
-			
+
 			var biome = Biomes.FirstOrDefault();
 			return biome.GetColor(latitude, longitude, altitude, this);
 		}
@@ -80,8 +80,7 @@ namespace LunraGames.NoiseMaker
 					var lat = SphereUtils.GetLatitude(y, height);
 					var lon = SphereUtils.GetLongitude(x, width);
 					var value = (float)sphere.GetValue((double)lat, (double)lon);
-					var index = (width * y) + x;
-					colors[index] = GetSphereColor(lat, lon, value);
+					colors[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = GetSphereColor(lat, lon, value);
 				}
 			}
 		}

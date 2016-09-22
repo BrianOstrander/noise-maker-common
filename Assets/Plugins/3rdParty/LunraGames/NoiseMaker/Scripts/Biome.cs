@@ -17,9 +17,6 @@ namespace LunraGames.NoiseMaker
 
 		public Color GetColor(float latitude, float longitude, float altitude, Mercator mercator)
 		{
-			//var allAltitudes = GetAltitudes(mercator);
-			// todo: change this to actually get the bioms altitudes, not every one that falls somewhere
-			//var altitudes = allAltitudes.Where(a => a.MinAltitude <= altitude && altitude <= a.MaxAltitude).ToList();
 			var altitudes = mercator.Altitudes.Where (a => AltitudeIds.Contains (a.Id)).ToList();
 
 			if (altitudes.Count == 0) return Color.magenta;

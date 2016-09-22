@@ -10,11 +10,11 @@ namespace LunraGames.NoiseMaker
 		const string TopTabControlName = "LGM_TopTabControlName";
 		const string BottomTabControlName = "LGM_BottomTabControlName";
 
-		public override Domain Draw (Mercator mercator, Domain domain, object module, out DomainPreview preview)
+		public override Domain Draw (Domain domain, object module, out DomainPreview preview)
 		{
 			var latitude = domain as LatitudeDomain;
 
-			preview = GetPreview(mercator, latitude, module);
+			preview = GetPreview(latitude, module);
 
 			GUILayout.Label(GUIContent.none);
 
