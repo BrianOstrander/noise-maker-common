@@ -90,6 +90,9 @@ namespace LunraGames.NoiseMaker
 					GUILayout.FlexibleSpace();
 					return;
 				}
+
+				var splashImage = NoiseMakerConfig.Instance.Splash;
+				GUI.Box (new Rect (0f, position.height - splashImage.height, splashImage.width, splashImage.height), splashImage, GUIStyle.none);
 				
 				// If we're opening the editor from a cold start, and it looks like the user was editing something, load it.
 				if (State == States.Idle && Graph == null && !StringExtensions.IsNullOrWhiteSpace(SaveGuid))

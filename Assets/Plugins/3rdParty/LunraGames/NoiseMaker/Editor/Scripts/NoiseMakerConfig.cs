@@ -19,7 +19,21 @@ namespace LunraGames.NoiseMaker
 		public GameObject Ico4Face;
 		public Mesh Ico4FaceMesh;
 		#endregion
-
+		
+		#region Splash resources
+		public Texture2D Splash { get { return EditorGUIUtility.isProSkin ? SplashPro : SplashPeasant; } }
+		[SerializeField]
+		Texture2D SplashPro;
+		[SerializeField]
+		Texture2D SplashPeasant;
+		
+		public Texture2D SplashMini { get { return EditorGUIUtility.isProSkin ? SplashMiniPro : SplashMiniPeasant; } }
+		[SerializeField]
+		Texture2D SplashMiniPro;
+		[SerializeField]
+		Texture2D SplashMiniPeasant;
+		#endregion
+		
 		#region Window tab icons
 		public Texture2D AuthorTab { get { return EditorGUIUtility.isProSkin ? AuthorTabPro : AuthorTabPeasant; } }
 		[SerializeField]

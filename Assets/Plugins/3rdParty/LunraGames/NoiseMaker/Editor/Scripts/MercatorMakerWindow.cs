@@ -103,6 +103,9 @@ namespace LunraGames.NoiseMaker
 		{
 			try 
 			{
+				var splashImage = NoiseMakerConfig.Instance.Splash;
+				GUI.Box (new Rect (0f, position.height - splashImage.height, splashImage.width, splashImage.height), splashImage, GUIStyle.none);
+				
 				if (State == States.Idle && Mercator == null && !StringExtensions.IsNullOrWhiteSpace(SaveGuid))
 				{
 					var config = AssetDatabase.LoadAssetAtPath<MercatorMap>(SavePath);

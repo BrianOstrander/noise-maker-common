@@ -34,6 +34,9 @@ namespace LunraGames.NoiseMaker
 		#region Messages
 		void OnGUI()
 		{
+			var splashImage = NoiseMakerConfig.Instance.SplashMini;
+			GUI.Box (new Rect (0f, position.height - splashImage.height, splashImage.width, splashImage.height), splashImage, GUIStyle.none);
+				
 			var overridePreview = false;
 
 			var noise = EditorGUILayout.ObjectField("Noise", NoiseGraph, typeof(NoiseGraph), false);

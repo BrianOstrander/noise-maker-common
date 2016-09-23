@@ -37,6 +37,9 @@ namespace LunraGames.NoiseMaker
 		{
 			serializedObject.Update();
 
+			var splashImage = NoiseMakerConfig.Instance.SplashMini;
+			GUI.Box (new Rect (0f, Screen.height - splashImage.height - (splashImage.height * 0.2f), splashImage.width, splashImage.height), splashImage, GUIStyle.none);
+
 			var assetPath = AssetDatabase.GetAssetPath(target.GetInstanceID());
 			var activelyEditing = assetPath == NoiseMakerWindow.ActiveSavePath;
 			var editingAllowed = !(activelyEditing || EditorApplication.isCompiling || EditorApplication.isPlayingOrWillChangePlaymode || Properties == null || Graph == null);
