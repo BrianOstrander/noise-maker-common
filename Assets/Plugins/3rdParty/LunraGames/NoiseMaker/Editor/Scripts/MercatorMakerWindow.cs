@@ -103,6 +103,20 @@ namespace LunraGames.NoiseMaker
 		{
 			try 
 			{
+				if (Application.isPlaying)
+				{
+					GUILayout.FlexibleSpace();
+					GUILayout.BeginHorizontal();
+					{
+						GUILayout.FlexibleSpace();
+						GUILayout.Label("Editing Not Permitted While Playing", Styles.NoPreviewLabel);
+						GUILayout.FlexibleSpace();
+					}
+					GUILayout.EndHorizontal();
+					GUILayout.FlexibleSpace();
+					return;
+				}
+
 				var splashImage = NoiseMakerConfig.Instance.Splash;
 				GUI.Box (new Rect (0f, position.height - splashImage.height, splashImage.width, splashImage.height), splashImage, GUIStyle.none);
 				

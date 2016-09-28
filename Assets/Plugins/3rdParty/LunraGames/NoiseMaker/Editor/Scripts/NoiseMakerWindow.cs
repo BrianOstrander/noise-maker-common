@@ -67,7 +67,7 @@ namespace LunraGames.NoiseMaker
 		[MenuItem ("Window/Lunra Games/Noise Maker/Editor")]
 		static void Init () 
 		{
-			var window = EditorWindow.GetWindow(typeof (NoiseMakerWindow), false, "Noise Maker") as NoiseMakerWindow;
+			var window = GetWindow(typeof (NoiseMakerWindow), false, "Noise Maker") as NoiseMakerWindow;
 			window.titleContent = new GUIContent("Noise Maker", NoiseMakerConfig.Instance.AuthorTab);
 			window.Show();
 		}

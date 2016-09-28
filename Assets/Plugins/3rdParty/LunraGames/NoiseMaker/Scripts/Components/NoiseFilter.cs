@@ -26,7 +26,6 @@ namespace LunraGames.NoiseMaker
 		#endregion
 
 		Mesh CachedMesh;
-		Material CachedMaterial;
 
 		void Awake()
 		{
@@ -47,7 +46,6 @@ namespace LunraGames.NoiseMaker
 			if (meshRenderer.sharedMaterial == null) throw new NullReferenceException("A sharedMaterial must be specified for this gameobject's MeshRenderer");
 
 			if (CachedMesh == null) CachedMesh = meshFilter.sharedMesh;
-			if (CachedMaterial == null) CachedMaterial = meshRenderer.sharedMaterial;
 
 			var graph = NoiseGraph.GraphInstantiation;
 			var map = MercatorMap.MercatorInstantiation;
@@ -65,7 +63,7 @@ namespace LunraGames.NoiseMaker
 
 			var sphere = new Sphere(root);
 
-			var mesh = Instantiate<Mesh>(CachedMesh);
+			var mesh = Instantiate(CachedMesh);
 
 			var verts = mesh.vertices;
 			Graph.GetSphereAltitudes(sphere, ref verts, Datum, Deviation);
@@ -80,7 +78,7 @@ namespace LunraGames.NoiseMaker
 			texture.SetPixels(colors);
 			texture.Apply();
 
-			meshRenderer.sharedMaterial.mainTexture = texture;
+			meshRenderer.material.mainTexture = texture;
 		}
 	}
 }
