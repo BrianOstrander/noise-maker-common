@@ -76,6 +76,7 @@ namespace LunraGames.NoiseMaker
 		[SerializeField]
 		Vector2 BiomeScrollPosition = Vector2.zero;
 
+		long GraphLastUpdated;
 		Graph Graph;
 		Dictionary<string, Action<Node<IModule>, Rect, int>> Previews;
 		int PreviewSelected;
@@ -177,7 +178,7 @@ namespace LunraGames.NoiseMaker
 					{
 						if (GUILayout.Button("New")) 
 						{
-							var savePath = UnityEditor.EditorUtility.SaveFilePanelInProject("New Mercator Map", "Mercator", "asset", null);
+							var savePath = EditorUtility.SaveFilePanelInProject("New Mercator Map", "Mercator", "asset", null);
 							if (!StringExtensions.IsNullOrWhiteSpace(savePath))
 							{
 								var config = CreateInstance<MercatorMap>();
@@ -248,18 +249,18 @@ namespace LunraGames.NoiseMaker
 				// Apparently unity likes to randomly throw this error... whatever...
 				try { freshNoiseGraph = EditorGUILayout.ObjectField("Noise", NoiseGraph, typeof(NoiseGraph), false); }
 				catch (Exception e) { if (!(e is ExitGUIException)) throw; }
+				NoiseGraph = freshNoiseGraph as NoiseGraph;
 
-				if (freshNoiseGraph != NoiseGraph || (Graph == null && NoiseGraph != null))
+				if (GraphLastUpdated < NoiseMakerWindow.ActiveLastUpdated || Graph == null && NoiseGraph != null)
 				{
-					// When previews change, we reset any cached info.
+					GraphLastUpdated = DateTime.Now.Ticks;
+					if (NoiseGraph == null) Graph = null;
+					else Graph = NoiseGraph.GraphInstantiation;
 					PreviewUpdating = false;
 					PreviewLastUpdated = 0L;
 					PreviewObjectEditor = null;
+					PreviewTexture = null;
 					PreviewMesh = null;
-					NoiseGraph = freshNoiseGraph as NoiseGraph;
-
-					if (NoiseGraph == null) Graph = null;
-					else Graph = NoiseGraph.GraphInstantiation;
 				}
 			}
 			GUILayout.EndArea();
@@ -760,30 +761,17 @@ namespace LunraGames.NoiseMaker
 			// Check if node has been updated since the last time we had drawn it.
 			if (lastUpdate != PreviewLastUpdated) 
 			{
-				if (PreviewTexture == null) PreviewTexture = new Texture2D((int)area.width, (int)area.height);
-
 				PreviewUpdating = true;
 				var module = node.GetValue(Graph);
 				PreviewModule = module;
 
-				var pixels = new Color[PreviewTexture.width * PreviewTexture.height];
-				for (var x = 0; x < PreviewTexture.width; x++)
-				{
-					for (var y = 0; y < PreviewTexture.height; y++)
-					{
-						// Get the value from the specified location, and run it through the selected previewer. 
-						var value = (float)module.GetValue((double)x, (double)y, 0.0);
-						pixels[SphereUtils.PixelCoordinateToIndex(x, y, PreviewTexture.width, PreviewTexture.height)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
-					}
-				}
-				PreviewTexture.SetPixels(pixels);
-				PreviewTexture.Apply();
+				PreviewTexture = NoiseMakerWindow.GetFlatTexture(module, 512, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == module) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
 				Repaint();
 			}
-			GUI.DrawTexture(new Rect(2f, 2f, PreviewTexture.width - 4f, PreviewTexture.height -4f), PreviewTexture);
+			GUI.DrawTexture(new Rect(2f, 2f, area.width - 4f, area.height - 4f), PreviewTexture);
 		}
 
 		/// <summary>
@@ -968,6 +956,11 @@ namespace LunraGames.NoiseMaker
 		public static void QueueRepaint()
 		{
 			RepaintQueued = true;
+		}
+		[Interloper.InterloperLinked]
+		static void LolNullIt()
+		{
+			Instance.Graph = null;
 		}
 	}
 }

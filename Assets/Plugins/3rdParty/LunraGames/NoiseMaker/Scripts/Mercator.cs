@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using LibNoise.Models;
+using LibNoise;
 
 namespace LunraGames.NoiseMaker
 {
@@ -96,6 +97,21 @@ namespace LunraGames.NoiseMaker
 					var lon = SphereUtils.GetLongitude(x, width);
 					var value = (float)sphere.GetValue((double)lat, (double)lon);
 					colors[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = GetSphereColor(lat, lon, value);
+				}
+			}
+		}
+
+		public void GetFlatColors(int width, int height, IModule module, ref Color[] colors)
+		{
+			if (colors == null) throw new ArgumentNullException("colors");
+			if (height * width != colors.Length) throw new ArgumentOutOfRangeException("colors");
+
+			for (var x = 0; x < width; x++)
+			{
+				for (var y = 0; y < height; y++)
+				{
+					var value = (float)module.GetValue(x, y, 0f);
+					colors[(y * width) + x] = Color.white.NewV(value);
 				}
 			}
 		}

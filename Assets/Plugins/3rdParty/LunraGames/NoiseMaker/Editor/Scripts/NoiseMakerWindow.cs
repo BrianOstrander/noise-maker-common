@@ -623,6 +623,7 @@ namespace LunraGames.NoiseMaker
 									PreviewSelected = i;
 									PreviewLastUpdated = 0L;
 									PreviewObjectEditor = null;
+									PreviewTexture = null;
 									PreviewMesh = null;
 								}
 							}
@@ -806,6 +807,36 @@ namespace LunraGames.NoiseMaker
 		}
 		#endregion
 
+		public static Texture2D GetFlatTexture(IModule module, int width = 98, Mercator map = null, Texture2D existing = null, Action completed = null)
+		{
+			var result = existing == null || existing.width != width || existing.height != width ? new Texture2D(width, width) : existing;
+
+			var resultWidth = result.width;
+			var resultHeight = result.height;
+			var unmodifiedMap = map;
+			var pixels = new Color[resultWidth * resultHeight];
+
+			Thrifty.Queue(
+				() =>
+				{
+					if (unmodifiedMap == null)
+					{
+						for (var x = 0; x < resultWidth; x++)
+						{
+							for (var y = 0; y < resultHeight; y++)
+							{
+								var value = (float)module.GetValue(x, y, 0.0);
+								pixels[(y * resultWidth) + x] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+							}
+						}
+					}
+					else unmodifiedMap.GetFlatColors(resultWidth, resultHeight, module, ref pixels);
+				},
+				() => TextureFarmer.Queue(result, pixels, completed)
+			);
+			return result;
+		}
+
 		/// <summary>
 		/// Gets the sphere projected texture, a simple heightmap using the active previewer.
 		/// </summary>
@@ -883,14 +914,14 @@ namespace LunraGames.NoiseMaker
 
 			if (config == null) 
 			{
-				UnityEditor.EditorUtility.DisplayDialog("Missing Noise Graph", "The Noise Graph you were editing is now missing.", "Okay");
+				EditorUtility.DisplayDialog("Missing Noise Graph", "The Noise Graph you were editing is now missing.", "Okay");
 				Reset();
 				return;
 			}
 
 			config.GraphInstantiation = Graph;
 			config.PropertiesInstantiation = Properties;
-			UnityEditor.EditorUtility.SetDirty(config);
+			EditorUtility.SetDirty(config);
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh();
 		}
@@ -926,6 +957,7 @@ namespace LunraGames.NoiseMaker
 
 		public static Type ConnectingFromOutputType { get { return Instance == null || Instance.ConnectingFrom == null ? null : Instance.ConnectingFrom.OutputType; } }
 		public static string ActiveSavePath { get { return Instance == null || StringExtensions.IsNullOrWhiteSpace(Instance.SavePath) ? null : Instance.SavePath; } }
+		public static long ActiveLastUpdated { get { return Instance == null ? 0L : Instance.PreviewLastUpdated; } }
 
 		public static void QueueRepaint()
 		{
@@ -952,7 +984,7 @@ namespace LunraGames.NoiseMaker
 			{
 				if (State != States.Splash) 
 				{
-					var result = UnityEditor.EditorUtility.DisplayDialogComplex("Editing in Progress", "You're in the middle of editing another Noise Graph, what would you like to do?", "Save", "Cancel", "Discard Changes");
+					var result = EditorUtility.DisplayDialogComplex("Editing in Progress", "You're in the middle of editing another Noise Graph, what would you like to do?", "Save", "Cancel", "Discard Changes");
 
 					if (result == 0) Save();
 					else if (result == 1) return;
@@ -970,7 +1002,7 @@ namespace LunraGames.NoiseMaker
 
 				Repaint();
 			}
-			else UnityEditor.EditorUtility.DisplayDialog("Invalid", "Selected noise graph must be inside project directory.", "Okay");	
+			else EditorUtility.DisplayDialog("Invalid", "Selected noise graph must be inside project directory.", "Okay");	
 		}
 	}
 }
