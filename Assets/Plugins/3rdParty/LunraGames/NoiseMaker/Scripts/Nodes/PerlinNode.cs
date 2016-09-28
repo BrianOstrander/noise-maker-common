@@ -17,7 +17,7 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(4)]
 		public float Persistence;
 		[NodeLinker(5)]
-		public int Seed = DemonUtility.IntSeed;
+		public int Seed = DemonUtility.NextInteger;
 
 		public override IModule GetValue (Graph graph)
 		{

@@ -13,7 +13,7 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(2)]
 		public float Frequency = 0.02f;
 		[NodeLinker(3)]
-		public int Seed = DemonUtility.IntSeed;
+		public int Seed = DemonUtility.NextInteger;
 
 		public override IModule GetValue (Graph graph)
 		{

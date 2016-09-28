@@ -16,12 +16,12 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(3, 1, 29)]
 		public int Roughness = 1;
 		[NodeLinker(4)]
-		public int Seed = DemonUtility.IntSeed;
+		public int Seed = DemonUtility.NextInteger;
 
 		public override IModule GetValue (Graph graph)
 		{
 			var values = NullableValues(graph);
-			var source = GetLocalIfValueNull<IModule>(Source, 0, values);
+			var source = GetLocalIfValueNull(Source, 0, values);
 
 			if (source == null) return null;
 
@@ -29,10 +29,10 @@ namespace LunraGames.NoiseMaker
 
 			turbulence.SourceModule = source;
 
-			turbulence.Frequency = GetLocalIfValueNull<float>(Frequency, 1, values);
-			turbulence.Power = GetLocalIfValueNull<float>(Power, 2, values);
-			turbulence.Roughness = GetLocalIfValueNull<int>(Roughness, 3, values);
-			turbulence.Seed = GetLocalIfValueNull<int>(Seed, 4, values);
+			turbulence.Frequency = GetLocalIfValueNull(Frequency, 1, values);
+			turbulence.Power = GetLocalIfValueNull(Power, 2, values);
+			turbulence.Roughness = GetLocalIfValueNull(Roughness, 3, values);
+			turbulence.Seed = GetLocalIfValueNull(Seed, 4, values);
 
 			Value = turbulence;
 			return Value;

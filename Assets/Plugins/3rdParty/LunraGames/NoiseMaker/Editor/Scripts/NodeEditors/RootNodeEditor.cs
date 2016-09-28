@@ -17,7 +17,7 @@ namespace LunraGames.NoiseMaker
 
 			if (GUILayout.Button("Randomize"))
 			{
-				graph.Seed = DemonUtility.IntSeed;
+				graph.Seed = DemonUtility.NextInteger;
 				preview.Stale = true;
 			}
 

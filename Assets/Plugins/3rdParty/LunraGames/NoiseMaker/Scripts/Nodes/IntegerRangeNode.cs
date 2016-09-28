@@ -10,7 +10,7 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(1)]
 		public int UpperBound = 1;
 		[NodeLinker(2)]
-		public int Seed = DemonUtility.IntSeed;
+		public int Seed = DemonUtility.NextInteger;
 		[NodeLinker(3)]
 		public RangeOverrides RangeOverride;
 
@@ -18,10 +18,10 @@ namespace LunraGames.NoiseMaker
 		{
 			var values = NullableValues(graph);
 
-			var lowerBound = GetLocalIfValueNull<int>(LowerBound, 0, values);
-			var upperBound = GetLocalIfValueNull<int>(UpperBound, 1, values);
-			var seed = GetLocalIfValueNull<int>(Seed, 2, values);
-			var rangeOverride = GetLocalIfValueNull<RangeOverrides>(RangeOverride, 3, values);
+			var lowerBound = GetLocalIfValueNull(LowerBound, 0, values);
+			var upperBound = GetLocalIfValueNull(UpperBound, 1, values);
+			var seed = GetLocalIfValueNull(Seed, 2, values);
+			var rangeOverride = GetLocalIfValueNull(RangeOverride, 3, values);
 
 			if (rangeOverride == RangeOverrides.Minimum) return lowerBound;
 
@@ -40,8 +40,8 @@ namespace LunraGames.NoiseMaker
 				else return lowerBound + ((upperBound - lowerBound) / 2);
 			}
 
-			Random.seed = seed;
-			return Random.Range(lowerBound, upperBound);
+			var generator = new Demon(seed);
+			return generator.GetNextInteger(lowerBound, upperBound);
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace LunraGames.NoiseMaker
 		[NodeLinker(3, 1, 29)]
 		public int OctaveCount = 1;
 		[NodeLinker(4)]
-		public int Seed = DemonUtility.IntSeed;
+		public int Seed = DemonUtility.NextInteger;
 
 		public override IModule GetValue (Graph graph)
 		{

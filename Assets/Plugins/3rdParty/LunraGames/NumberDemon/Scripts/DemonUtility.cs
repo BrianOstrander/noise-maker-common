@@ -6,32 +6,11 @@ namespace LunraGames.NumberDemon
 {
 	public static class DemonUtility
 	{
-		static Random _Generator;
-		static Random Generator { get { return _Generator ?? (_Generator = new Random()); } }
+		static Demon Generator = new Demon();
 
 		const int IntHalfValue = (int.MaxValue / 2) + 1;
 		const uint UintHalfValue = (uint.MaxValue / 2u) + 1u;
 		const ulong UlongHalfValue = (ulong.MaxValue / 2uL) + 1uL;
-
-		/// <summary>
-		/// Returns a random seed each time.
-		/// </summary>
-		/// <value>The int seed.</value>
-		public static int IntSeed { get { return Generator.Next(); } }
-
-		/// <summary>
-		/// Returns a random seed each time.
-		/// </summary>
-		/// <value>The long seed.</value>
-		public static long LongSeed 
-		{ 
-			get 
-			{ 
-				var bytes = new byte[8];
-				Generator.NextBytes(bytes);
-				return BitConverter.ToInt64(bytes, 0);
-			}
-		}
 
 		/// <summary>
 		/// Given a unique pair of integers and their order, return a unique integer. When at least one value is above 1,073,741,824, they roll over. They roll under somewhere too, but I'm too lazy to check.
@@ -125,8 +104,9 @@ namespace LunraGames.NumberDemon
 			else return (long)(value - UlongHalfValue);
 		}
 
-        public static float NextFloat { get { return (float)Generator.NextDouble(); } }
-
-        public static Color NextColor { get { return new Color(NextFloat, NextFloat, NextFloat); } }
+		public static int NextInteger { get { return Generator.NextInteger; } }
+		public static long NextLong { get { return Generator.NextLong; } }
+		public static float NextFloat { get { return Generator.NextFloat; } }
+		public static Color NextColor { get { return new Color(NextFloat, NextFloat, NextFloat); } }
 	}
 }
