@@ -765,7 +765,7 @@ namespace LunraGames.NoiseMaker
 				var module = node.GetValue(Graph);
 				PreviewModule = module;
 
-				PreviewTexture = NoiseMakerWindow.GetFlatTexture(module, 512, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == module) ? false : PreviewUpdating);
+				PreviewTexture = NoiseMakerWindow.GetFlatTexture(module, (int)area.width, (int)area.height, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == module) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 

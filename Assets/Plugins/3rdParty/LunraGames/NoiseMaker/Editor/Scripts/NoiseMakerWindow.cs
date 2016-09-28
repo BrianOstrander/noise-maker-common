@@ -807,9 +807,9 @@ namespace LunraGames.NoiseMaker
 		}
 		#endregion
 
-		public static Texture2D GetFlatTexture(IModule module, int width = 98, Mercator map = null, Texture2D existing = null, Action completed = null)
+		public static Texture2D GetFlatTexture(IModule module, int width = 98, int height = 98, Mercator map = null, Texture2D existing = null, Action completed = null)
 		{
-			var result = existing == null || existing.width != width || existing.height != width ? new Texture2D(width, width) : existing;
+			var result = existing == null || existing.width != width || existing.height != height ? new Texture2D(width, height) : existing;
 
 			var resultWidth = result.width;
 			var resultHeight = result.height;
