@@ -15,5 +15,6 @@ namespace LunraGames.NoiseMaker
 		List<string> SourceIds { get; set; }
 		object GetRawValue(Graph graph);
 		Type OutputType { get; }
+		bool HasAncestor(Graph graph, string ancestorId);
 	}
 }

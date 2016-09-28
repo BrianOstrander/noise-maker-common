@@ -210,5 +210,23 @@ namespace LunraGames.NoiseMaker
 			if (!typeof(S).IsAssignableFrom(value.GetType())) throw new ArgumentException("Specified source is not the correct type", "values["+valueIndex+"]");
 			return (S)value;
 		}
+
+		public bool HasAncestor(Graph graph, string ancestorId)
+		{
+			if (string.IsNullOrEmpty(ancestorId)) return false;
+			if (ancestorId == Id) return true;
+
+			foreach (var id in SourceIds)
+			{
+				if (string.IsNullOrEmpty(id)) continue;
+
+				if (id == ancestorId) return true;
+
+				var child = graph.Nodes.FirstOrDefault(c => c.Id == id);
+				var hasAncestor = child == null ? false : child.HasAncestor(graph, ancestorId);
+				if (hasAncestor) return true;
+			}
+			return false;
+		}
 	}
 }

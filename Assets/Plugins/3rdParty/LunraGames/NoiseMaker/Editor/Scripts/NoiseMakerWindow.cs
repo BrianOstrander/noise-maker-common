@@ -306,14 +306,14 @@ namespace LunraGames.NoiseMaker
 								if (freshName == propertyName) return;
 								else if (StringExtensions.IsNullOrWhiteSpace(freshName))
 								{
-									UnityEditor.EditorUtility.DisplayDialog("Invalid Name", "A property's name can't be empty.", "Okay");
+									EditorUtility.DisplayDialog("Invalid Name", "A property's name can't be empty.", "Okay");
 									return;
 								}
 								foreach (var prop in Properties)
 								{
 									if (prop.Name == freshName && prop != property)
 									{
-										UnityEditor.EditorUtility.DisplayDialog("Duplicate Name", "A property with that name already exists.", "Okay");
+										EditorUtility.DisplayDialog("Duplicate Name", "A property with that name already exists.", "Okay");
 										return;
 									}
 								}
@@ -410,6 +410,11 @@ namespace LunraGames.NoiseMaker
 					var cursorRect = new Rect(Event.current.mousePosition, Vector2.one);
 					DrawCurve(fromRect, cursorRect);
 					Repaint();
+				}
+				else if (ConnectingTo.HasAncestor(Graph, ConnectingFrom.Id) || ConnectingFrom.HasAncestor(Graph, ConnectingTo.Id))
+				{
+					EditorUtility.DisplayDialog("Invalid Connection", "Recursive node connections are not allowed.", "Okay");
+					ResetConnections();
 				}
 				else
 				{
