@@ -14,3 +14,7 @@
 	path = Assets/Plugins/3rdParty/LunraGames/Singletonnes
 	url = https://github.com/LunraGames/Singletonnes.git
 	branch = master
+[submodule "Assets/Plugins/3rdParty/LunraGames/PlugIt"]
+	path = Assets/Plugins/3rdParty/LunraGames/PlugIt
+	url = https://github.com/LunraGames/PlugIt.git
+	branch = develop
