@@ -1,7 +1,9 @@
 ﻿namespace LunraGames.NoiseMaker
 {
-	public class Strings
+	public static class Strings
 	{
+		public const string Plugin = "Noise Maker";
+		
 		public const string Default = "Default";
 
 		public const string Generators = "Generators";
