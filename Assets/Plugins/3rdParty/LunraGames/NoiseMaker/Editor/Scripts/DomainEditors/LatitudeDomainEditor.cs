@@ -29,13 +29,13 @@ namespace LunraGames.NoiseMaker
 			var topTabTexture = NoiseMakerConfig.Instance.DomainLatitudeWidgetTop.normal.background;
 			var bottomTabTexture = NoiseMakerConfig.Instance.DomainLatitudeWidgetBottom.normal.background;
 
-			var topArea = new Rect(lastRect.width - emptyTexture.width, lastRect.yMax, (float)emptyTexture.width, (float)emptyTexture.height * topStart);
-			var middleArea = new Rect(lastRect.width - emptyTexture.width, topArea.yMax, topArea.width, (float)emptyTexture.height * (bottomStart - topStart));
-			var bottomArea = new Rect(lastRect.width - emptyTexture.width, middleArea.yMax, topArea.width, (float)emptyTexture.height * (1f - bottomStart));
+			var topArea = new Rect(lastRect.width - emptyTexture.width, lastRect.yMax, emptyTexture.width, emptyTexture.height * topStart);
+			var middleArea = new Rect(lastRect.width - emptyTexture.width, topArea.yMax, topArea.width, emptyTexture.height * (bottomStart - topStart));
+			var bottomArea = new Rect(lastRect.width - emptyTexture.width, middleArea.yMax, topArea.width, emptyTexture.height * (1f - bottomStart));
 
-			var topHeightScaled = (topArea.height / (float)emptyTexture.height);
-			var middleHeightScaled = (middleArea.height / (float)filledTexture.height);
-			var bottomHeightScaled = (bottomArea.height / (float)emptyTexture.height);
+			var topHeightScaled = (topArea.height / emptyTexture.height);
+			var middleHeightScaled = (middleArea.height / filledTexture.height);
+			var bottomHeightScaled = (bottomArea.height / emptyTexture.height);
 
 			var lineWidth = topArea.width * 1.2f;
 			var topLine = new Rect(lastRect.width - lineWidth, Mathf.Min(topArea.yMax, bottomArea.yMax - lineTexture.height), lineWidth, lineTexture.height);
@@ -50,7 +50,7 @@ namespace LunraGames.NoiseMaker
 			var topTabText = new Rect(topLine.x + NoiseMakerConfig.Instance.DomainLatitudeWidgetTop.padding.left - 46f, topTab.y + NoiseMakerConfig.Instance.DomainLatitudeWidgetTop.padding.top, 50f, topTab.height - NoiseMakerConfig.Instance.DomainLatitudeWidgetTop.padding.bottom);
 			var bottomTabText = new Rect(bottomLine.x + NoiseMakerConfig.Instance.DomainLatitudeWidgetBottom.padding.left - 46f, bottomTab.y + NoiseMakerConfig.Instance.DomainLatitudeWidgetBottom.padding.top, 50f, bottomTab.height - NoiseMakerConfig.Instance.DomainLatitudeWidgetBottom.padding.bottom);
 
-			var pixelLatScalar = 180f / (float)filledTexture.height;
+			var pixelLatScalar = 180f / filledTexture.height;
 			var lineLat = pixelLatScalar * topLine.height * 2f;
 
 			GUI.DrawTexture(topLine, lineTexture);
@@ -66,12 +66,12 @@ namespace LunraGames.NoiseMaker
 				MercatorMakerWindow.RepaintNow();
 			}
 
-			latitude.MaxLatitude = Deltas.DetectDelta<float>(latitude.MaxLatitude, EditorGUI.DelayedFloatField(topTabText, latitude.MaxLatitude, Styles.MercatorLatitudeText), ref preview.Stale);
+			latitude.MaxLatitude = Deltas.DetectDelta(latitude.MaxLatitude, EditorGUI.DelayedFloatField(topTabText, latitude.MaxLatitude, Styles.MercatorLatitudeText), ref preview.Stale);
 			GUI.SetNextControlName(TopTabControlName);
 			if (GUI.RepeatButton(topTab, GUIContent.none, NoiseMakerConfig.Instance.DomainLatitudeWidgetTop))
 			{
 				var delta = topTab.center - Event.current.mousePosition;
-				var newLat = Mathf.Clamp(latitude.MaxLatitude + (180f * (delta.y / (float)filledTexture.height)), -90f, 90f);
+				var newLat = Mathf.Clamp(latitude.MaxLatitude + (180f * (delta.y / filledTexture.height)), -90f, 90f);
 				latitude.MaxLatitude = newLat;
 				if (latitude.MaxLatitude <= latitude.MinLatitude + lineLat) latitude.MinLatitude = Mathf.Clamp(latitude.MaxLatitude - lineLat, -90f, 90f);
 				preview.Stale = true;
@@ -79,12 +79,12 @@ namespace LunraGames.NoiseMaker
 				MercatorMakerWindow.RepaintNow();
 			}
 
-			latitude.MinLatitude = Deltas.DetectDelta<float>(latitude.MinLatitude, EditorGUI.DelayedFloatField(bottomTabText, latitude.MinLatitude, Styles.MercatorLatitudeText), ref preview.Stale);
+			latitude.MinLatitude = Deltas.DetectDelta(latitude.MinLatitude, EditorGUI.DelayedFloatField(bottomTabText, latitude.MinLatitude, Styles.MercatorLatitudeText), ref preview.Stale);
 			GUI.SetNextControlName(BottomTabControlName);
 			if (GUI.RepeatButton(bottomTab, GUIContent.none, NoiseMakerConfig.Instance.DomainLatitudeWidgetBottom))
 			{
 				var delta = bottomTab.center - Event.current.mousePosition;
-				var newLat = Mathf.Clamp(latitude.MinLatitude + (180f * (delta.y / (float)filledTexture.height)), -90f, 90f);
+				var newLat = Mathf.Clamp(latitude.MinLatitude + (180f * (delta.y / filledTexture.height)), -90f, 90f);
 				latitude.MinLatitude = newLat;
 				if (latitude.MaxLatitude - lineLat <= latitude.MinLatitude) latitude.MaxLatitude = Mathf.Clamp(latitude.MinLatitude + lineLat, -90f, 90f);
 				preview.Stale = true;

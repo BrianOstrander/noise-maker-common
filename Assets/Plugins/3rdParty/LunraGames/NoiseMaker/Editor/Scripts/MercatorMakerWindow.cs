@@ -217,7 +217,7 @@ namespace LunraGames.NoiseMaker
 			if (Previews == null) 
 			{
 				Previews = new Dictionary<string, Action<Node<IModule>, Rect, int>> {
-					{ "Flat", DrawFlatPreview },
+					{ "Flat", DrawPlanePreview },
 					{ "Sphere", DrawSpherePreview },
 					{ "Elevation", DrawElevationPreview }
 				};
@@ -441,7 +441,7 @@ namespace LunraGames.NoiseMaker
 			{
 				if (showDomain) 
 				{
-					if (string.IsNullOrEmpty(domain.BiomeId)) UnityEditor.EditorUtility.DisplayDialog("No Biome", "Select or create a biome from the domain panel first.", "Okay");
+					if (string.IsNullOrEmpty(domain.BiomeId)) EditorUtility.DisplayDialog("No Biome", "Select or create a biome from the domain panel first.", "Okay");
 					else BiomeSelection = domain.BiomeId;
 				}
 				else if (showAltitude) AltitudeSelection = null;
@@ -450,11 +450,11 @@ namespace LunraGames.NoiseMaker
 			if (DrawSelectedEditorHeader(showAltitude, altitudeHeaderArea, NoiseMakerConfig.Instance.AltitudeIcon, altitude == null ? "Altitude" : (string.IsNullOrEmpty(altitude.Name) ? altitudeEditors.FirstOrDefault(e => e.Details.Target == altitude.GetType()).Details.Name+" Altitude" : altitude.Name+" Altitude")))
 			{
 				PreviewUpdating = false;
-				if (showBiome) UnityEditor.EditorUtility.DisplayDialog("Select Altitude", "Select or create a an altitude from the biome panel first.", "Okay");
+				if (showBiome) EditorUtility.DisplayDialog("Select Altitude", "Select or create a an altitude from the biome panel first.", "Okay");
 				else
 				{
 					BiomeSelection = domain.BiomeId;
-					if (string.IsNullOrEmpty(domain.BiomeId)) UnityEditor.EditorUtility.DisplayDialog("No Biome", "Select or create a biome from the domain panel first, then create an altitude to start editing.", "Okay");
+					if (string.IsNullOrEmpty(domain.BiomeId)) EditorUtility.DisplayDialog("No Biome", "Select or create a biome from the domain panel first, then create an altitude to start editing.", "Okay");
 				}
 			}
 
@@ -557,8 +557,8 @@ namespace LunraGames.NoiseMaker
 									"Convert Biome to Prefab", 
 									name =>
 									{
-										if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome can't have a blank name.", "Okay"); 
-										else if (Mercator.Biomes.Any(b => b.Name == name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome with the name \""+name+"\" already exists.", "Okay");
+										if (StringExtensions.IsNullOrWhiteSpace(name)) EditorUtility.DisplayDialog("Invalid", "A Biome can't have a blank name.", "Okay"); 
+										else if (Mercator.Biomes.Any(b => b.Name == name)) EditorUtility.DisplayDialog("Invalid", "A Biome with the name \""+name+"\" already exists.", "Okay");
 										else biome.Name = name;
 									},
 									description: "Choose a unique name for this biome."
@@ -571,8 +571,8 @@ namespace LunraGames.NoiseMaker
 								"Rename Biome", 
 								name =>
 								{
-									if (StringExtensions.IsNullOrWhiteSpace(name)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome can't have a blank name.", "Okay"); 
-									else if (Mercator.Biomes.Any(b => b.Name == name && b.Id != biome.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "A Biome with the name \""+name+"\" already exists.", "Okay");
+									if (StringExtensions.IsNullOrWhiteSpace(name)) EditorUtility.DisplayDialog("Invalid", "A Biome can't have a blank name.", "Okay"); 
+									else if (Mercator.Biomes.Any(b => b.Name == name && b.Id != biome.Id)) EditorUtility.DisplayDialog("Invalid", "A Biome with the name \""+name+"\" already exists.", "Okay");
 									else biome.Name = name;
 								},
 								description: "Choose a unique name for this biome."
@@ -608,7 +608,7 @@ namespace LunraGames.NoiseMaker
 								// Linking an existing altitude.
 								var existingAltitude = altitudes[selected - existingIndex];
 								Debug.Log("Linking "+existingAltitude.Name);
-								if (biome.AltitudeIds.Contains(existingAltitude.Id)) UnityEditor.EditorUtility.DisplayDialog("Invalid", "The Altitude \""+existingAltitude.Name+"\" already exists in this Biome.", "Okay");
+								if (biome.AltitudeIds.Contains(existingAltitude.Id)) EditorUtility.DisplayDialog("Invalid", "The Altitude \""+existingAltitude.Name+"\" already exists in this Biome.", "Okay");
 								else biome.AltitudeIds.Add(existingAltitude.Id);
 							}
 							biomePreview.Stale = true;
@@ -754,7 +754,7 @@ namespace LunraGames.NoiseMaker
 		/// <param name="node">Node to draw, typically the root.</param>
 		/// <param name="area">Area the editor should take up.</param>
 		// todo: consolidate this logic somewhere so it's not duplicated here and NoiseMakerWindow
-		void DrawFlatPreview(Node<IModule> node, Rect area, int index)
+		void DrawPlanePreview(Node<IModule> node, Rect area, int index)
 		{
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
 			// todo: remove these duplicate update checks.
@@ -765,7 +765,7 @@ namespace LunraGames.NoiseMaker
 				var module = node.GetValue(Graph);
 				PreviewModule = module;
 
-				PreviewTexture = NoiseMakerWindow.GetFlatTexture(module, (int)area.width, (int)area.height, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == module) ? false : PreviewUpdating);
+				PreviewTexture = NoiseMakerWindow.GetPlaneTexture(module, (int)area.width, (int)area.height, Mercator, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == module) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
@@ -795,7 +795,7 @@ namespace LunraGames.NoiseMaker
 				var sphere = new Sphere(module);
 				PreviewModule = sphere;
 
-				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == sphere) ? false : PreviewUpdating);
+				PreviewTexture = NoiseMakerWindow.GetSphereTexture(module, map: Mercator, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == sphere) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 

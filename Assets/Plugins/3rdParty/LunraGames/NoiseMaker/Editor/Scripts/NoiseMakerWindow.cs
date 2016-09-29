@@ -605,7 +605,7 @@ namespace LunraGames.NoiseMaker
 						if (Previews == null) 
 						{
 							Previews = new Dictionary<string, Action<Node<IModule>, Rect, int>> {
-								{ "Flat", DrawFlatPreview },
+								{ "Flat", DrawPlanePreview },
 								{ "Sphere", DrawSpherePreview },
 								{ "Elevation", DrawElevationPreview }
 							};
@@ -688,7 +688,7 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		/// <param name="node">Node to draw, typically the root.</param>
 		/// <param name="area">Area the editor should take up.</param>
-		void DrawFlatPreview(Node<IModule> node, Rect area, int index)
+		void DrawPlanePreview(Node<IModule> node, Rect area, int index)
 		{
 			var lastUpdate = NodeEditor.LastUpdated(node.Id);
 			// todo: remove these duplicate update checks.
@@ -807,7 +807,7 @@ namespace LunraGames.NoiseMaker
 		}
 		#endregion
 
-		public static Texture2D GetFlatTexture(IModule module, int width = 98, int height = 98, Mercator map = null, Texture2D existing = null, Action completed = null)
+		public static Texture2D GetPlaneTexture(IModule module, int width = 98, int height = 98, Mercator map = null, Texture2D existing = null, Action completed = null)
 		{
 			var result = existing == null || existing.width != width || existing.height != height ? new Texture2D(width, height) : existing;
 
@@ -825,12 +825,12 @@ namespace LunraGames.NoiseMaker
 						{
 							for (var y = 0; y < resultHeight; y++)
 							{
-								var value = (float)module.GetValue(x, y, 0.0);
-								pixels[(y * resultWidth) + x] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
+								var value = (float)module.GetValue(x, y, 0f);
+								pixels[SphereUtils.PixelCoordinateToIndex(x, y, resultWidth, resultHeight)] = NodeEditor.Previewer.Calculate(value, NodeEditor.Previewer);
 							}
 						}
 					}
-					else unmodifiedMap.GetFlatColors(resultWidth, resultHeight, module, ref pixels);
+					else unmodifiedMap.GetPlaneColors(resultWidth, resultHeight, module, ref pixels);
 				},
 				() => TextureFarmer.Queue(result, pixels, completed)
 			);

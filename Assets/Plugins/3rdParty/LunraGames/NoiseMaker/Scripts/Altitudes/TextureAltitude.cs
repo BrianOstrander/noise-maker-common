@@ -7,7 +7,7 @@ namespace LunraGames.NoiseMaker
 	{
 		public Texture2D Texture;
 
-		public override Color GetColor (float latitude, float longitude)
+		public override Color GetSphereColor (float latitude, float longitude)
 		{
 			return Color.white;
 		}

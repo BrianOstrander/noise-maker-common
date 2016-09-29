@@ -6,7 +6,12 @@ namespace LunraGames.NoiseMaker
 	{
 		public Color Color = Color.white;
 
-		public override Color GetColor (float latitude, float longitude)
+		public override Color GetSphereColor (float latitude, float longitude)
+		{
+			return Color;
+		}
+
+		public override Color GetPlaneColor(float x, float y)
 		{
 			return Color;
 		}

@@ -15,9 +15,11 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		public string BiomeId;
 
-		public abstract float GetWeight(float latitude, float longitude, float altitude);
+		public virtual float GetSphereWeight(float latitude, float longitude, float altitude) { return 0f; }
+		public virtual Color GetSphereColor(float latitude, float longitude, float altitude, Mercator mercator) { return Color.magenta; }
 
-		public abstract Color GetColor(float latitude, float longitude, float altitude, Mercator mercator);
+		public virtual float GetPlaneWeight(float x, float y, float altitude) { return 0f; }
+		public virtual Color GetPlaneColor(float x, float y, float altitude, Mercator mercator) { return Color.magenta; }
 
 		public Biome GetBiome(Mercator mercator)
 		{

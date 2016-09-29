@@ -15,12 +15,12 @@ namespace LunraGames.NoiseMaker
 		/// </summary>
 		public List<string> AltitudeIds = new List<string>();
 
-		public Color GetColor(float latitude, float longitude, float altitude, Mercator mercator)
+		Color GetColor(Func<Altitude, Color> colorRetriever, float altitude, Mercator mercator)
 		{
 			var altitudes = mercator.Altitudes.Where (a => AltitudeIds.Contains (a.Id)).ToList();
 
 			if (altitudes.Count == 0) return Color.magenta;
-			if (altitudes.Count == 1) return altitudes[0].GetColor(latitude, longitude);
+			if (altitudes.Count == 1) return colorRetriever(altitudes[0]);
 
 			altitudes.OrderBy(a => Mathf.Abs(((altitude - a.MinAltitude) / (a.MaxAltitude - a.MinAltitude)) - 0.5f));
 
@@ -32,7 +32,7 @@ namespace LunraGames.NoiseMaker
 			{
 				var scalar = (altitude - curr.MinAltitude) / (curr.MaxAltitude - curr.MinAltitude); 
 				scalars.Add(scalar);
-				colors.Add(curr.GetColor(latitude, longitude));
+				colors.Add(colorRetriever(curr));
 				count++;
 			}
 
@@ -53,6 +53,16 @@ namespace LunraGames.NoiseMaker
 			}
 
 			return currColor;
+		}
+
+		public Color GetSphereColor(float latitude, float longitude, float altitude, Mercator mercator)
+		{
+			return GetColor(alt => alt.GetSphereColor(latitude, longitude), altitude, mercator);
+		}
+
+		public Color GetPlaneColor(float x, float y, float altitude, Mercator mercator)
+		{
+			return GetColor(alt => alt.GetPlaneColor(x, y), altitude, mercator);
 		}
 	}
 }

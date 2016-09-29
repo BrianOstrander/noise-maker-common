@@ -42,18 +42,27 @@ namespace LunraGames.NoiseMaker
 						{
 							for (var y = 0; y < height; y++)
 							{
-								var latitude = SphereUtils.GetLatitude(y, height);
-								var longitude = SphereUtils.GetLongitude(x, width);
-
+								var isSphere = module is Sphere;
 								float value;
-
-								if (module is Sphere) value = (float)(module as Sphere).GetValue(latitude, longitude);
-								else value = (float)(module as IModule).GetValue((double)x, (double)y, 0.0);
+								float weight;
+								
+								if (isSphere) 
+								{
+									var latitude = SphereUtils.GetLatitude(y, height);
+									var longitude = SphereUtils.GetLongitude(x, width);
+									value = (float)(module as Sphere).GetValue(latitude, longitude);
+									weight = domain.GetSphereWeight(latitude, longitude, value);
+								}
+								else
+								{
+									value = (float)(module as IModule).GetValue(x, y, 0.0);
+									weight = domain.GetPlaneWeight(x, y, value);
+								}
 
 								var normalValue = Previewer.Calculate(value, Previewer);
 								var highlightedValue = Color.green.NewV(normalValue);
 
-								pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, domain.GetWeight(latitude, longitude, value)) ? normalValue : highlightedValue;
+								pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, weight) ? normalValue : highlightedValue;
 							}
 						}
 					},

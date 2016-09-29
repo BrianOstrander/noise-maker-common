@@ -50,18 +50,30 @@ namespace LunraGames.NoiseMaker
 						{
 							for (var y = 0; y < height; y++)
 							{
-								var latitude = SphereUtils.GetLatitude(y, height);
-								var longitude = SphereUtils.GetLongitude(x, width);
-
 								float value;
+								float weight;
+								Color color;
 
-								if (module is Sphere) value = (float)(module as Sphere).GetValue(latitude, longitude);
-								else value = (float)(module as IModule).GetValue((double)x, (double)y, 0.0);
+								var isSphere = module is Sphere;
 
-								var normalValue = biome.GetColor(latitude, longitude, value, mercator);
-								var highlightedValue = Previewer.Calculate(value, Previewer);
+								if (isSphere)
+								{
+									var latitude = SphereUtils.GetLatitude(y, height);
+									var longitude = SphereUtils.GetLongitude(x, width);
+									value = (float)(module as Sphere).GetValue(latitude, longitude);
+									weight = domain.GetSphereWeight(latitude, longitude, value);
+									color = biome.GetSphereColor(latitude, longitude, value, mercator);
+								}
+								else
+								{
+									value = (float)(module as IModule).GetValue(x, y, 0f);
+									weight = domain.GetPlaneWeight(x, y, value);
+									color = biome.GetPlaneColor(x, y, value, mercator);
+								}
 
-								pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, domain.GetWeight(latitude, longitude, value)) ? highlightedValue : normalValue;
+								var hiddenColor = Previewer.Calculate(value, Previewer);
+
+								pixels[SphereUtils.PixelCoordinateToIndex(x, y, width, height)] = Mathf.Approximately(0f, weight) ? hiddenColor : color;
 							}
 						}
 					},

@@ -11,6 +11,7 @@ namespace LunraGames.NoiseMaker
 		public float MinAltitude = -0.5f;
 		public float MaxAltitude = 0.5f;
 
-		public abstract Color GetColor(float latitude, float longitude);
+		public virtual Color GetSphereColor(float latitude, float longitude) { return Color.magenta; }
+		public virtual Color GetPlaneColor(float x, float y) { return Color.magenta; }
 	}
 }

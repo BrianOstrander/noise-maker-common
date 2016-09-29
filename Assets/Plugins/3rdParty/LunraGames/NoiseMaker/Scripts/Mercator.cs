@@ -59,28 +59,32 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		// todo: support more than one latitude.
-		public Color GetSphereColor(float latitude, float longitude, float altitude)
+		Color GetColor(Func<Domain, float> weightRetriever, Func<Domain, Color> colorRetriever)
 		{
 			if (Domains == null || Domains.Count == 0 || Biomes == null || Biomes.Count == 0 || Altitudes == null || Altitudes.Count == 0) return Color.magenta;
-			if (Domains.Count == 1) return Domains.First().GetColor(latitude, longitude, altitude, this);
-			var orderedDomains = Domains.OrderByDescending(d => d.GetWeight(latitude, longitude, altitude)).ToArray();
+			if (Domains.Count == 1) return colorRetriever(Domains.First());
+			var orderedDomains = Domains.OrderByDescending(weightRetriever).ToArray();
 			var first = orderedDomains[0];
-			var firstWeight = first.GetWeight(latitude, longitude, altitude);
-			var firstColor = first.GetColor(latitude, longitude, altitude, this);
+			var firstWeight = weightRetriever(first);
+			var firstColor = colorRetriever(first);
 
 			if (Mathf.Approximately(firstWeight, 0f)) return firstColor;
 
 			var second = orderedDomains[1];
-			var secondWeight = second.GetWeight(latitude, longitude, altitude);
+			var secondWeight = weightRetriever(second);
 
 			if (Mathf.Approximately(secondWeight, 0f)) return firstColor;
 
-			var secondColor = second.GetColor(latitude, longitude, altitude, this);
+			var secondColor = colorRetriever(second);
 
 			var scalar = 0.5f - (((firstWeight - secondWeight) / firstWeight) * 0.5f);
 
 			return Color.Lerp(firstColor, secondColor, scalar);
+		}
+
+		public Color GetSphereColor(float latitude, float longitude, float altitude)
+		{
+			return GetColor(domain => domain.GetSphereWeight(latitude, longitude, altitude), domain => domain.GetSphereColor(latitude, longitude, altitude, this));
 		}
 
 		public void GetSphereColors(int width, int height, Sphere sphere, ref Color[] colors)
@@ -101,7 +105,12 @@ namespace LunraGames.NoiseMaker
 			}
 		}
 
-		public void GetFlatColors(int width, int height, IModule module, ref Color[] colors)
+		public Color GetPlaneColor(float x, float y, float altitude)
+		{
+			return GetColor(domain => domain.GetPlaneWeight(x, y, altitude), domain => domain.GetPlaneColor(x, y, altitude, this));
+		}
+
+		public void GetPlaneColors(int width, int height, IModule module, ref Color[] colors)
 		{
 			if (colors == null) throw new ArgumentNullException("colors");
 			if (height * width != colors.Length) throw new ArgumentOutOfRangeException("colors");
@@ -111,7 +120,7 @@ namespace LunraGames.NoiseMaker
 				for (var y = 0; y < height; y++)
 				{
 					var value = (float)module.GetValue(x, y, 0f);
-					colors[(y * width) + x] = Color.white.NewV(value);
+					colors[(y * width) + x] = GetPlaneColor(x, y, value);
 				}
 			}
 		}
