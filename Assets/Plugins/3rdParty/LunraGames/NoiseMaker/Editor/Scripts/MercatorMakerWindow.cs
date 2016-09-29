@@ -765,13 +765,13 @@ namespace LunraGames.NoiseMaker
 				var module = node.GetValue(Graph);
 				PreviewModule = module;
 
-				PreviewTexture = NoiseMakerWindow.GetPlaneTexture(module, (int)area.width, (int)area.height, Mercator, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == module) ? false : PreviewUpdating);
+				PreviewTexture = NoiseMakerWindow.GetPlaneTexture(module, 512, 512, Mercator, completed: () => PreviewUpdating = (PreviewLastUpdated == lastUpdate && PreviewSelected == index && PreviewModule == module) ? false : PreviewUpdating);
 
 				PreviewLastUpdated = lastUpdate;
 
 				Repaint();
 			}
-			GUI.DrawTexture(new Rect(2f, 2f, area.width - 4f, area.height - 4f), PreviewTexture);
+			GUI.DrawTexture(new Rect(area.width - 1024f, 2f, 1024f, 512f), PreviewTexture);
 		}
 
 		/// <summary>
@@ -956,11 +956,6 @@ namespace LunraGames.NoiseMaker
 		public static void QueueRepaint()
 		{
 			RepaintQueued = true;
-		}
-		[Interloper.InterloperLinked]
-		static void LolNullIt()
-		{
-			Instance.Graph = null;
 		}
 	}
 }

@@ -40,10 +40,11 @@ namespace LunraGames.NoiseMaker
 
 			var changed = false;
 
-			Filtering.enumValueIndex = Deltas.DetectDelta<int>(Filtering.enumValueIndex, GUILayout.Toolbar(Filtering.enumValueIndex, Enum.GetNames(typeof(NoiseMaker.Filtering))), ref changed);
-			var filtering = (NoiseMaker.Filtering)Filtering.enumValueIndex;
-			if (changed && filtering == NoiseMaker.Filtering.Sphere && MapWidth.intValue != (MapHeight.intValue * 2)) MapWidth.intValue = MapHeight.intValue * 2;
-			changed = false;
+			// todo: implement filtering
+			//Filtering.enumValueIndex = Deltas.DetectDelta(Filtering.enumValueIndex, GUILayout.Toolbar(Filtering.enumValueIndex, Enum.GetNames(typeof(NoiseMaker.Filtering))), ref changed);
+			var filtering = (Filtering)Filtering.enumValueIndex;
+			//if (changed && filtering == NoiseMaker.Filtering.Sphere && MapWidth.intValue != (MapHeight.intValue * 2)) MapWidth.intValue = MapHeight.intValue * 2;
+			//changed = false;
 
 			GUI.enabled = Application.isPlaying && NoiseGraph.objectReferenceValue != null && MercatorMap.objectReferenceValue != null;
 			if (GUILayout.Button("Regenerate")) (target as NoiseFilter).Regenerate();
