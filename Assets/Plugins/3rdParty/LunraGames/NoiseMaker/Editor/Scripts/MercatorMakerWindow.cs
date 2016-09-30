@@ -470,6 +470,8 @@ namespace LunraGames.NoiseMaker
 						GUILayout.Label(editorEntry.Details.Description+".");
 						if (string.IsNullOrEmpty(domain.Name))
 						{
+							// todo: Domains as biomes
+							/*
 							if (GUILayout.Button("Convert Domain to Prefab", GUILayout.Width(Layouts.ConvertToPrefabButtonWidth)))
 							{
 								TextDialogPopup.Show(
@@ -483,6 +485,7 @@ namespace LunraGames.NoiseMaker
 									description: "Choose a unique name for this Domain."
 								);
 							}
+							*/
 						}
 						else if (GUILayout.Button("Rename Domain", GUILayout.Width(Layouts.ConvertToPrefabButtonWidth)))
 						{
@@ -581,36 +584,20 @@ namespace LunraGames.NoiseMaker
 					}
 					GUILayout.EndHorizontal();
 
-					var altitudeOptions = new List<string>(new [] {"Select an Altitude...", "--- Create a New Altitude ---"});
+					var altitudeOptions = new List<string>(new [] { "Select an Altitude..." });
 					foreach (var orderedEditor in altitudeEditors) altitudeOptions.Add(orderedEditor.Details.Name);
-
-					var existingIndex = altitudeOptions.Count;
-					altitudeOptions.Add("--- Link Existing Altitude ---");
-					var altitudes = Mercator.Altitudes.Where(a => !string.IsNullOrEmpty(a.Name)).OrderBy(a => a.Name).ToList();
-					foreach (var orderedAltitude in altitudes) altitudeOptions.Add(orderedAltitude.Name);
 
 					GUILayout.BeginHorizontal();
 					{
 						var selected = EditorGUILayout.Popup(0, altitudeOptions.ToArray());
 
-						if (1 < selected && selected != existingIndex) 
+						if (0 < selected) 
 						{
-							if (selected < existingIndex)
-							{
-								// Creating a new altitude.
-								altitude = Activator.CreateInstance(altitudeEditors.ToList()[selected - 2].Details.Target) as Altitude;
-								altitude.Id = Guid.NewGuid().ToString();
-								Mercator.Altitudes.Add(altitude);
-								biome.AltitudeIds.Add(altitude.Id);
-							}
-							else
-							{
-								// Linking an existing altitude.
-								var existingAltitude = altitudes[selected - existingIndex];
-								Debug.Log("Linking "+existingAltitude.Name);
-								if (biome.AltitudeIds.Contains(existingAltitude.Id)) EditorUtility.DisplayDialog("Invalid", "The Altitude \""+existingAltitude.Name+"\" already exists in this Biome.", "Okay");
-								else biome.AltitudeIds.Add(existingAltitude.Id);
-							}
+							// Creating a new altitude.
+							altitude = Activator.CreateInstance(altitudeEditors.ToList()[selected - 1].Details.Target) as Altitude;
+							altitude.Id = Guid.NewGuid().ToString();
+							Mercator.Altitudes.Add(altitude);
+							biome.AltitudeIds.Add(altitude.Id);
 							biomePreview.Stale = true;
 						}
 					}
