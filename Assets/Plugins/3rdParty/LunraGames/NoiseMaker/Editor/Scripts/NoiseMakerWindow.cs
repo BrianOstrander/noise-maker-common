@@ -472,7 +472,7 @@ namespace LunraGames.NoiseMaker
 							GUILayout.BeginHorizontal();
 							{
 								// Add a nice little margin
-								GUILayout.Box(GUIContent.none, EditorStyles.miniButtonLeft, GUILayout.Width(16f), GUILayout.ExpandHeight(true));
+								GUILayout.Box(GUIContent.none, Styles.LeftBracket, GUILayout.Width(16f), GUILayout.ExpandHeight(true));
 								// Start drawing the actual options
 								GUILayout.BeginVertical();
 								{
@@ -598,7 +598,7 @@ namespace LunraGames.NoiseMaker
 			{
 				GUILayout.BeginHorizontal();
 				{
-					GUILayout.Box(GUIContent.none, EditorStyles.miniButtonLeft, GUILayout.Width(16f), GUILayout.Height(area.height));
+					GUILayout.Box(GUIContent.none, Styles.LeftBracket, GUILayout.Width(16f), GUILayout.Height(area.height));
 
 					GUILayout.BeginVertical(Styles.PreviewBackground);
 					{
@@ -630,7 +630,7 @@ namespace LunraGames.NoiseMaker
 						}
 						GUILayout.EndHorizontal();
 						// todo: remove the magic numbers below
-						var previewArea = new Rect(14f, 24f, area.width - 14f, area.height - 24f);
+						var previewArea = new Rect(15f, 25f, area.width - 15f, area.height - 25f);
 
 						GUILayout.BeginArea(previewArea);
 						{

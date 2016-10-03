@@ -25,7 +25,7 @@ namespace LunraGames.NoiseMaker
 		[MenuItem ("Window/Lunra Games/Noise Maker/Preview")]
 		static void Init () 
 		{
-			var window = EditorWindow.GetWindow(typeof (PreviewWindow), false, "Noise Maker Preview") as PreviewWindow;
+			var window = GetWindow(typeof (PreviewWindow), false, "Noise Maker Preview") as PreviewWindow;
 			window.titleContent = new GUIContent("Preview", NoiseMakerConfig.Instance.PreviewTab);
 			window.minSize = new Vector2(650f, 650f);
 			window.Show();

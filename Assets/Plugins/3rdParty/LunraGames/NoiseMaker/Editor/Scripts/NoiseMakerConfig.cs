@@ -127,12 +127,6 @@ namespace LunraGames.NoiseMaker
 		[SerializeField]
 		GUIStyle BiomeAltitudeEditWidgetPeasant;
 
-		public Texture2D BiomeAltitudeViewWidget { get { return EditorGUIUtility.isProSkin ? BiomeAltitudeViewWidgetPro : BiomeAltitudeViewWidgetPeasant; } }
-		[SerializeField]
-		Texture2D BiomeAltitudeViewWidgetPro;
-		[SerializeField]
-		Texture2D BiomeAltitudeViewWidgetPeasant;
-
 		public GUIStyle BiomeAltitudeWidgetTop { get { return EditorGUIUtility.isProSkin ? BiomeAltitudeWidgetTopPro : BiomeAltitudeWidgetTopPeasant; } }
 		[SerializeField]
 		GUIStyle BiomeAltitudeWidgetTopPro;

@@ -7,6 +7,21 @@ namespace LunraGames.NoiseMaker
 	public class Styles
 	{
 		public static Color RootColor { get { return Color.cyan; } }
+		public static Color BackgroundColor { get { return EditorGUIUtility.isProSkin ? new Color(0.219f, 0.219f, 0.219f) : Color.HSVToRGB(0f, 0f, 0.765f); } }
+		public static Color IoBorderNormalColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0f, 0f, 0.35f) : Color.HSVToRGB(0f, 0f, 0.5f); } }
+		public static Color IoInsideNormalColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0f, 0f, 0.25f) : Color.HSVToRGB(0f, 0f, 0.7f); } }
+		public static Color IoBorderActiveColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0f, 0f, 0.4f) : Color.HSVToRGB(0f, 0f, 0.6f); } }
+		public static Color IoInsideActiveColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0f, 0f, 0.5f) : Color.HSVToRGB(0f, 0f, 0.9f); } }
+
+		public static Color RenameBorderNormalColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0.55f, 0.4f, 0.5f) : Color.HSVToRGB(0.55f, 0.4f, 0.7f); } }
+		public static Color RenameInsideNormalColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0.51f, 0.3f, 0.5f) : Color.HSVToRGB(0.51f, 0.3f, 0.7f); } }
+		public static Color RenameBorderActiveColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0.55f, 0.3f, 0.6f) : Color.HSVToRGB(0.55f, 0.3f, 0.5f); } }
+		public static Color RenameInsideActiveColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0.51f, 0.4f, 0.6f) : Color.HSVToRGB(0.51f, 0.4f, 0.5f); } }
+
+		public static Color CloseBorderNormalColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0f, 0.4f, 0.5f) : Color.HSVToRGB(0f, 0.4f, 0.7f); } }
+		public static Color CloseInsideNormalColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0f, 0.3f, 0.5f) : Color.HSVToRGB(0f, 0.3f, 0.7f); } }
+		public static Color CloseBorderActiveColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0f, 0.3f, 0.6f) : Color.HSVToRGB(0f, 0.3f, 0.5f); } }
+		public static Color CloseInsideActiveColor { get { return EditorGUIUtility.isProSkin ? Color.HSVToRGB(0f, 0.4f, 0.6f) : Color.HSVToRGB(0f, 0.4f, 0.5f); } }
 
 		static GUIStyle _Blank;
 
@@ -26,8 +41,8 @@ namespace LunraGames.NoiseMaker
 					{
 						for (var y = 0; y < active.height; y++)
 						{
-							active.SetPixel(x, y, new Color(0.219f, 0.219f, 0.219f));
-							normal.SetPixel(x, y, new Color(0.219f, 0.219f, 0.219f));
+							active.SetPixel(x, y, BackgroundColor);
+							normal.SetPixel(x, y, BackgroundColor);
 						}
 					}
 					normal.Apply();
@@ -60,8 +75,8 @@ namespace LunraGames.NoiseMaker
 					{
 						for (var y = 0; y < active.height; y++)
 						{
-							var normalColor = x == 0 || y == 0 || x == normal.width - 1 || y == normal.height - 1 ? Color.HSVToRGB(0f, 0f, 0.35f) : Color.HSVToRGB(0f, 0f, 0.25f);
-							var activeColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0f, 0f, 0.4f) : Color.HSVToRGB(0f, 0f, 0.5f);
+							var normalColor = x == 0 || y == 0 || x == normal.width - 1 || y == normal.height - 1 ? IoBorderNormalColor : IoInsideNormalColor;
+							var activeColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? IoBorderActiveColor :IoInsideActiveColor ;
 							active.SetPixel(x, y, activeColor.NewA(1f));
 							normal.SetPixel(x, y, normalColor.NewA(1f));
 						}
@@ -122,8 +137,8 @@ namespace LunraGames.NoiseMaker
 					{
 						for (var y = 0; y < active.height; y++)
 						{
-							var normalColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0f, 0.4f, 0.5f) : Color.HSVToRGB(0f, 0.3f, 0.5f);
-							var activeColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0f, 0.3f, 0.6f) : Color.HSVToRGB(0f, 0.4f, 0.6f);
+							var normalColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? CloseBorderNormalColor : CloseInsideNormalColor;
+							var activeColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? CloseBorderActiveColor : CloseInsideActiveColor;
 							active.SetPixel(x, y, activeColor.NewA(1f));
 							normal.SetPixel(x, y, normalColor.NewA(1f));
 						}
@@ -157,8 +172,8 @@ namespace LunraGames.NoiseMaker
 					{
 						for (var y = 0; y < active.height; y++)
 						{
-							var normalColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0.55f, 0.4f, 0.5f) : Color.HSVToRGB(0.51f, 0.3f, 0.5f);
-							var activeColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? Color.HSVToRGB(0.55f, 0.3f, 0.6f) : Color.HSVToRGB(0.51f, 0.4f, 0.6f);
+							var normalColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? RenameBorderNormalColor : RenameInsideNormalColor;
+							var activeColor = x == 0 || y == 0 || x == active.width - 1 || y == active.height - 1 ? RenameBorderActiveColor : RenameInsideActiveColor;
 							active.SetPixel(x, y, activeColor.NewA(1f));
 							normal.SetPixel(x, y, normalColor.NewA(1f));
 						}
@@ -205,12 +220,12 @@ namespace LunraGames.NoiseMaker
 				{
 					_OptionBox = new GUIStyle(GUI.skin.box);
 					var background = new Texture2D(_OptionBox.normal.background.width, _OptionBox.normal.background.height);
-
+					var borderColor = EditorGUIUtility.isProSkin ? Color.HSVToRGB(0f, 0f, 0.1f) : Color.HSVToRGB(0f, 0f, 0.8f);
 					for (var x = 0; x < background.width; x++)
 					{
 						for (var y = 0; y < background.height; y++)
 						{
-							var color = x == 0 || x == background.width - 1 ? Color.HSVToRGB(0f, 0f, 0.1f) : Color.HSVToRGB(0f, 0f, 0.25f);
+							var color = x == 0 || x == background.width - 1 ? borderColor : BackgroundColor;
 							background.SetPixel(x, y, color.NewA(0.75f));
 						}
 					}
@@ -387,7 +402,7 @@ namespace LunraGames.NoiseMaker
 			{
 				if (_PreviewToolbarLeft == null)
 				{
-					_PreviewToolbarLeft = new GUIStyle(EditorStyles.miniButtonLeft);
+					_PreviewToolbarLeft = EditorGUIUtility.isProSkin ? new GUIStyle(EditorStyles.miniButtonLeft) : new GUIStyle(GUI.skin.button);
 					_PreviewToolbarLeft.alignment = TextAnchor.LowerLeft;
 					_PreviewToolbarLeft.fontSize = 18;
 					_PreviewToolbarLeft.fixedHeight = 23f;
@@ -405,7 +420,7 @@ namespace LunraGames.NoiseMaker
 			{
 				if (_PreviewToolbarMiddle == null)
 				{
-					_PreviewToolbarMiddle = new GUIStyle(EditorStyles.miniButtonMid);
+					_PreviewToolbarMiddle = EditorGUIUtility.isProSkin ? new GUIStyle(EditorStyles.miniButtonMid) : new GUIStyle(GUI.skin.button);
 					_PreviewToolbarMiddle.alignment = TextAnchor.MiddleCenter;
 					_PreviewToolbarMiddle.fontSize = 18;
 					_PreviewToolbarMiddle.fixedHeight = 23f;
@@ -461,7 +476,7 @@ namespace LunraGames.NoiseMaker
 					{
 						for (var y = 0; y < background.height; y++)
 						{
-							var color = (background.height - 16) < y ? Color.clear : Color.HSVToRGB(0f, 0f, 0.25f);
+							var color = (background.height - 16) < y ? Color.clear : BackgroundColor;
 							background.SetPixel(x, y, color);
 						}
 					}
@@ -506,7 +521,7 @@ namespace LunraGames.NoiseMaker
 			{
 				if (_MercatorSelectionEditorHeader == null)
 				{
-					_MercatorSelectionEditorHeader = new GUIStyle(EditorStyles.miniButtonMid);
+					_MercatorSelectionEditorHeader = EditorGUIUtility.isProSkin ? new GUIStyle(EditorStyles.miniButtonMid) : new GUIStyle(GUI.skin.button);
 					_MercatorSelectionEditorHeader.alignment = TextAnchor.MiddleLeft;
 					_MercatorSelectionEditorHeader.fontSize = 18;
 				}
@@ -528,6 +543,16 @@ namespace LunraGames.NoiseMaker
 				}
 
 				return _MercatorLatitudeText;
+			}
+		}
+
+		static GUIStyle _LeftBracket;
+
+		public static GUIStyle LeftBracket
+		{
+			get
+			{
+				return _LeftBracket ?? (_LeftBracket = EditorGUIUtility.isProSkin ? EditorStyles.miniButtonLeft : GUI.skin.button);
 			}
 		}
 	}
