@@ -174,6 +174,15 @@ namespace LunraGames.NoiseMaker
 				GUILayout.FlexibleSpace();
 				GUILayout.BeginVertical();
 				{
+					if (!PluginGuard.IsInPluginsDirectory)
+					{
+						GUILayout.BeginHorizontal();
+						{
+							EditorGUILayout.HelpBox("The Noise Maker plugin and / or its dependencies are not in a plugins directory! This may cause unpredictable behaviour.", MessageType.Warning);
+							if (GUILayout.Button("Learn More", Styles.OptionButtonRight, GUILayout.Height(38f))) System.Diagnostics.Process.Start("https://docs.unity3d.com/Manual/SpecialFolders.html");
+						}
+						GUILayout.EndHorizontal();
+					}
 					GUILayout.Label("Welcome to Noise Maker!");
 					GUILayout.BeginHorizontal();
 					{

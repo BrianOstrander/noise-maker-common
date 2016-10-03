@@ -93,7 +93,7 @@ namespace LunraGames.NoiseMaker
 		[MenuItem ("Window/Lunra Games/Noise Maker/Mercator")]
 		static void Init () 
 		{
-			var window = EditorWindow.GetWindow(typeof (MercatorMakerWindow), false, "Mercator") as MercatorMakerWindow;
+			var window = GetWindow(typeof (MercatorMakerWindow), false, "Mercator") as MercatorMakerWindow;
 			window.titleContent = new GUIContent("Mercator", NoiseMakerConfig.Instance.MercatorTab);
 			window.minSize = new Vector2(650f, 650f);
 			window.Show();
@@ -173,6 +173,15 @@ namespace LunraGames.NoiseMaker
 				GUILayout.FlexibleSpace();
 				GUILayout.BeginVertical();
 				{
+					if (!PluginGuard.IsInPluginsDirectory)
+					{
+						GUILayout.BeginHorizontal();
+						{
+							EditorGUILayout.HelpBox("The Mercator plugin and / or its dependencies are not in a plugins directory! This may cause unpredictable behaviour.", MessageType.Warning);
+							if (GUILayout.Button("Learn More", Styles.OptionButtonRight, GUILayout.Height(38f))) System.Diagnostics.Process.Start("https://docs.unity3d.com/Manual/SpecialFolders.html");
+						}
+						GUILayout.EndHorizontal();
+					}
 					GUILayout.Label("Create or Open Mercator Map");
 					GUILayout.BeginHorizontal();
 					{
