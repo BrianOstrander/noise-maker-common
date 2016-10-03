@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b3f384e6f2064dff864e91d55794299, type: 3}
+  m_Name: MercatorExample
+  m_EditorClassIdentifier: 
+  MercatorJson: '{"$type":"LunraGames.NoiseMaker.Mercator, Assembly-CSharp-firstpass","Domains":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Domain,
+    Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.LatitudeDomain,
+    Assembly-CSharp-firstpass","MinLatitude":16.8000031,"MaxLatitude":61.2000046,"Id":"02811c80-6828-40e4-8b61-cc5bc538b62d","Name":null,"BiomeId":"2be81b18-78d2-4172-b1a1-8885b2d81ec4"},{"$type":"LunraGames.NoiseMaker.LatitudeDomain,
+    Assembly-CSharp-firstpass","MinLatitude":-61.20001,"MaxLatitude":-16.2000065,"Id":"b6b39a3a-91b6-41ca-bf27-2da6a8e5d097","Name":null,"BiomeId":"2be81b18-78d2-4172-b1a1-8885b2d81ec4"},{"$type":"LunraGames.NoiseMaker.LatitudeDomain,
+    Assembly-CSharp-firstpass","MinLatitude":-25.2000065,"MaxLatitude":25.7999954,"Id":"67ee6791-e4e7-4261-ae2f-0ddf7c49020c","Name":null,"BiomeId":"3fa8c440-0f32-4cf9-8971-3e40a7dfd7c8"},{"$type":"LunraGames.NoiseMaker.LatitudeDomain,
+    Assembly-CSharp-firstpass","MinLatitude":38.4,"MaxLatitude":90.0,"Id":"9942dd4c-f78a-40ea-b649-b39ff0a90693","Name":null,"BiomeId":"0036f0d2-1513-4d98-81d2-deddac8660f2"},{"$type":"LunraGames.NoiseMaker.LatitudeDomain,
+    Assembly-CSharp-firstpass","MinLatitude":-90.0,"MaxLatitude":-38.9999924,"Id":"e88da7ec-1ad0-4026-ab41-836fa008b1bb","Name":null,"BiomeId":"0036f0d2-1513-4d98-81d2-deddac8660f2"},{"$type":"LunraGames.NoiseMaker.RadialDomain,
+    Assembly-CSharp-firstpass","Center":{"x":0.0,"y":0.0},"Radius":1000.0,"Id":"55315245-48a7-4a3b-a511-aeec49165a09","Name":null,"BiomeId":"2be81b18-78d2-4172-b1a1-8885b2d81ec4"}]},"Biomes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Biome,
+    Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.Biome,
+    Assembly-CSharp-firstpass","Id":"2be81b18-78d2-4172-b1a1-8885b2d81ec4","Name":"Temperate","AltitudeIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":["89d017ab-b4ac-49d4-806b-928960e6b127","05dd0f0b-87c6-4e37-b986-afbadbf1a5e1","5fc10aed-2bb1-466b-b8aa-92ccfa41c2ae"]}},{"$type":"LunraGames.NoiseMaker.Biome,
+    Assembly-CSharp-firstpass","Id":"3fa8c440-0f32-4cf9-8971-3e40a7dfd7c8","Name":null,"AltitudeIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":["45782a69-551d-4946-8ee0-32a6be300b53","b14c667e-4dac-43a5-9dea-f9d07a5fca9f","7bfae98c-8ea3-4611-a5b0-6b9265eda1e6","09353064-a72d-4c75-bc39-87e50ed38374"]}},{"$type":"LunraGames.NoiseMaker.Biome,
+    Assembly-CSharp-firstpass","Id":"0036f0d2-1513-4d98-81d2-deddac8660f2","Name":"Polar","AltitudeIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":["25aa060d-11c9-43ed-828f-82a344e19fb6","b9491306-9cf6-42c0-bac7-ab40f20dadeb"]}},{"$type":"LunraGames.NoiseMaker.Biome,
+    Assembly-CSharp-firstpass","Id":"25b0cbdd-4d3c-46b8-8675-b974089dce05","Name":null,"AltitudeIds":{"$type":"System.Collections.Generic.List`1[[System.String,
+    mscorlib]], mscorlib","$values":["117082a6-fed4-46df-bc4c-6ae48a3781fc","ccfd6b05-2d75-4597-8357-6f9328fac260"]}}]},"Altitudes":{"$type":"System.Collections.Generic.List`1[[LunraGames.NoiseMaker.Altitude,
+    Assembly-CSharp-firstpass]], mscorlib","$values":[{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.0,"g":0.255172253,"b":1.0,"a":1.0},"Id":"89d017ab-b4ac-49d4-806b-928960e6b127","Name":null,"MinAltitude":-1.0,"MaxAltitude":-0.605545461},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.0,"g":0.751724243,"b":1.0,"a":1.0},"Id":"05dd0f0b-87c6-4e37-b986-afbadbf1a5e1","Name":null,"MinAltitude":-0.706611156,"MaxAltitude":-0.15700455},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":1.0,"g":0.881999969,"b":0.0,"a":1.0},"Id":"5fc10aed-2bb1-466b-b8aa-92ccfa41c2ae","Name":null,"MinAltitude":-0.322314024,"MaxAltitude":1.0},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.0,"g":0.255172253,"b":1.0,"a":1.0},"Id":"45782a69-551d-4946-8ee0-32a6be300b53","Name":null,"MinAltitude":-1.0,"MaxAltitude":-0.5289251},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.0,"g":0.751724243,"b":1.0,"a":1.0},"Id":"b14c667e-4dac-43a5-9dea-f9d07a5fca9f","Name":null,"MinAltitude":-0.6611567,"MaxAltitude":-0.165289044},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":1.0,"g":0.881999969,"b":0.0,"a":1.0},"Id":"7bfae98c-8ea3-4611-a5b0-6b9265eda1e6","Name":null,"MinAltitude":-0.257231027,"MaxAltitude":0.09310968},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.116632961,"g":0.7352941,"b":0.0,"a":1.0},"Id":"09353064-a72d-4c75-bc39-87e50ed38374","Name":null,"MinAltitude":1.07756328E-07,"MaxAltitude":1.0},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.301470578,"g":0.91328603,"b":1.0,"a":1.0},"Id":"25aa060d-11c9-43ed-828f-82a344e19fb6","Name":null,"MinAltitude":-0.8966815,"MaxAltitude":-0.190065429},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"Id":"b9491306-9cf6-42c0-bac7-ab40f20dadeb","Name":null,"MinAltitude":-0.3719004,"MaxAltitude":0.9339622},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"Id":"65024e66-b8d4-4128-a0eb-7b957db28d99","Name":null,"MinAltitude":-0.5,"MaxAltitude":0.5},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"Id":"4a807fe2-51cc-4335-9c6a-935b855e9c76","Name":null,"MinAltitude":-0.504129946,"MaxAltitude":1.0},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":0.557850361,"g":0.808420837,"b":0.9852941,"a":1.0},"Id":"117082a6-fed4-46df-bc4c-6ae48a3781fc","Name":null,"MinAltitude":-0.951635838,"MaxAltitude":-0.165307462},{"$type":"LunraGames.NoiseMaker.ColorAltitude,
+    Assembly-CSharp-firstpass","Color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"Id":"ccfd6b05-2d75-4597-8357-6f9328fac260","Name":null,"MinAltitude":-0.272727281,"MaxAltitude":0.814045668}]}}'
