@@ -1,0 +1,1 @@
+In order for Noise Maker, Mercator, and other Lunra Games plugins to work, please put the entire Lunra Games folder and its contents in the "Plugins" folder. For more information on special folders, visit https://docs.unity3d.com/Manual/SpecialFolders.html
