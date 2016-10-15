@@ -14,7 +14,7 @@ namespace LunraGames.NoiseMaker
 
 		public override IModule GetValue (Graph graph)
 		{
-			var source = GetLocalIfValueNull<IModule>(Source, 0, graph);
+			var source = GetLocalIfValueNull(Source, 0, graph);
 
 			if (source == null) return null;
 

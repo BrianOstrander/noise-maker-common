@@ -183,6 +183,8 @@ namespace LunraGames.NoiseMaker
 
 		public INode DrawFields(Graph graph, INode node, bool showPreview = true)
 		{
+			var wasEnabled = GUI.enabled;
+
 			var preview = GetPreview(node.OutputType, graph, node);
 
 			if (showPreview) 
@@ -207,7 +209,7 @@ namespace LunraGames.NoiseMaker
 					if (originNode != null) usedNodeValue = originNode.GetRawValue(graph);
 				}
 
-				GUI.enabled = !usingLinkedNode;
+				GUI.enabled = !usingLinkedNode && wasEnabled;
 
 				var wasColor = GUI.color;
 				GUI.color = link.Type == NoiseMakerWindow.ConnectingFromOutputType ? Color.cyan : Color.white;
@@ -291,6 +293,7 @@ namespace LunraGames.NoiseMaker
 				GUI.color = wasColor;
 			}
 
+			GUI.enabled = wasEnabled;
 			return node;
 		}
 
