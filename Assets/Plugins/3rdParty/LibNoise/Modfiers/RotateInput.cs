@@ -28,11 +28,11 @@ namespace LibNoise.Modifiers
         : IModule
     {
         public IModule SourceModule { get; set; }
-
+#pragma warning disable 414
         private double XAngle;
         private double YAngle;
         private double ZAngle;
-
+#pragma warning restore 414
         /// An entry within the 3x3 rotation matrix used for rotating the
         /// input value.
         double m_x1Matrix;
@@ -76,9 +76,7 @@ namespace LibNoise.Modifiers
                 throw new ArgumentNullException("A source module must be provided.");
 
             SourceModule = sourceModule;
-            XAngle = xAngle;
-            YAngle = yAngle;
-            ZAngle = zAngle;
+            SetAngles(xAngle, yAngle, zAngle);
         }
 
         public void SetAngles(double xAngle, double yAngle, double zAngle)

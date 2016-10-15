@@ -65,7 +65,7 @@ namespace LibNoise.Modifiers
 
         public void SetBounds(double lowerBound, double upperBound)
         {
-            if (LowerBound >= upperBound)
+            if (lowerBound >= upperBound)
                 throw new Exception("Lower bound must be lower than upper bound.");
 
             LowerBound = lowerBound;

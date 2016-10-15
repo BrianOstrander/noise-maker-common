@@ -1,0 +1,20 @@
+[submodule "Assets/Plugins/3rdParty/LunraGames/Core"]
+	path = Assets/Plugins/3rdParty/LunraGames/Core
+	url = https://github.com/LunraGames/Core.git
+	branch = master
+[submodule "Assets/Plugins/3rdParty/LunraGames/Interloper"]
+	path = Assets/Plugins/3rdParty/LunraGames/Interloper
+	url = https://github.com/LunraGames/Interloper.git
+	branch = master
+[submodule "Assets/Plugins/3rdParty/LunraGames/Narcissus"]
+	path = Assets/Plugins/3rdParty/LunraGames/Narcissus
+	url = https://github.com/LunraGames/Narcissus.git
+	branch = master
+[submodule "Assets/Plugins/3rdParty/LunraGames/Singletonnes"]
+	path = Assets/Plugins/3rdParty/LunraGames/Singletonnes
+	url = https://github.com/LunraGames/Singletonnes.git
+	branch = master
+[submodule "Assets/Plugins/3rdParty/LunraGames/PlugIt"]
+	path = Assets/Plugins/3rdParty/LunraGames/PlugIt
+	url = https://github.com/LunraGames/PlugIt.git
+	branch = develop

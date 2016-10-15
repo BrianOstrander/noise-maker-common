@@ -1,54 +1,39 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using LibNoise;
-using System;
-using UnityEditor;
+using LunraGames.NumberDemon;
 
 namespace LunraGames.NoiseMaker
 {
-	public class PerlinNode : Node
+	public class PerlinNode : Node<IModule>
 	{
-		Perlin module = new Perlin();
-		Texture2D preview = new Texture2D(256, 256);
+		[NodeLinker(0)]
+		public float Frequency = 0.02f;
+		[NodeLinker(1)]
+		public float Lacunarity;
+		[NodeLinker(2)]
+		public NoiseQuality Quality = NoiseQuality.Standard;
+		[NodeLinker(3, 1, 29)]
+		public int OctaveCount = 1;
+		[NodeLinker(4)]
+		public float Persistence;
+		[NodeLinker(5)]
+		public int Seed = DemonUtility.NextInteger;
 
-		public PerlinNode()
+		public override IModule GetValue (Graph graph)
 		{
-			Name = "Perlin";
-			var frequency = new Action<float>(val => module.Frequency = val);
-			var lacunarity = new Action<float>(val => module.Lacunarity = val);
-			// todo: noise quality
-			//var noiseQuality = new Action<float>(val => module.NoiseQuality = val);
-			var octaveCount = new Action<int>(val => module.OctaveCount = val);
-			var persistence = new Action<float>(val => module.Persistence = val);
-			var seed = new Action<int>(val => module.Seed = val);
+			var values = NullableValues(graph);
 
-			Fields = new List<Field>
-			{
-				new Field { Name = "Frequency", FieldType = typeof(float), OnChange = val => frequency((float)val) },
-				new Field { Name = "Lacunarity", FieldType = typeof(float), OnChange = val => lacunarity((float)val) },
-				new Field { Name = "Octaves", FieldType = typeof(int), OnChange = val => octaveCount((int)val) },
-				new Field { Name = "Persistence", FieldType = typeof(float), OnChange = val => persistence((float)val) },
-				new Field { Name = "Seed", FieldType = typeof(int), OnChange = val => seed((int)val) }
-			};
-		}
+			var perlin = Value == null ? new Perlin() : Value as Perlin;
 
-		protected override void OnDraw()
-		{
-			if (GUILayout.Button("Redraw"))
-			{
-				for (var x = 0; x < preview.width; x ++)
-				{
-					for (var y = 0; y < preview.height; y++) 
-					{
-						var val = (float)module.GetValue((float)x, (float)y, 0.0);
-						preview.SetPixel(x, y, new Color(val, val, val, 1f));
-						//Debug.Log(val);
-					}
-				}
-				preview.Apply();
-			}
-			GUILayout.Box(preview);
-			DrawFields();
+			perlin.Frequency = GetLocalIfValueNull<float>(Frequency, 0, values);
+			perlin.Lacunarity = GetLocalIfValueNull<float>(Lacunarity, 1, values);
+			perlin.NoiseQuality = GetLocalIfValueNull<NoiseQuality>(Quality, 2, values);
+			perlin.OctaveCount = GetLocalIfValueNull<int>(OctaveCount, 3, values);
+			perlin.Persistence = GetLocalIfValueNull<float>(Persistence, 4, values);
+			perlin.Seed = GetLocalIfValueNull<int>(Seed, 5, values);
+
+			Value = perlin;
+			return Value;
 		}
 	}
 }
