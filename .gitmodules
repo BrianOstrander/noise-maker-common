@@ -18,3 +18,6 @@
 	path = Assets/Plugins/3rdParty/LunraGames/PlugIt
 	url = https://github.com/LunraGames/PlugIt.git
 	branch = develop
+[submodule "Assets/Plugins/3rdParty/LibNoiseNet"]
+	path = Assets/Plugins/3rdParty/LibNoiseNet
+	url = https://BrianOstrander@github.com/LunraGames/LibNoiseNet.git
