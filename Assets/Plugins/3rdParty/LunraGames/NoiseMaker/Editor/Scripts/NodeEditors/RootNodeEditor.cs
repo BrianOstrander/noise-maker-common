@@ -11,7 +11,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var rootNode = DrawFields(graph, node) as RootNode;
 
-			var preview = GetPreview<float>(graph, node);
+			var preview = GetPreview(graph, node);
 
 			graph.Seed = Deltas.DetectDelta<int>(graph.Seed, EditorGUILayout.IntField("Seed", graph.Seed), ref preview.Stale);
 

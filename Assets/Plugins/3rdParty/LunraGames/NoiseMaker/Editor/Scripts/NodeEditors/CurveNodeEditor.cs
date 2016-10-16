@@ -1,80 +1,27 @@
-﻿using UnityEngine;
-using System.Collections;
-using System;
-using System.Linq;
-using UnityEditor;
-using LibNoise;
-using LibNoise.Modifiers;
-using System.Collections.Generic;
-
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace LunraGames.NoiseMaker
 {
-	[NodeDrawer(typeof(CurveNode), Strings.Modifiers, "Curve")]
+	[NodeDrawer(typeof(CurveNode), Strings.Properties, "Curve")]
 	public class CurveNodeEditor : NodeEditor
 	{
-		static Dictionary<string, Vector2> ScrollPositions = new Dictionary<string, Vector2>();
-
 		public override INode Draw(Graph graph, INode node)
 		{
-			var curve = node as CurveNode;
+			var curveNode = node as CurveNode;
 
-			if (curve.GetValue(graph) != null)
+			var preview = GetPreview(graph, node);
+
+			var unmodifiedCurve = new AnimationCurve();
+			foreach (var key in curveNode.PropertyValue.keys)
 			{
-				var preview = GetPreview<IModule>(graph, node);
-				GUILayout.Box(preview.Preview);
-
-				GUILayout.FlexibleSpace();
-
-				var lastPoints = new List<Vector2>(curve.Points);
-
-				var scrollPos = Vector2.zero;
-				if (ScrollPositions.ContainsKey(curve.Id)) scrollPos = ScrollPositions[curve.Id];
-				else ScrollPositions.Add(curve.Id, scrollPos);
-
-				if (GUILayout.Button("Add")) curve.Points.Add(Vector2.zero);
-
-				scrollPos = GUILayout.BeginScrollView(new Vector2(0f, scrollPos.y), false, false, GUILayout.Height(96f));
-				{
-					var showDelete = 4 < curve.Points.Count;
-					int? deletedIndex = null;
-					for (var i = 0; i < curve.Points.Count; i++)
-					{
-						var unmodifiedI = i;
-						GUILayout.BeginHorizontal();
-						var x = EditorGUILayout.FloatField(curve.Points[unmodifiedI].x);
-						var y = EditorGUILayout.FloatField(curve.Points[unmodifiedI].y);
-						curve.Points[i] = new Vector2(x, y);
-						if (showDelete && GUILayout.Button("X")) deletedIndex = unmodifiedI;
-						GUILayout.EndHorizontal();
-					}
-
-					if (deletedIndex.HasValue) curve.Points.RemoveAt(deletedIndex.Value);
-
-					GUILayout.FlexibleSpace();
-				}
-				GUILayout.EndScrollView();
-
-				ScrollPositions[curve.Id] = scrollPos;
-
-				preview.Stale = preview.Stale || lastPoints.Count != curve.Points.Count;
-
-				if (!preview.Stale)
-				{
-					for (var i = 0; i < lastPoints.Count; i++)
-					{
-						preview.Stale = preview.Stale || lastPoints[i].x != curve.Points[i].x || lastPoints[i].y != curve.Points[i].y;
-					}
-				}
+				unmodifiedCurve.AddKey(new Keyframe(key.time, key.value, key.inTangent, key.outTangent));
 			}
-			else 
-			{
-				EditorGUILayout.HelpBox(Strings.SpecifyAnInput, MessageType.Warning);
-				GUILayout.FlexibleSpace();
-			}
+			// for spooky reasons I can't remember, we need to pass the unmodifiedCurve to the CurveField
+			curveNode.PropertyValue = EditorGUILayout.CurveField("Curve", unmodifiedCurve);
+			preview.Stale = preview.Stale || !AnimationCurveExtensions.CurvesEqual(unmodifiedCurve, curveNode.PropertyValue);
 
-			return curve;
+			return curveNode;
 		}
-
 	}
 }

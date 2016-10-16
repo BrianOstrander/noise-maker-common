@@ -23,7 +23,7 @@ namespace LunraGames.NoiseMaker
 
 		const float RenameWidth = 54f;
 		const float RenameHeight = 18f;
-		const float RenameStartOffset = CloseStartOffset + (CloseWidth * 0.5f) + RenameWidth; 
+		const float RenameStartOffset = CloseStartOffset + (CloseWidth * 0.5f) + RenameWidth;
 
 		public delegate Color CalculateColor(float value, VisualizationPreview previewer);
 
@@ -38,7 +38,7 @@ namespace LunraGames.NoiseMaker
 				if (_Visualizations == null)
 				{
 					_Visualizations = new List<VisualizationPreview>();
-					_Visualizations.Add(new VisualizationPreview 
+					_Visualizations.Add(new VisualizationPreview
 					{
 						Name = "Grayscale",
 						Calculate = Visualizers.Grayscale,
@@ -47,7 +47,7 @@ namespace LunraGames.NoiseMaker
 						ValueMin = 0f,
 						ValueMax = 1f
 					});
-					_Visualizations.Add(new VisualizationPreview 
+					_Visualizations.Add(new VisualizationPreview
 					{
 						Name = "Spectrum",
 						Calculate = Visualizers.Spectrum,
@@ -56,7 +56,7 @@ namespace LunraGames.NoiseMaker
 						HueMin = 0f,
 						HueMax = 1f
 					});
-					_Visualizations.Add(new VisualizationPreview 
+					_Visualizations.Add(new VisualizationPreview
 					{
 						Name = "Cool",
 						Calculate = Visualizers.Spectrum,
@@ -73,7 +73,7 @@ namespace LunraGames.NoiseMaker
 
 		protected static List<NodePreview> Previews = new List<NodePreview>();
 
-		protected NodePreview GetPreview(Type type, Graph graph, INode node)
+		protected NodePreview GetPreview(Graph graph, INode node)
 		{
 			var preview = Previews.FirstOrDefault(p => p.Id == node.Id);
 
@@ -99,7 +99,7 @@ namespace LunraGames.NoiseMaker
 
 			if (preview.Stale)
 			{
-				if (type == typeof(IModule))
+				if (node.OutputType == typeof(IModule))
 				{
 					var module = node.GetRawValue(graph) as IModule;
 					if (module == null) preview.Warning = NodeEditorCacher.Editors[node.GetType()].Details.Warning;
@@ -122,7 +122,7 @@ namespace LunraGames.NoiseMaker
 									}
 								}
 							},
-							() => TextureFarmer.Queue (preview.Preview, pixels, NoiseMakerWindow.QueueRepaint, NoiseMakerWindow.QueueRepaint)
+							() => TextureFarmer.Queue(preview.Preview, pixels, NoiseMakerWindow.QueueRepaint, NoiseMakerWindow.QueueRepaint)
 						);
 					}
 				}
@@ -134,11 +134,6 @@ namespace LunraGames.NoiseMaker
 			}
 
 			return preview;
-		}
-
-		protected NodePreview GetPreview<T>(Graph graph, INode node)
-		{
-			return GetPreview(typeof(T), graph, node);
 		}
 
 		public List<Rect> DrawInputs(Rect position, params NodeIo[] inputs)
@@ -185,7 +180,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var wasEnabled = GUI.enabled;
 
-			var preview = GetPreview(node.OutputType, graph, node);
+			var preview = GetPreview(graph, node);
 
 			if (showPreview) 
 			{
@@ -283,6 +278,25 @@ namespace LunraGames.NoiseMaker
 					{
 						var typedValue = (Vector3) linkValue;
 						link.Field.SetValue(node, Deltas.DetectDelta<Vector3>(typedValue, EditorGUILayout.Vector3Field(link.Name, typedValue), ref preview.Stale));
+					}
+				}
+				else if (link.Type == typeof(AnimationCurve))
+				{
+					if (usedNodeValue != null) EditorGUILayout.CurveField(link.Name, (AnimationCurve)usedNodeValue);
+					else 
+					{
+						var typedValue = linkValue as AnimationCurve;
+
+						var unmodifiedCurve = new AnimationCurve();
+						foreach (var key in typedValue.keys)
+						{
+							unmodifiedCurve.AddKey(new Keyframe(key.time, key.value, key.inTangent, key.outTangent));
+						}
+						// for spooky reasons I can't remember, we need to pass the unmodifiedCurve to the CurveField
+						typedValue = EditorGUILayout.CurveField(link.Name, unmodifiedCurve);
+						preview.Stale = preview.Stale || !AnimationCurveExtensions.CurvesEqual(unmodifiedCurve, typedValue);
+
+						link.Field.SetValue(node, typedValue);
 					}
 				}
 				else

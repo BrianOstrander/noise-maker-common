@@ -2,18 +2,18 @@
 
 namespace LunraGames.NoiseMaker
 {
-	[NodeDrawer(typeof(BooleanNode), Strings.Properties, "Boolean")]
-	public class BooleanNodeEditor : NodeEditor
+	[NodeDrawer(typeof(FloatNode), Strings.Properties, "Float")]
+	public class FloatNodeEditor : NodeEditor
 	{
 		public override INode Draw(Graph graph, INode node)
 		{
-			var booleanNode = node as BooleanNode;
+			var floatNode = node as FloatNode;
 
-			var preview = GetPreview<bool>(graph, node);
+			var preview = GetPreview(graph, node);
 
-			booleanNode.PropertyValue = Deltas.DetectDelta<bool>(booleanNode.PropertyValue, EditorGUILayout.Toggle("Value", booleanNode.PropertyValue), ref preview.Stale);
+			floatNode.PropertyValue = Deltas.DetectDelta(floatNode.PropertyValue, EditorGUILayout.FloatField("Value", floatNode.PropertyValue), ref preview.Stale);
 
-			return booleanNode;
+			return floatNode;
 		}
 	}
 }

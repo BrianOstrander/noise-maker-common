@@ -116,27 +116,42 @@ namespace LunraGames.NoiseMaker
 					else if (value is float)
 					{
 						var typedValue = (float)value;
-						property.Value = Deltas.DetectDelta<float>(typedValue, EditorGUILayout.FloatField(propertyName, typedValue), ref changed);
+						property.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.FloatField(propertyName, typedValue), ref changed);
 					}
 					else if (value is int)
 					{
 						var typedValue = (int)value;
-						property.Value = Deltas.DetectDelta<int>(typedValue, EditorGUILayout.IntField(propertyName, typedValue), ref changed);
+						property.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.IntField(propertyName, typedValue), ref changed);
 					}
 					else if (value is bool)
 					{
 						var typedValue = (bool)value;
-						property.Value = Deltas.DetectDelta<bool>(typedValue, EditorGUILayout.Toggle(propertyName, typedValue), ref changed);
+						property.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.Toggle(propertyName, typedValue), ref changed);
 					}
 					else if (value is Enum) 
 					{
 						var typedValue = (Enum)value;
-						property.Value = Deltas.DetectDelta<Enum>(typedValue, EditorGUILayout.EnumPopup(propertyName, typedValue), ref changed);
+						property.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.EnumPopup(propertyName, typedValue), ref changed);
 					} 
 					else if (value is Vector3) 
 					{
 						var typedValue = (Vector3)value;
-						property.Value = Deltas.DetectDelta<Vector3>(typedValue, EditorGUILayout.Vector3Field(propertyName, typedValue), ref changed);
+						property.Value = Deltas.DetectDelta(typedValue, EditorGUILayout.Vector3Field(propertyName, typedValue), ref changed);
+					}
+					else if (value is AnimationCurve)
+					{
+						var typedValue = (AnimationCurve)value;
+
+						var unmodifiedCurve = new AnimationCurve();
+						foreach (var key in typedValue.keys)
+						{
+							unmodifiedCurve.AddKey(new Keyframe(key.time, key.value, key.inTangent, key.outTangent));
+						}
+						// for spooky reasons I can't remember, we need to pass the unmodifiedCurve to the CurveField
+						typedValue = EditorGUILayout.CurveField(propertyName, unmodifiedCurve);
+						changed = changed || !AnimationCurveExtensions.CurvesEqual(unmodifiedCurve, typedValue);
+
+						property.Value = typedValue;
 					}
 					else EditorGUILayout.HelpBox("Property "+helpboxName+" is of unsupported type \""+value.GetType()+"\".", MessageType.Error);
 
@@ -145,7 +160,7 @@ namespace LunraGames.NoiseMaker
 
 				if (rootChanged || changedProperty != null)
 				{
-					try 
+					try
 					{
 						// Only apply properties to graph if one of them changed.
 						if (changedProperty != null) Graph.Apply(changedProperty);

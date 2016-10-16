@@ -10,7 +10,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var vector3Node = node as Vector3Node;
 
-			var preview = GetPreview<Vector3>(graph, node);
+			var preview = GetPreview(graph, node);
 
 			vector3Node.PropertyValue = Deltas.DetectDelta<Vector3>(vector3Node.PropertyValue, EditorGUILayout.Vector3Field("Value", vector3Node.PropertyValue), ref preview.Stale);
 
