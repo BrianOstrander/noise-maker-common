@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using LibNoise;
 using UnityEngine;
 
@@ -27,7 +26,7 @@ namespace LunraGames.NoiseMaker.Modifiers
             // Get the output value from the source module.
             double sourceModuleValue = SourceModule.GetValue(x, y, z);
 
-            return (double)Curve.Evaluate((float)sourceModuleValue);
+            return Curve.Evaluate((float)sourceModuleValue);
         }
     }
 }

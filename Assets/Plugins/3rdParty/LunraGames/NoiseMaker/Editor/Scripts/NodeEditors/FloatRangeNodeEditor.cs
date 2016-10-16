@@ -14,6 +14,7 @@ namespace LunraGames.NoiseMaker
 			if (rangeNode.UpperBound < rangeNode.LowerBound) EditorGUILayout.HelpBox("Upper bound cannot be less than lower bound.", MessageType.Warning);
 
 			rangeNode = DrawFields(graph, rangeNode, false) as FloatRangeNode;
+
 			var currValue = rangeNode.GetValue(graph);
 
 			GUILayout.BeginHorizontal();

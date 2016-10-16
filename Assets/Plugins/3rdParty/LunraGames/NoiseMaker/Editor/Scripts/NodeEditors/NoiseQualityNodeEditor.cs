@@ -10,7 +10,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var noiseQualityNode = node as NoiseQualityNode;
 
-			var preview = GetPreview<NoiseQuality>(graph, node);
+			var preview = GetPreview(graph, node);
 
 			noiseQualityNode.PropertyValue = Deltas.DetectDelta<NoiseQuality>(noiseQualityNode.PropertyValue, (NoiseQuality)EditorGUILayout.EnumPopup("Value", noiseQualityNode.PropertyValue), ref preview.Stale);
 

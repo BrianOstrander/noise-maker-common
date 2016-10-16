@@ -22,8 +22,8 @@ namespace LunraGames.NoiseMaker
 		{
 			var values = NullableValues(graph);
 
-			var source0 = GetLocalIfValueNull<IModule>(Source0, 0, values);
-			var source1 = GetLocalIfValueNull<IModule>(Source1, 1, values);
+			var source0 = GetLocalIfValueNull(Source0, 0, values);
+			var source1 = GetLocalIfValueNull(Source1, 1, values);
 
 			if (source0 == null || source1 == null) return null;
 

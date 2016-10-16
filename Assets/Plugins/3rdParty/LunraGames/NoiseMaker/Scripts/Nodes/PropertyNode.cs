@@ -25,5 +25,14 @@ namespace LunraGames.NoiseMaker
 			Value = PropertyValue;
 			return Value;
 		}
+
+		[JsonIgnore]
+		protected virtual T DefaultValue { get { return default(T); } }
+
+		public PropertyNode() 
+		{
+			// This may give you a warning, but it should be safe... since it's just getting a default value.
+			PropertyValue = DefaultValue;
+		}
 	}
 }

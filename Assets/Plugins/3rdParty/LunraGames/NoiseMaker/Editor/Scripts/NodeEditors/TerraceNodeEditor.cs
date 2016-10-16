@@ -22,7 +22,7 @@ namespace LunraGames.NoiseMaker
 
 			if (terrace.GetValue(graph) != null)
 			{
-				var preview = GetPreview<IModule>(graph, node);
+				var preview = GetPreview(graph, node);
 				GUILayout.Box(preview.Preview);
 
 				GUILayout.FlexibleSpace();

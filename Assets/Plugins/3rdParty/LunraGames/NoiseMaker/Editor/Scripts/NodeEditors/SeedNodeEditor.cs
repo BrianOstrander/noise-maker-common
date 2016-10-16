@@ -13,7 +13,7 @@ namespace LunraGames.NoiseMaker
 		{
 			var seedNode = node as SeedNode;
 			var currSeed = seedNode.GetValue(graph);
-			var preview = GetPreview<int>(graph, node);
+			var preview = GetPreview(graph, node);
 
 			int lastSeed;
 			var hadLastSeed = LastSeeds.TryGetValue(node.Id, out lastSeed);

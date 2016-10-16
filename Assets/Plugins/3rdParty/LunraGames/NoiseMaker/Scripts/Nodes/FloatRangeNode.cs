@@ -24,7 +24,6 @@ namespace LunraGames.NoiseMaker
 			var rangeOverride = GetLocalIfValueNull(RangeOverride, 3, values);
 
 			if (rangeOverride == RangeOverrides.Minimum) return lowerBound;
-
 			if (rangeOverride == RangeOverrides.Maximum) return upperBound;
 
 			// Invalid ranges always return 0.

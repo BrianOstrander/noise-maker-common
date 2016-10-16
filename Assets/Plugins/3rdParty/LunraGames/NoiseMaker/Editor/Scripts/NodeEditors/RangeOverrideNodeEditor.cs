@@ -9,9 +9,9 @@ namespace LunraGames.NoiseMaker
 		{
 			var overrideNode = node as RangeOverrideNode;
 
-			var preview = GetPreview<RangeOverrides>(graph, node);
+			var preview = GetPreview(graph, node);
 
-			overrideNode.PropertyValue = Deltas.DetectDelta<RangeOverrides>(overrideNode.PropertyValue, (RangeOverrides)EditorGUILayout.EnumPopup("Value", overrideNode.PropertyValue), ref preview.Stale);
+			overrideNode.PropertyValue = Deltas.DetectDelta(overrideNode.PropertyValue, (RangeOverrides)EditorGUILayout.EnumPopup("Value", overrideNode.PropertyValue), ref preview.Stale);
 
 			return overrideNode;
 		}
