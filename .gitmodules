@@ -25,3 +25,7 @@ url=https://github.com/LunraGames/LibNoiseNet.git
 	path = Assets/Plugins/3rdParty/LunraGames/NoiseMaker
 	url = git@bitbucket.org:LunraGames/noise-maker.git
 	branch = develop
+[submodule "Assets/Plugins/3rdParty/LunraGames/NumberDemon"]
+	path = Assets/Plugins/3rdParty/LunraGames/NumberDemon
+	url = https://github.com/LunraGames/NumberDemon.git
+	branch = develop
