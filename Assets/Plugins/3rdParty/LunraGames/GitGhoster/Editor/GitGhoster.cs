@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using System.Linq;
 
-namespace LunraGames.GitGhoster
+namespace LunraGamesEditor.GitGhoster
 {
 	public class GitGhoster 
 	{
