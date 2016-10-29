@@ -1,4 +1,4 @@
-﻿namespace LunraGames.GitGhoster
+﻿namespace LunraGamesEditor.GitGhoster
 {
 	public static class PrefKeyNames
 	{

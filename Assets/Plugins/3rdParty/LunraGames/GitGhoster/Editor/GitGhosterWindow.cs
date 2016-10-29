@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace LunraGames.GitGhoster
+namespace LunraGamesEditor.GitGhoster
 {
 	public class GitGhosterWindow : EditorWindow 
 	{
