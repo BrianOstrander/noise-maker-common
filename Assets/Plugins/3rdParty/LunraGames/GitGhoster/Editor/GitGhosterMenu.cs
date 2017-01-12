@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace LunraGames.GitGhoster
+namespace LunraGamesEditor.GitGhoster
 {
 	public class GitGhosterMenu
 	{

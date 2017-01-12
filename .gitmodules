@@ -20,4 +20,12 @@
 	branch = develop
 [submodule "Assets/Plugins/3rdParty/LibNoiseNet"]
 	path = Assets/Plugins/3rdParty/LibNoiseNet
-	url = https://BrianOstrander@github.com/LunraGames/LibNoiseNet.git
+url=https://github.com/LunraGames/LibNoiseNet.git
+[submodule "Assets/Plugins/3rdParty/LunraGames/NoiseMaker"]
+	path = Assets/Plugins/3rdParty/LunraGames/NoiseMaker
+	url = git@bitbucket.org:LunraGames/noise-maker.git
+	branch = develop
+[submodule "Assets/Plugins/3rdParty/LunraGames/NumberDemon"]
+	path = Assets/Plugins/3rdParty/LunraGames/NumberDemon
+	url = https://github.com/LunraGames/NumberDemon.git
+	branch = develop
